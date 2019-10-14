@@ -1,7 +1,9 @@
 """Orchestrator component for controlling a Faucet SDN"""
 
+from datetime import datetime
 import logging
 import os
+import time
 import sys
 import yaml
 
@@ -21,10 +23,13 @@ class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
     controlling faucet ACLs at runtime"""
 
+    _DETAIL_FORMAT = '%s is %s: %s'
+
     def __init__(self, config):
         self._config = config
         self._faucet_events = None
         self._server = None
+        self._start_time = datetime.fromtimestamp(time.time()).isoformat()
         self._faucet_collector = FaucetStateCollector()
         self._local_collector = LocalStateCollector()
         self._cpn_collector = CPNStateCollector()
@@ -95,7 +100,7 @@ class Forchestrator:
         state_summary = self._get_state_summary()
         overview = {
             'peer_controller_url': self._get_peer_controller_url(),
-            'state_summary': state_summary,
+            'state_summary_sources': state_summary,
             'site_name': self._config['site']['name'],
             'controller_hostname': os.getenv('HOSTNAME')
         }
@@ -107,9 +112,12 @@ class Forchestrator:
             state_summary = {
                 'state_summary': 'monkey'
             }
-            change_counts = map(lambda subsystem: subsystem.get('change_count', 0), summary.values())
-            last_changes = map(lambda subsystem: subsystem.get('last_change'), summary.values())
-            last_updates = map(lambda subsystem: subsystem.get('last_update'), summary.values())
+            change_counts = map(lambda subsystem:
+                                subsystem.get('change_count', 0), summary.values())
+            last_changes = map(lambda subsystem:
+                               subsystem.get('last_change', self._start_time), summary.values())
+            last_updates = map(lambda subsystem:
+                               subsystem.get('last_update', self._start_time), summary.values())
             state_summary.update({
                 'state_summary_change_count': sum(change_counts),
                 'state_summary_last_change': max(last_changes),
@@ -131,12 +139,13 @@ class Forchestrator:
         for subsystem_name in summary:
             subsystem = summary[subsystem_name]
             state = subsystem.get('state', 'error')
+            detail = subsystem.get('detail', 'unknown')
             if state == 'broken':
                 has_error = True
-                error_detail = subsystem_name + ': ' + subsystem.get('detail', 'unknown')
+                error_detail = self._DETAIL_FORMAT % (subsystem_name, state, detail)
             elif state != 'healthy':
                 has_warning = True
-                warning_detail = subsystem_name + ': ' + subsystem.get('detail', 'unknown')
+                warning_detail = self._DETAIL_FORMAT % (subsystem_name, state, detail)
         if has_error:
             return 'broken', error_detail
         elif has_warning:
