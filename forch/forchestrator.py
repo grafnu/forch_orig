@@ -123,7 +123,7 @@ class Forchestrator:
                 'state_summary_last_change': max(last_changes),
                 'state_summary_last_update': max(last_updates)
             })
-            summary, detail = self._summary_of_summary(summary)
+            summary, detail = self._get_combined_summary(summary)
             state_summary['state_summary'] = summary
             state_summary['state_summary_detail'] = detail
         except Exception as e:
@@ -133,7 +133,7 @@ class Forchestrator:
             })
         return state_summary
 
-    def _summary_of_summary(self, summary):
+    def _get_combined_summary(self, summary):
         has_error = False
         has_warning = False
         for subsystem_name in summary:
