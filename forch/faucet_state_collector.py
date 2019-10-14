@@ -77,7 +77,9 @@ class FaucetStateCollector:
 
     def get_dataplane_summary(self):
         return {
-            'hello': 'world'
+            'state': 'broken',
+            'detail': 'not implemented',
+            'change_count': 1
         }
 
     def get_dataplane_state(self):
@@ -90,7 +92,9 @@ class FaucetStateCollector:
 
     def get_switch_summary(self):
         return {
-            'hello': 'world'
+            'state': 'broken',
+            'detail': 'not implemented',
+            'change_count': 1
         }
 
     def get_switch_state(self):

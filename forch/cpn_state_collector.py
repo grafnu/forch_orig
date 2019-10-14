@@ -56,7 +56,9 @@ class CPNStateCollector:
 
     def get_cpn_summary(self):
         return {
-            'hello': 'world'
+            'state': 'broken',
+            'detail': 'not implemented',
+            'change_count': 1
         }
 
     def get_cpn_state(self):

@@ -23,7 +23,9 @@ class LocalStateCollector:
 
     def get_process_summary(self):
         return {
-            'hello': 'world'
+            'state': 'broken',
+            'detail': 'not implemented',
+            'change_count': 1
         }
 
     def get_process_state(self):
