@@ -112,12 +112,12 @@ class Forchestrator:
             state_summary = {
                 'state_summary': 'monkey'
             }
-            change_counts = map(lambda subsystem:
-                                subsystem.get('change_count', 0), summary.values())
-            last_changes = map(lambda subsystem:
-                               subsystem.get('last_change', self._start_time), summary.values())
-            last_updates = map(lambda subsystem:
-                               subsystem.get('last_update', self._start_time), summary.values())
+            change_counts = list(map(lambda subsystem:
+                                subsystem.get('change_count', 0), summary.values()))
+            last_changes = list(map(lambda subsystem:
+                               subsystem.get('last_change', self._start_time), summary.values()))
+            last_updates = list(map(lambda subsystem:
+                               subsystem.get('last_update', self._start_time), summary.values()))
             state_summary.update({
                 'state_summary_change_count': sum(change_counts),
                 'state_summary_last_change': max(last_changes),
