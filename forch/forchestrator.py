@@ -155,9 +155,9 @@ class Forchestrator:
     def _get_state_summary(self):
         return {
             'cpn': self._cpn_collector.get_cpn_summary(),
-            'processes': self._local_collector.get_process_summary(),
+            'process': self._local_collector.get_process_summary(),
             'dataplane': self._faucet_collector.get_dataplane_summary(),
-            'switches': self._faucet_collector.get_switch_summary()
+            'switch': self._faucet_collector.get_switch_summary()
         }
 
     def get_switch_state(self, path, params):
@@ -175,7 +175,7 @@ class Forchestrator:
         return self._faucet_collector.get_host_path(src, dst)
 
     def get_cpn_state(self, path, params):
-        """Get CoPN state"""
+        """Get CPN state"""
         return self._cpn_collector.get_cpn_state()
 
     def get_process_state(self, path, params):
