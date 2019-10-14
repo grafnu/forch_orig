@@ -92,14 +92,64 @@ class Forchestrator:
     def get_system_state(self, path, params):
         """Get an overview of the system state"""
         # TODO: These are all placeholder values, so need to be replaced.
+        state_summary = self._get_state_summary()
         overview = {
             'peer_controller_url': self._get_peer_controller_url(),
-            'processes': self._local_collector.get_process_overview(),
-            'dataplane': self._faucet_collector.get_dataplane_state(),
-            'site_name': self._config['site']['name']
+            'state_summary': state_summary,
+            'site_name': self._config['site']['name'],
+            'controller_hostname': os.getenv('HOSTNAME')
         }
-        overview.update(self._faucet_collector.get_controller_state())
+        overview.update(self._distill_summary(state_summary))
         return overview
+
+    def _distill_summary(self, summary):
+        try:
+            state_summary = {
+                'state_summary': 'monkey'
+            }
+            change_counts = map(lambda subsystem: subsystem.get('change_count', 0), summary.values())
+            last_changes = map(lambda subsystem: subsystem.get('last_change'), summary.values())
+            last_updates = map(lambda subsystem: subsystem.get('last_update'), summary.values())
+            state_summary.update({
+                'state_summary_change_count': sum(change_counts),
+                'state_summary_last_change': max(last_changes),
+                'state_summary_last_update': max(last_updates)
+            })
+            summary, detail = self._summary_of_summary(summary)
+            state_summary['state_summary'] = summary
+            state_summary['state_summary_detail'] = detail
+        except Exception as e:
+            state_summary.update({
+                'state_summary': 'error',
+                'state_summary_detail': str(e)
+            })
+        return state_summary
+
+    def _summary_of_summary(self, summary):
+        has_error = False
+        has_warning = False
+        for subsystem_name in summary:
+            subsystem = summary[subsystem_name]
+            state = subsystem.get('state', 'error')
+            if state == 'broken':
+                has_error = True
+                error_detail = subsystem_name + ': ' + subsystem.get('detail', 'unknown')
+            elif state != 'healthy':
+                has_warning = True
+                warning_detail = subsystem_name + ': ' + subsystem.get('detail', 'unknown')
+        if has_error:
+            return 'broken', error_detail
+        elif has_warning:
+            return 'damaged', warning_detail
+        return 'healthy', None
+
+    def _get_state_summary(self):
+        return {
+            'cpn': self._cpn_collector.get_cpn_summary(),
+            'processes': self._local_collector.get_process_summary(),
+            'dataplane': self._faucet_collector.get_dataplane_summary(),
+            'switches': self._faucet_collector.get_switch_summary()
+        }
 
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
@@ -116,7 +166,7 @@ class Forchestrator:
         return self._faucet_collector.get_host_path(src, dst)
 
     def get_cpn_state(self, path, params):
-        """Get CPN state"""
+        """Get CoPN state"""
         return self._cpn_collector.get_cpn_state()
 
     def get_process_state(self, path, params):

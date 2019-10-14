@@ -75,6 +75,11 @@ class FaucetStateCollector:
         """get the system states"""
         return self.system_states
 
+    def get_dataplane_summary(self):
+        return {
+            'hello': 'world'
+        }
+
     def get_dataplane_state(self):
         """get the topology state"""
         dplane_map = {}
@@ -82,6 +87,11 @@ class FaucetStateCollector:
         dplane_map[TOPOLOGY_LINK_MAP] = self._get_stack_topo()
         self._fill_egress_state(dplane_map)
         return dplane_map
+
+    def get_switch_summary(self):
+        return {
+            'hello': 'world'
+        }
 
     def get_switch_state(self):
         """get a set of all switches"""
@@ -489,13 +499,3 @@ class FaucetStateCollector:
                 return ret_attr
 
         return ret_attr
-
-    def get_controller_state(self):
-        """Get the faucet controller state"""
-        return {
-            'controller_state': 'up',
-            'controller_state_change_count': 2,
-            'controller_state_last_change': None,
-            'controller_state_last_update': "2019-10-11T15:23:21.382479",
-            'controller_state_description': "hunky-dory"
-        }

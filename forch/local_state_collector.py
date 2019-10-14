@@ -21,7 +21,12 @@ class LocalStateCollector:
                               'forch':      ('python', r'forchestrator\.py'),
                               'bosun':      ('dunsel_watcher', r'bosun')}
 
-    def get_process_state(self, extended=True):
+    def get_process_summary(self):
+        return {
+            'hello': 'world'
+        }
+
+    def get_process_state(self):
         """Get the information of processes in proc_set"""
         self._process_state = {}
         procs = self._get_target_processes()
@@ -76,7 +81,3 @@ class LocalStateCollector:
         proc_map['memory_info_mb'] = {}
         proc_map['memory_info_mb']['rss'] = proc.memory_info().rss / 1e6
         proc_map['memory_info_mb']['vms'] = proc.memory_info().vms / 1e6
-
-    def get_process_overview(self):
-        """Get process overview (limited details)"""
-        return self.get_process_state(extended=False)

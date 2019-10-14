@@ -54,6 +54,11 @@ class CPNStateCollector:
         if self._ping_manager:
             self._ping_manager.start_loop(self._handle_ping_result)
 
+    def get_cpn_summary(self):
+        return {
+            'hello': 'world'
+        }
+
     def get_cpn_state(self):
         """Get CPN state"""
         cpn_nodes = {}
