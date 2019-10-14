@@ -22,6 +22,7 @@ class LocalStateCollector:
                               'bosun':      ('dunsel_watcher', r'bosun')}
 
     def get_process_summary(self):
+        """Return a summary of process table"""
         process_state = self.get_process_state()
         return {
             'state': process_state.get('processes_state')

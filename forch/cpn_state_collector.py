@@ -55,6 +55,7 @@ class CPNStateCollector:
             self._ping_manager.start_loop(self._handle_ping_result)
 
     def get_cpn_summary(self):
+        """Get summary of cpn info"""
         return {
             'state': 'broken',
             'detail': 'not implemented',

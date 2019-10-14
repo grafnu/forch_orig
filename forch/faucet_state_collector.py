@@ -76,6 +76,7 @@ class FaucetStateCollector:
         return self.system_states
 
     def get_dataplane_summary(self):
+        """Get summary of dataplane"""
         return {
             'state': 'broken',
             'detail': 'not implemented',
@@ -91,6 +92,7 @@ class FaucetStateCollector:
         return dplane_map
 
     def get_switch_summary(self):
+        """Get summary of switch state"""
         return {
             'state': 'broken',
             'detail': 'not implemented',
