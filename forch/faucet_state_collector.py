@@ -549,7 +549,6 @@ class FaucetStateCollector:
                 return port
         return None
 
-
     @staticmethod
     def _get_host_name():
         host_name = os.getenv('HOSTNAME')
