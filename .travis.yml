@@ -1,0 +1,11 @@
+sudo: required
+dist: bionic
+addons:
+  apt:
+    update: true
+script:
+  - set -e
+  - bin/check_style
+branches:
+  except:
+  - /^release-\d+\.\d+(\.\d+)?$/
