@@ -1,3 +1,3 @@
-CONST_STATUS_HEALTHY = 'healthy'
-CONST_STATUS_DOWN = 'down'
-CONST_STATUS_WOUNDED = 'wounded'
+STATUS_HEALTHY = 'healthy'
+STATUS_DOWN = 'down'
+STATUS_DAMAGED = 'damaged'
