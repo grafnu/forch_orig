@@ -543,6 +543,7 @@ class FaucetStateCollector:
         return ret_attr
 
     def _get_egress_port(self, switch):
+        """Get egress port of a switch"""
         for port in self.switch_states.get(switch, {}).get(KEY_PORTS, {}):
             port_attr = self._get_port_attributes(switch, port)
             if port_attr.get('type') == 'egress':
@@ -551,6 +552,7 @@ class FaucetStateCollector:
 
     @staticmethod
     def _get_host_name():
+        """Get current host name"""
         host_name = os.getenv('HOSTNAME')
         if host_name:
             return host_name
