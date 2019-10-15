@@ -478,11 +478,11 @@ class FaucetStateCollector:
         for mac, mac_state in self.learned_macs.items():
             if src_mac and mac == src_mac:
                 continue
-            sw, port = self._get_access_switch(mac)
-            if not sw or not port:
+            switch, port = self._get_access_switch(mac)
+            if not switch or not port:
                 continue
             ret_mac_map = ret_map.setdefault(mac, {})
-            ret_mac_map['access_switch'] = sw
+            ret_mac_map['access_switch'] = switch
             ret_mac_map['access_port'] = port
             ret_mac_map['learned_ip'] = mac_state.get(KEY_MAC_LEARNING_IP)
 
@@ -495,6 +495,7 @@ class FaucetStateCollector:
             ret_mac_map['url'] = url
 
         if not fill_src:
+            host_name = FaucetStateCollector._get_host_name()
             url = f"http://{host_name}:9019/host_path?eth_src={src_mac}&eth_dst=egress"
             ret_map['egress'] = {'url': url}
 
