@@ -226,7 +226,7 @@ class FaucetStateCollector:
                         subkey1 = start_dp+":"+start_port
                         subkey2 = peer_dp+":"+peer_port
                         keep_order = subkey1 < subkey2
-                        key = subkey1+"-"+subkey2 if keep_order else subkey2+"-"+subkey1
+                        key = subkey1+"@"+subkey2 if keep_order else subkey2+"@"+subkey1
                         if key in topo_map:
                             continue
                         topo_map[key] = link_obj
