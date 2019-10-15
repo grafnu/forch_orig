@@ -7,7 +7,7 @@ addons:
   apt:
     update: true
 install:
-  - echo Hello
+  - pip3 install -r etc/requirements.txt
 script:
   - set -e
   - bin/check_style
