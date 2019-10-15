@@ -9,6 +9,7 @@ import re
 import threading
 import yaml
 
+import forch.constants as constants
 import forch.ping_manager
 
 LOGGER = logging.getLogger('cpn')
@@ -19,6 +20,15 @@ KEY_CPN_PING_RES = 'ping_results'
 KEY_CPN_STATUS = 'status'
 KEY_CPN_STATUS_COUNT = 'status_count'
 KEY_CPN_STATUS_TS = 'status_updated'
+KEY_CPN_STATE = 'state'
+KEY_CPN_STATE_COUNT = 'state_count'
+KEY_CPN_STATE_UPDATE_TS = 'state_updated'
+KEY_CPN_STATE_CHANGE_TS = 'state_changed'
+
+PING_SUMMARY_REGEX = {'transmitted': r'\d+(?= packets transmitted)',
+                      'received': r'\d+(?= received)',
+                      'loss_percentage': r'\d+(?=% packet loss)',
+                      'time_ms': r'(?<=time )\d+(?=ms)'}
 
 
 class CPNStateCollector:
@@ -54,21 +64,13 @@ class CPNStateCollector:
         if self._ping_manager:
             self._ping_manager.start_loop(self._handle_ping_result)
 
-    def get_cpn_summary(self):
-        """Get summary of cpn info"""
-        return {
-            'state': 'broken',
-            'detail': 'not implemented',
-            'change_count': 1
-        }
-
     def get_cpn_state(self):
         """Get CPN state"""
-        cpn_nodes = {}
+        ret_map = {}
 
         with self._lock:
             for cpn_node, node_state in self._nodes_state.items():
-                ret_node_map = cpn_nodes.setdefault(cpn_node, {})
+                ret_node_map = ret_map.setdefault(cpn_node, {})
                 ret_node_map['attributes'] = copy.copy(node_state.get(KEY_CPN_ATTRIBUTES, {}))
                 ret_node_map['status'] = node_state.get(KEY_CPN_STATUS, None)
                 ping_result = node_state.get(KEY_CPN_PING_RES, {}).get('stdout', None)
@@ -76,17 +78,17 @@ class CPNStateCollector:
                 ret_node_map['status_change_count'] = node_state.get(KEY_CPN_STATUS_COUNT, None)
                 ret_node_map['status_last_updated'] = node_state.get(KEY_CPN_STATUS_TS, None)
 
-        return {
-            'cpn_state': 'monkey',
-            'cpn_state_change_count': 1,
-            'cpn_state_last_update': "2019-10-11T15:23:21.382479",
-            'cpn_state_last_changed': "2019-10-11T15:23:21.382479",
-            'cpn_nodes': cpn_nodes
-        }
+            ret_map['cpn_state'] = self._cpn_state.get(KEY_CPN_STATE, None)
+            ret_map['cpn_state_change_count'] = self._cpn_state.get(KEY_CPN_STATE_COUNT, None)
+            ret_map['cpn_state_last_update'] = self._cpn_state.get(KEY_CPN_STATE_UPDATE_TS, None)
+            ret_map['cpn_state_last_changed'] = self._cpn_state.get(KEY_CPN_STATE_CHANGE_TS, None)
+
+        return ret_map
 
     def _handle_ping_result(self, ping_res_future):
         """Handle ping result for hosts"""
         ping_res_map = ping_res_future.result()
+        current_time = datetime.now().isoformat()
         with self._lock:
             for host_name, res_map in ping_res_map.items():
                 if host_name not in self._nodes_state:
@@ -99,9 +101,12 @@ class CPNStateCollector:
                 if not last_status or new_status != last_status:
                     node_state_map[KEY_CPN_STATUS] = new_status
                     node_state_map[KEY_CPN_STATUS_COUNT] = last_status_count + 1
-                    node_state_map[KEY_CPN_STATUS_TS] = datetime.now().isoformat()
+                    node_state_map[KEY_CPN_STATUS_TS] = current_time
 
                 node_state_map[KEY_CPN_PING_RES] = res_map
+
+            self._update_cpn_state(current_time)
+
 
     @staticmethod
     def _get_node_status(ping_result):
@@ -109,21 +114,43 @@ class CPNStateCollector:
         result = re.search(r'\d+(?=% packet loss)', ping_result['stdout'])
         loss = int(result.group()) if result else 100
         if loss == 0:
-            return 'healthy'
+            return constants.CONST_STATUS_HEALTHY
         if loss == 100:
-            return 'down'
-        return 'flaky'
+            return constants.CONST_STATUS_DOWN
+        return constants.CONST_STATUS_WOUNDED
 
     @staticmethod
     def _get_ping_summary(ping_stdout):
         """Get ping summary"""
+        res_summary = {}
         if not ping_stdout:
             return None
-        reach_stats = False
-        stats_lines = []
         for line in ping_stdout.split('\n'):
-            if reach_stats:
-                stats_lines.append(line)
-            if not reach_stats and 'ping statistics' in line:
-                reach_stats = True
-        return '\n'.join(stats_lines)
+            for summary_key, regex in PING_SUMMARY_REGEX.items():
+                match = re.search(regex, line)
+                if match:
+                    res_summary[summary_key] = match.group()
+            if 'rtt' == line[:3]:
+                rtt_vals = re.findall(r'[0-9]*\.?[0-9]+', line)
+                res_summary['rtt'] = dict(zip(['min', 'avg', 'max', 'mdev'], rtt_vals))
+        return res_summary
+
+    def _update_cpn_state(self, current_time):
+        new_cpn_state = self._get_cpn_status()
+        if new_cpn_state != self._cpn_state.get(KEY_CPN_STATE, None):
+            cpn_state_count = self._nodes_state.get(KEY_CPN_STATE_COUNT, 0) + 1
+            self._cpn_state[KEY_CPN_STATE_COUNT] = cpn_state_count
+            self._cpn_state[KEY_CPN_STATE_CHANGE_TS] = current_time
+        self._cpn_state[KEY_CPN_STATE] = new_cpn_state
+        self._cpn_state[KEY_CPN_STATE_UPDATE_TS] = current_time
+
+    def _get_cpn_status(self):
+        n_healthy = 0
+        for node, node_state in self._nodes_state.items():
+            if node_state.get(KEY_CPN_STATUS, "") == constants.CONST_STATUS_HEALTHY:
+                n_healthy += 1
+        if n_healthy == len(self._nodes_state):
+            return constants.CONST_STATUS_HEALTHY
+        if n_healthy == 0:
+            return constants.CONST_STATUS_DOWN
+        return constants.CONST_STATUS_WOUNDED

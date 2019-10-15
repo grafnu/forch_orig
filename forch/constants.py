@@ -1,0 +1,3 @@
+CONST_STATUS_HEALTHY = 'healthy'
+CONST_STATUS_DOWN = 'down'
+CONST_STATUS_WOUNDED = 'wounded'
