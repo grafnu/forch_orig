@@ -135,6 +135,7 @@ class FaucetStateCollector:
             for switch, switch_state in self.switch_states.items():
                 switch_map[switch] = {}
                 switch_map[switch]["state"] = switch_state.get(SW_STATE, "")
+            return switch_map
 
     def _get_switch(self, switch_name):
         """lock protect get_switch_raw"""
