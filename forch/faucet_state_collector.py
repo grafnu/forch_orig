@@ -30,6 +30,8 @@ def dump_states(func):
     return wrapped
 
 
+SWITCH_CONNECTED = "CONNECTED"
+
 KEY_SWITCH = "dpids"
 KEY_DP_ID = "dp_id"
 KEY_PORTS = "ports"
@@ -64,6 +66,7 @@ EGRESS_STATE = "egress_state"
 EGRESS_DETAIL = "egress_state_detail"
 EGRESS_LAST_CHANGE = "egress_state_last_change"
 EGRESS_CHANGE_COUNT = "egress_state_change_count"
+
 
 class FaucetStateCollector:
     """Processing faucet events and store states in the map"""
@@ -110,7 +113,7 @@ class FaucetStateCollector:
         for switch_name in self.switch_states:
             switch_data = self._get_switch(switch_name)
             switches_data[switch_name] = switch_data
-            if switch_data[SW_STATE] != constants.STATE_HEALTHY:
+            if switch_data[SW_STATE] != SWITCH_CONNECTED:
                 broken.append(switch_name)
         return {
             'switches_state': constants.STATE_BROKEN if broken else constants.STATE_HEALTHY,
