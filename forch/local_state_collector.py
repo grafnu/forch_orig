@@ -26,7 +26,8 @@ class LocalStateCollector:
         """Return a summary of process table"""
         process_state = self.get_process_state()
         return {
-            'state': process_state.get('processes_state')
+            'state': process_state.get('processes_state'),
+            'detail': process_state.get('processes_state_detail')
         }
 
     def get_process_state(self):
@@ -39,7 +40,8 @@ class LocalStateCollector:
 
         # fill up process info
         for target_name in self._target_procs:
-            state_map = self._process_state.setdefault(target_name, {})
+            state_map = {}
+            self._process_state[target_name] = state_map
             if target_name in procs:
                 proc = procs[target_name]
                 if proc:
