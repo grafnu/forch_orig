@@ -127,12 +127,6 @@ class FaucetStateCollector:
             result['switches_restrict'] = switch
         return result
 
-    def get_hosts_list(self, eth_src):
-        """Return a list of learned access devices"""
-        if eth_src:
-            return self._get_learned_macs(False, eth_src)
-        return self._get_learned_macs(True)
-
     def _fill_egress_state(self, dplane_state):
         """Return egress state obj"""
         with self.lock:
@@ -336,10 +330,12 @@ class FaucetStateCollector:
 
     def get_host_path(self, src_mac, dst_mac, to_egress):
         """Given two MAC addresses in the core network, find the active path between them"""
+
         if not src_mac:
             return {'error': 'Empty eth_src. Please use list_hosts to get a list of hosts'}
         if not dst_mac and not to_egress:
-            return {'error': 'Empty eth_dst. Please use list_hosts to get a list of hosts'}
+            return {'error': 'Empty eth_dst. Use list_hosts, or set to_egress=true'}
+
         if src_mac not in self.learned_macs or dst_mac and dst_mac not in self.learned_macs:
             error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
             return {'error': error_msg}
@@ -504,29 +500,30 @@ class FaucetStateCollector:
                 return switch, port
         return None, None
 
-    def _get_learned_macs(self, fill_src, src_mac=None):
+    def get_list_hosts(self, src_mac):
         """Get access devices"""
-        ret_map = {}
+        host_macs = {}
         for mac, mac_state in self.learned_macs.items():
-            if src_mac and mac == src_mac:
+            if mac == src_mac:
                 continue
             switch, port = self._get_access_switch(mac)
             if not switch or not port:
                 continue
-            ret_mac_map = ret_map.setdefault(mac, {})
-            ret_mac_map['access_switch'] = switch
-            ret_mac_map['access_port'] = port
-            ret_mac_map['learned_ip'] = mac_state.get(KEY_MAC_LEARNING_IP)
+            mac_deets = host_macs.setdefault(mac, {})
+            mac_deets['switch'] = switch
+            mac_deets['port'] = port
+            mac_deets['host_ip'] = mac_state.get(KEY_MAC_LEARNING_IP)
 
             host_name = FaucetStateCollector._get_host_name()
             url = f"http://{host_name}:9019/"
-            if fill_src:
-                url += f"list_hosts?eth_src={mac}"
-            else:
+            if src_mac:
                 url += f"host_path?eth_src={src_mac}&eth_dst={mac}"
-            ret_mac_map['url'] = url
+            else:
+                url += f"list_hosts?eth_src={mac}"
+            mac_deets['url'] = url
 
-        return ret_map
+        key = 'eth_dsts' if src_mac else 'eth_srcs'
+        return {key: host_macs}
 
     def _get_graph(self, src_mac, dst_mac):
         """Get a graph consists of links only used by src and dst MAC"""
