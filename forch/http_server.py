@@ -48,7 +48,7 @@ class HttpServer():
         self._config = config
         self._paths = {}
         self._server = None
-        self._root_path = config.get('http_root', 'forch_public')
+        self._root_path = config.get('http_root', 'public')
 
     def start_server(self):
         """Start serving thread"""
