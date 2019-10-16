@@ -113,6 +113,7 @@ class FaucetStateCollector:
         }
 
     def get_hosts_list(self, eth_src):
+        """Return a list of learned access devices"""
         if eth_src:
             return self._get_learned_macs(False, eth_src)
         return self._get_learned_macs(True)
