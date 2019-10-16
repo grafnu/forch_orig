@@ -44,6 +44,7 @@ class CPNStateCollector:
         self._ping_manager = None
 
     def initialize(self):
+        """Initialize this instance and make it go"""
         cpn_dir_name = os.getenv('FORCH_CONFIG_DIR')
         cpn_file_name = os.path.join(cpn_dir_name, 'cpn.yaml')
         LOGGER.info("Loading CPN config file: %s", cpn_file_name)
@@ -164,12 +165,12 @@ class CPNStateCollector:
 
     def _get_cpn_state(self):
         broken = []
-        if len(self._node_states) == 0:
+        if not self._node_states:
             return constants.STATE_BROKEN, broken
         for node_name, node_state in self._node_states.items():
             if node_state.get(KEY_NODE_STATE) != constants.STATE_HEALTHY:
                 broken.append(node_name)
-        if len(broken) == 0:
+        if not broken:
             return constants.STATE_HEALTHY, broken
         if len(broken) == len(self._node_states):
             return constants.STATE_DOWN, broken
