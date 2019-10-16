@@ -78,7 +78,7 @@ class HttpServer():
                 if request_path.startswith(a_path):
                     path_remain = request_path[len(a_path):]
                     result = self._paths[a_path](path_remain, params)
-                    if isinstance(result, str) or isinstance(result, bytes):
+                    if isinstance(result, (bytes, str)):
                         return result
                     return json.dumps(result)
             return str(self._paths)
