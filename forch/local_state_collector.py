@@ -35,7 +35,6 @@ class LocalStateCollector:
 
         self._process_state.clear()
         procs = self._get_target_processes()
-        has_error = False
         broken = []
 
         # fill up process info
