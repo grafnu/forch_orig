@@ -39,6 +39,7 @@ class Forchestrator:
         self._faucet_events = forch.faucet_event_client.FaucetEventClient(
             self._config.get('event_client', {}))
         self._faucet_events.connect()
+        self._cpn_collector.initialize()
 
     def main_loop(self):
         """Main event processing loop"""
@@ -100,7 +101,7 @@ class Forchestrator:
         overview = {
             'peer_controller_url': self._get_peer_controller_url(),
             'state_summary_sources': state_summary,
-            'site_name': self._config['site']['name'],
+            'site_name': self._config.get('site', {}).get('name', 'unknown'),
             'controller_hostname': os.getenv('HOSTNAME')
         }
         overview.update(self._distill_summary(state_summary))
@@ -108,6 +109,7 @@ class Forchestrator:
 
     def _distill_summary(self, summary):
         try:
+            LOGGER.info('Change counts %s', summary)
             state_summary = {
                 'state_summary': 'monkey'
             }
@@ -131,6 +133,7 @@ class Forchestrator:
                 'state_summary': 'error',
                 'state_summary_detail': str(e)
             })
+            LOGGER.exception('Calculating state summary')
         return state_summary
 
     def _get_combined_summary(self, summary):
