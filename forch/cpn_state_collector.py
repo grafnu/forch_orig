@@ -153,15 +153,13 @@ class CPNStateCollector:
 
     def _update_cpn_state(self, current_time, detail=None):
         new_cpn_state, broken = self._get_cpn_state()
-        if not detail:
-            detail = ', '.join(broken)
-        print(new_cpn_state, self._cpn_state.get(KEY_CPN_STATE))
+        use_detail = detail if detail else ', '.join(broken)
         if new_cpn_state != self._cpn_state.get(KEY_CPN_STATE):
             cpn_state_count = self._cpn_state.get(KEY_CPN_STATE_COUNT, 0) + 1
             self._cpn_state[KEY_CPN_STATE_COUNT] = cpn_state_count
             self._cpn_state[KEY_CPN_STATE_CHANGE_TS] = current_time
         self._cpn_state[KEY_CPN_STATE] = new_cpn_state
-        self._cpn_state[KEY_CPN_STATE_DETAIL] = detail
+        self._cpn_state[KEY_CPN_STATE_DETAIL] = use_detail
         self._cpn_state[KEY_CPN_STATE_UPDATE_TS] = current_time
 
     def _get_cpn_state(self):
