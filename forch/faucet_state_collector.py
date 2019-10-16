@@ -112,6 +112,11 @@ class FaucetStateCollector:
             'switches': switch_data
         }
 
+    def get_hosts_list(self, eth_src):
+        if eth_src:
+            return self._get_learned_macs(False, eth_src)
+        return self._get_learned_macs(True)
+
     def _fill_egress_state(self, dplane_map):
         """Return egress state obj"""
         with self.lock:
@@ -258,9 +263,7 @@ class FaucetStateCollector:
 
     def get_active_egress_path(self, src_mac):
         """Given a MAC address return active route to egress."""
-        src_ip = self.learned_macs.get(src_mac, {}).get(KEY_MAC_LEARNING_IP)
-        res = {'src_ip': src_ip,
-               'path': []}
+        res = {'path': []}
         if src_mac not in self.learned_macs:
             return res
         src_switch, src_port = self._get_access_switch(src_mac)
@@ -303,20 +306,21 @@ class FaucetStateCollector:
                 hop = next_hop
         return res
 
-    def get_host_path(self, src_mac, dst_mac=None):
+    def get_host_path(self, src_mac, dst_mac, to_egress):
         """Given two MAC addresses in the core network, find the active path between them"""
         if not src_mac:
-            return {'message': 'Empty eth_src. Returning access devices.',
-                    'access_devices': self._get_learned_macs(True)}
-        if not dst_mac:
-            res = {'message': 'Empty eth_dst. Returning access devices and egress.',
-                   'access_devices': self._get_learned_macs(False, src_mac)}
-            return res
-        if dst_mac == 'egress':
-            return self.get_active_egress_path(src_mac)
-        if src_mac not in self.learned_macs or dst_mac not in self.learned_macs:
-            return {'message': 'MAC addresses cannot be found. Returning all learned MACs.',
-                    'macs': self._get_learned_macs(True)}
+            return {'error': 'Empty eth_src. Please use list_hosts to get a list of hosts'}
+        if not dst_mac and not to_egress:
+            return {'error': 'Empty eth_dst. Please use list_hosts to get a list of hosts'}
+        if src_mac not in self.learned_macs or dst_mac and dst_mac not in self.learned_macs:
+            error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
+            return {'error': error_msg}
+
+        if to_egress:
+            ret_map = self.get_active_egress_path(src_mac)
+            src_ip = self.learned_macs.get(src_mac, {}).get(KEY_MAC_LEARNING_IP)
+            ret_map['src_ip'] = src_ip
+            return ret_map
 
         res = {'src_ip': self.learned_macs[src_mac].get(KEY_MAC_LEARNING_IP),
                'dst_ip': self.learned_macs[dst_mac].get(KEY_MAC_LEARNING_IP),
@@ -487,17 +491,12 @@ class FaucetStateCollector:
             ret_mac_map['learned_ip'] = mac_state.get(KEY_MAC_LEARNING_IP)
 
             host_name = FaucetStateCollector._get_host_name()
-            url = f"http://{host_name}:9019/host_path?"
+            url = f"http://{host_name}:9019/"
             if fill_src:
-                url += f"eth_src={mac}"
+                url += f"list_hosts?eth_src={mac}"
             else:
-                url += f"eth_src={src_mac}&eth_dst={mac}"
+                url += f"host_path?eth_src={src_mac}&eth_dst={mac}"
             ret_mac_map['url'] = url
-
-        if not fill_src:
-            host_name = FaucetStateCollector._get_host_name()
-            url = f"http://{host_name}:9019/host_path?eth_src={src_mac}&eth_dst=egress"
-            ret_map['egress'] = {'url': url}
 
         return ret_map
 
