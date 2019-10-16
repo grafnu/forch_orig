@@ -98,7 +98,7 @@ class FaucetStateCollector:
 
     def get_switch_summary(self):
         """Get summary of switch state"""
-        switch_state = self.get_switch_state()
+        switch_state = self.get_switch_state(None)
         return {
             'state': switch_state['switches_state'],
             'detail': switch_state['switches_state_detail'],
@@ -106,7 +106,7 @@ class FaucetStateCollector:
             'last_change': switch_state['switches_state_last_change']
         }
 
-    def get_switch_state(self):
+    def get_switch_state(self, switch):
         """get a set of all switches"""
         switches_data = {}
         broken = []
@@ -115,6 +115,8 @@ class FaucetStateCollector:
             switches_data[switch_name] = switch_data
             if switch_data[SW_STATE] != SWITCH_CONNECTED:
                 broken.append(switch_name)
+        if switch:
+            switches_data = {switch: switches_data[switch]}
         return {
             'switches_state': constants.STATE_BROKEN if broken else constants.STATE_HEALTHY,
             'switches_state_detail': ', '.join(broken),
