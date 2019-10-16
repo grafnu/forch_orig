@@ -110,7 +110,6 @@ class Forchestrator:
 
     def _distill_summary(self, summary):
         try:
-            LOGGER.info('Change counts %s', summary)
             state_summary = {
                 'state_summary': 'monkey'
             }
