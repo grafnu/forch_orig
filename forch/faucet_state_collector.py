@@ -115,15 +115,17 @@ class FaucetStateCollector:
             switches_data[switch_name] = switch_data
             if switch_data[SW_STATE] != SWITCH_CONNECTED:
                 broken.append(switch_name)
-        if switch:
-            switches_data = {switch: switches_data[switch]}
-        return {
+        result = {
             'switches_state': constants.STATE_BROKEN if broken else constants.STATE_HEALTHY,
             'switches_state_detail': ', '.join(broken),
             'switches_state_change_count': 1,
             'switches_state_last_change': "2019-10-11T15:23:21.382479",
             'switches': switches_data
         }
+        if switch:
+            result['switches'] = {switch: switches_data[switch]}
+            result['switches_restrict'] = switch
+        return result
 
     def get_hosts_list(self, eth_src):
         """Return a list of learned access devices"""
@@ -143,6 +145,8 @@ class FaucetStateCollector:
     def _get_switch_map(self):
         """returns switch map for topology overview"""
         switch_map = {}
+        if not self.switch_states:
+            return None
         with self.lock:
             for switch, switch_state in self.switch_states.items():
                 switch_map[switch] = {}
@@ -228,7 +232,7 @@ class FaucetStateCollector:
 
     def _fill_path_to_root(self, switch_name, switch_map):
         """populate path to root for switch_state"""
-        switch_map["root_path"] = self.get_switch_egress_path(switch_name)['path']
+        switch_map["root_path"] = self.get_switch_egress_path(switch_name).get('path')
 
     @staticmethod
     def _make_key(start_dp, start_port, peer_dp, peer_port):
@@ -244,7 +248,7 @@ class FaucetStateCollector:
             config_obj = self.faucet_config.get(DPS_CFG, {})
             dps = self.topo_state.get(TOPOLOGY_DPS, {})
             if not dps or not config_obj:
-                return topo_map
+                return None
             for start_dp, dp_obj in config_obj.items():
                 for start_port, iface_obj in dp_obj.get("interfaces", {}).items():
                     peer_dp = iface_obj.get("stack", {}).get("dp")
@@ -296,6 +300,11 @@ class FaucetStateCollector:
         with self.lock:
             link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
             dps = self.topo_state.get(TOPOLOGY_DPS, {})
+            if not dps or not link_list:
+                return {
+                    'state': constants.STATE_BROKEN,
+                    'error': 'Missing state data'
+                }
             hop = {'switch': src_switch}
             if src_port:
                 hop['in'] = src_port
