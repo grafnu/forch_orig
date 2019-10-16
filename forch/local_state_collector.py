@@ -6,6 +6,7 @@ import re
 
 import psutil
 
+import forch.constants as constants
 
 LOGGER = logging.getLogger('localstate')
 
@@ -34,6 +35,7 @@ class LocalStateCollector:
         self._process_state.clear()
         procs = self._get_target_processes()
         has_error = False
+        broken = []
 
         # fill up process info
         for target_name in self._target_procs:
@@ -42,16 +44,20 @@ class LocalStateCollector:
                 proc = procs[target_name]
                 if proc:
                     state_map.update(self._extract_process_state(proc))
+                    state_map['state'] = constants.STATE_HEALTHY
                 else:
                     state_map['state'] = 'broken'
                     state_map['detail'] = 'Multiple processes found'
-                    has_error = True
+                    broken.append(target_name)
             else:
                 state_map['state'] = 'broken'
                 state_map['detail'] = 'Process not found'
-                has_error = True
+                broken.append(target_name)
 
-        self._process_state['processes_state'] = 'broken' if has_error else 'healthy'
+        state = constants.STATE_BROKEN if broken else constants.STATE_HEALTHY
+        self._process_state['processes_state'] = state
+        self._process_state['processes_state_detail'] = ', '.join(broken)
+
         return self._process_state
 
     def _get_target_processes(self):
