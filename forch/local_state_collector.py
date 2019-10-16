@@ -6,7 +6,6 @@ import re
 
 import psutil
 
-
 LOGGER = logging.getLogger('localstate')
 
 class LocalStateCollector:
