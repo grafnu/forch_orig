@@ -62,6 +62,8 @@ class CPNStateCollector:
             self._node_states.clear()
             self._update_cpn_state(datetime.now().isoformat(), detail=str(e))
 
+        self._update_cpn_state(datetime.now().isoformat(), detail="Initializing")
+
         if self._ping_manager:
             self._ping_manager.start_loop(self._handle_ping_result)
 
@@ -150,9 +152,12 @@ class CPNStateCollector:
         return res_summary
 
     def _update_cpn_state(self, current_time, detail=None):
-        new_cpn_state = self._get_cpn_state()
+        new_cpn_state, broken = self._get_cpn_state()
+        if not detail:
+            detail = ', '.join(broken)
+        print(new_cpn_state, self._cpn_state.get(KEY_CPN_STATE))
         if new_cpn_state != self._cpn_state.get(KEY_CPN_STATE):
-            cpn_state_count = self._node_states.get(KEY_CPN_STATE_COUNT, 0) + 1
+            cpn_state_count = self._cpn_state.get(KEY_CPN_STATE_COUNT, 0) + 1
             self._cpn_state[KEY_CPN_STATE_COUNT] = cpn_state_count
             self._cpn_state[KEY_CPN_STATE_CHANGE_TS] = current_time
         self._cpn_state[KEY_CPN_STATE] = new_cpn_state
@@ -160,14 +165,14 @@ class CPNStateCollector:
         self._cpn_state[KEY_CPN_STATE_UPDATE_TS] = current_time
 
     def _get_cpn_state(self):
+        broken = []
         if len(self._node_states) == 0:
-            return constants.STATE_BROKEN
-        n_healthy = 0
-        for _, node_state in self._node_states.items():
-            if node_state.get(KEY_NODE_STATE, "") == constants.STATE_HEALTHY:
-                n_healthy += 1
-        if n_healthy == len(self._node_states):
-            return constants.STATE_HEALTHY
-        if n_healthy == 0:
-            return constants.STATE_DOWN
-        return constants.STATE_DAMAGED
+            return constants.STATE_BROKEN, broken
+        for node_name, node_state in self._node_states.items():
+            if node_state.get(KEY_NODE_STATE) != constants.STATE_HEALTHY:
+                broken.append(node_name)
+        if len(broken) == 0:
+            return constants.STATE_HEALTHY, broken
+        if len(broken) == len(self._node_states):
+            return constants.STATE_DOWN, broken
+        return constants.STATE_DAMAGED, broken
