@@ -503,7 +503,7 @@ class FaucetStateCollector:
     def get_list_hosts(self, src_mac):
         """Get access devices"""
         host_macs = {}
-        if src_mac and not src_mac in self.learned_macs:
+        if src_mac and src_mac not in self.learned_macs:
             error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
             return {'error': error_msg}
         for mac, mac_state in self.learned_macs.items():
