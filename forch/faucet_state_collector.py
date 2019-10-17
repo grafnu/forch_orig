@@ -196,10 +196,10 @@ class FaucetStateCollector:
         port_map = {}
         port_attr = self._get_port_attributes(switch, port)
         switch_port_attributes_map = port_map.setdefault("attributes", {})
-        switch_port_attributes_map["description"] = port_attr.get('description', None)
-        switch_port_attributes_map["port_type"] = port_attr.get('type', None)
-        switch_port_attributes_map["stack_peer_switch"] = port_attr.get('peer_switch', None)
-        switch_port_attributes_map["stack_peer_port"] = port_attr.get('peer_port', None)
+        switch_port_attributes_map["description"] = port_attr.get('description')
+        switch_port_attributes_map["port_type"] = port_attr.get('type')
+        switch_port_attributes_map["stack_peer_switch"] = port_attr.get('peer_switch')
+        switch_port_attributes_map["stack_peer_port"] = port_attr.get('peer_port')
 
         # port dynamics
         if KEY_PORT_STATE_UP in port_states:
@@ -207,8 +207,8 @@ class FaucetStateCollector:
             port_map["state"] = constants.STATE_ACTIVE if active else constants.STATE_DOWN
         else:
             port_map["state"] = None
-        port_map["state_last_change"] = port_states.get(KEY_PORT_STATE_TS, None)
-        port_map["state_change_count"] = port_states.get(KEY_PORT_STATE_COUNT, None)
+        port_map["state_last_change"] = port_states.get(KEY_PORT_STATE_TS)
+        port_map["state_change_count"] = port_states.get(KEY_PORT_STATE_COUNT)
 
         return port_map
 
