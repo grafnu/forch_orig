@@ -11,7 +11,6 @@ def get_http_files():
 
 data_files = []
 data_files.append(('forch/public', get_http_files()))
-print(data_files)
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
