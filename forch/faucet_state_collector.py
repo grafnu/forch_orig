@@ -318,7 +318,7 @@ class FaucetStateCollector:
         """"Returns path to egress from given switch. Appends ingress port to first hop if given"""
         res = {'path': []}
         with self.lock:
-            link_list = self.topo_state.get(TOPOLOGY_GRAPH).get('links', [])
+            link_list = self.topo_state.get(TOPOLOGY_GRAPH, {}).get('links', [])
             dps = self.topo_state.get(TOPOLOGY_DPS, {})
             if not dps or not link_list:
                 return {
