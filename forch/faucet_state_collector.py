@@ -31,6 +31,7 @@ def dump_states(func):
 
 
 SWITCH_CONNECTED = "CONNECTED"
+SWITCH_DOWN = "DOWN"
 
 KEY_SWITCH = "dpids"
 KEY_DP_ID = "dp_id"
@@ -471,7 +472,7 @@ class FaucetStateCollector:
             if not dp_name:
                 return
             dp_state = self.switch_states.setdefault(dp_name, {})
-            new_state = constants.STATE_HEALTHY if connected else constants.STATE_DOWN
+            new_state = SWITCH_CONNECTED if connected else SWITCH_DOWN
             if dp_state.get(SW_STATE) != new_state:
                 LOGGER.info('dp_change %s, %s -> %s', dp_name, dp_state.get(SW_STATE), new_state)
                 dp_state[SW_STATE] = new_state
