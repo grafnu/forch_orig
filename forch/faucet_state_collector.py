@@ -421,7 +421,7 @@ class FaucetStateCollector:
             old_state = egress_state.get(EGRESS_STATE)
             new_state = name if state else constants.STATE_DOWN
             if new_state != old_state:
-                LOGGER.info('lag_state changed from %s to %s', old_state, new_state)
+                LOGGER.info('lag_state %s, %s -> %s', name, old_state, new_state)
                 egress_state[EGRESS_STATE] = new_state
                 egress_state[EGRESS_PORT] = port if state else None
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
@@ -473,7 +473,7 @@ class FaucetStateCollector:
             dp_state = self.switch_states.setdefault(dp_name, {})
             new_state = constants.STATE_HEALTHY if connected else constants.STATE_DOWN
             if dp_state.get(SW_STATE) != new_state:
-                LOGGER.info('dp_change change from %s to %s', dp_state.get(SW_STATE), new_state)
+                LOGGER.info('dp_change %s, %s -> %s', dp_name, dp_state.get(SW_STATE), new_state)
                 dp_state[SW_STATE] = new_state
                 dp_state[SW_STATE_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 dp_state[SW_STATE_CHANGE_COUNT] = dp_state.get(SW_STATE_CHANGE_COUNT, 0) + 1
@@ -482,7 +482,7 @@ class FaucetStateCollector:
     def process_dataplane_config_change(self, timestamp, dps_config):
         """Handle config data sent through event channel """
         with self.lock:
-            LOGGER.info('dataplane_config change to state %s', dps_config)
+            LOGGER.info('dataplane_config change')
             cfg_state = self.faucet_config
             cfg_state[DPS_CFG] = dps_config
             cfg_state[DPS_CFG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
@@ -493,7 +493,7 @@ class FaucetStateCollector:
         """Process stack topology change event"""
         topo_state = self.topo_state
         with self.lock:
-            LOGGER.info('stack_topo change with root %s', stack_root)
+            LOGGER.info('stack_topo changed to root %s', stack_root)
             topo_state[TOPOLOGY_ROOT] = stack_root
             topo_state[TOPOLOGY_GRAPH] = graph
             topo_state[TOPOLOGY_DPS] = dps
