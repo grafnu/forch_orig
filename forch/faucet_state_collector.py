@@ -493,7 +493,7 @@ class FaucetStateCollector:
         """Process stack topology change event"""
         topo_state = self.topo_state
         with self.lock:
-            LOGGER.info('stack_topo change to root %s', stack_root)
+            LOGGER.info('stack_topo change with root %s', stack_root)
             topo_state[TOPOLOGY_ROOT] = stack_root
             topo_state[TOPOLOGY_GRAPH] = graph
             topo_state[TOPOLOGY_DPS] = dps
@@ -527,7 +527,7 @@ class FaucetStateCollector:
         for switch, port_map in learned_switches.items():
             port = port_map[KEY_MAC_LEARNING_PORT]
             port_attr = self._get_port_attributes(switch, port)
-            if port_attr['type'] == 'access':
+            if port_attr.get('type') == 'access':
                 return switch, port
         return None, None
 
