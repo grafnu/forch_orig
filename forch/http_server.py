@@ -54,7 +54,7 @@ class HttpServer():
 
     def start_server(self):
         """Start serving thread"""
-        LOGGER.info('Starting http server on %s', self.get_url_base())
+        LOGGER.info('Starting http server on %s', self._get_url_base())
         address = (self._host, self._port)
         handler = functools.partial(RequestHandler, self)
         self._server = ThreadedHTTPServer(address, handler)
@@ -63,7 +63,7 @@ class HttpServer():
         thread.deamon = False
         thread.start()
 
-    def get_url_base(self):
+    def _get_url_base(self):
         return 'http://%s:%s' % (self._host, self._port)
 
     def stop_server(self):

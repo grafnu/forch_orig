@@ -95,6 +95,9 @@ class Forchestrator:
     def _get_peer_controller_url(self):
         return 'http://google.com'
 
+    def _get_hostname(self):
+        return os.getenv('HOSTNAME')
+
     def get_system_state(self, path, params):
         """Get an overview of the system state"""
         # TODO: These are all placeholder values, so need to be replaced.
@@ -103,7 +106,7 @@ class Forchestrator:
             'peer_controller_url': self._get_peer_controller_url(),
             'state_summary_sources': state_summary,
             'site_name': self._config.get('site', {}).get('name', 'unknown'),
-            'controller_hostname': self._host
+            'controller_hostname': self._get_hostname()
         }
         overview.update(self._distill_summary(state_summary))
         return overview
@@ -163,6 +166,11 @@ class Forchestrator:
             'switch': self._faucet_collector.get_switch_summary()
         }
 
+    def _extract_host(self, path):
+        slash = path.find('/')
+        host = path[:slash]
+        return f'http://{host}'
+
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
         switch = params.get('switch')
@@ -183,7 +191,8 @@ class Forchestrator:
     def get_list_hosts(self, path, params):
         """List learned access devices"""
         eth_src = params.get('eth_src')
-        return self._faucet_collector.get_list_hosts(eth_src)
+        host = self._extract_host(path)
+        return self._faucet_collector.get_list_hosts(host, eth_src)
 
     def get_cpn_state(self, path, params):
         """Get CPN state"""
