@@ -35,7 +35,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         opt_pairs = urllib.parse.parse_qsl(parsed.query)
         for pair in opt_pairs:
             opts[pair[0]] = pair[1]
-        message = str(self._context._get_data(host, parsed.path[1:], opts))
+        message = str(self._context.get_data(host, parsed.path[1:], opts))
         self.wfile.write(message.encode())
 
 
@@ -76,12 +76,11 @@ class HttpServer():
         """Register a request mapping"""
         self._paths[path] = target
 
-    def _get_data(self, host, path, params):
+    def get_data(self, host, path, params):
         """Get data for a particular request path and query params"""
         try:
             for a_path in self._paths:
                 if path.startswith(a_path):
-                    path_remain = path[len(a_path):]
                     full_path = host + '/' + path
                     result = self._paths[a_path](full_path, params)
                     if isinstance(result, (bytes, str)):
@@ -100,7 +99,6 @@ class HttpServer():
 
     def _split_request(self, base_path, req_path):
         slash = req_path.find('/') + 1
-        host = req_path[:slash]
         path = req_path[slash:]
         full_path = os.path.join(self._root_path, path)
         if os.path.isdir(full_path):
