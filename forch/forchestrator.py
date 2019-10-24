@@ -169,7 +169,7 @@ class Forchestrator:
         url_base = self._extract_url_base(path)
         for state in states:
             summary = states[state]
-            summary['url'] = f'{url_base}/{state}'
+            summary['url'] = f'{url_base}/?{state}'
         return states
 
     def _extract_url_base(self, path):
