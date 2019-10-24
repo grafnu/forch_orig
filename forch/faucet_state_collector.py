@@ -113,7 +113,7 @@ class FaucetStateCollector:
         switches_data = {}
         broken = []
         change_count = 0
-        last_change = '#n/a' # Clevery chosen to be sorted less than timestamp.
+        last_change = '#n/a'  # Clevery chosen to be sorted less than timestamp.
         for switch_name in self.switch_states:
             switch_data = self._get_switch(switch_name, port)
             switches_data[switch_name] = switch_data
