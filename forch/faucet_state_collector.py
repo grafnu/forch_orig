@@ -113,16 +113,20 @@ class FaucetStateCollector:
         """get a set of all switches"""
         switches_data = {}
         broken = []
+        change_count = 0
+        last_change = '#n/a' # Clevery chosen to be sorted less than timestamp.
         for switch_name in self.switch_states:
             switch_data = self._get_switch(switch_name, port)
             switches_data[switch_name] = switch_data
+            change_count += switch_data.get(SW_STATE_CHANGE_COUNT, 0)
+            last_change = max(last_change, switch_data.get(SW_STATE_LAST_CHANGE, ''))
             if switch_data[SW_STATE] != constants.STATE_ACTIVE:
                 broken.append(switch_name)
         result = {
             'switches_state': constants.STATE_BROKEN if broken else constants.STATE_HEALTHY,
             'switches_state_detail': ', '.join(broken),
-            'switches_state_change_count': 1,
-            'switches_state_last_change': "2019-10-11T15:23:21.382479",
+            'switches_state_change_count': change_count,
+            'switches_state_last_change': last_change,
             'switches': switches_data
         }
         if switch:
