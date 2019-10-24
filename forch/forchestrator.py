@@ -103,7 +103,7 @@ class Forchestrator:
             'peer_controller_url': self._get_peer_controller_url(),
             'state_summary_sources': state_summary,
             'site_name': self._config.get('site', {}).get('name', 'unknown'),
-            'controller_hostname': os.getenv('HOSTNAME')
+            'controller_hostname': self._host
         }
         overview.update(self._distill_summary(state_summary))
         return overview
@@ -206,8 +206,8 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     CONFIG = load_config()
     FORCH = Forchestrator(CONFIG)
-    FORCH.initialize()
     HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}))
+    FORCH.initialize()
     HTTP.map_request('system_state', FORCH.get_system_state)
     HTTP.map_request('dataplane_state', FORCH.get_dataplane_state)
     HTTP.map_request('switch_state', FORCH.get_switch_state)
