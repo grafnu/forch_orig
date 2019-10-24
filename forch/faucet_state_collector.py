@@ -532,6 +532,13 @@ class FaucetStateCollector:
                 return switch, port
         return None, None
 
+    def get_host_summary(self):
+        """Get a summary of the learned hosts"""
+        num_hosts = len(self.learned_macs)
+        return {
+            'detail': f'{num_hosts} learned host MACs'
+        }
+
     def get_list_hosts(self, url_base, src_mac):
         """Get access devices"""
         host_macs = {}
