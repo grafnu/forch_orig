@@ -200,13 +200,17 @@ class Forchestrator:
         eth_src = params.get('eth_src')
         eth_dst = params.get('eth_dst')
         to_egress = params.get('to_egress') == 'true'
-        return self._faucet_collector.get_host_path(eth_src, eth_dst, to_egress)
+        reply = self._faucet_collector.get_host_path(eth_src, eth_dst, to_egress)
+        self._augment_state_reply(reply, path)
+        return reply
 
     def get_list_hosts(self, path, params):
         """List learned access devices"""
         eth_src = params.get('eth_src')
         host = self._extract_url_base(path)
-        return self._faucet_collector.get_list_hosts(host, eth_src)
+        reply = self._faucet_collector.get_list_hosts(host, eth_src)
+        self._augment_state_reply(reply, path)
+        return reply
 
     def get_cpn_state(self, path, params):
         """Get CPN state"""

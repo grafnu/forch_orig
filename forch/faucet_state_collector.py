@@ -557,9 +557,9 @@ class FaucetStateCollector:
             mac_deets['host_ip'] = mac_state.get(KEY_MAC_LEARNING_IP)
 
             if src_mac:
-                url = f"{url_base}/host_path?eth_src={src_mac}&eth_dst={mac}"
+                url = f"{url_base}/?host_path?eth_src={src_mac}&eth_dst={mac}"
             else:
-                url = f"{url_base}/list_hosts?eth_src={mac}"
+                url = f"{url_base}/?list_hosts?eth_src={mac}"
             mac_deets['url'] = url
 
         key = 'eth_dsts' if src_mac else 'eth_srcs'
