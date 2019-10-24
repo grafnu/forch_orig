@@ -33,7 +33,6 @@ def dump_states(func):
 SWITCH_CONNECTED = "CONNECTED"
 SWITCH_DOWN = "DOWN"
 
-SWITCHES = "dpids"
 DP_ID = "dp_id"
 PORTS = "ports"
 PORT_STATE_COUNT = "change_count"
