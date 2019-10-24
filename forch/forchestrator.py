@@ -177,15 +177,23 @@ class Forchestrator:
         host = path[:slash]
         return f'http://{host}'
 
+    def _augment_state_reply(self, reply, path):
+        url = self._extract_url_base(path)
+        reply['system_state_url'] = url
+
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
         switch = params.get('switch')
         port = params.get('port')
-        return self._faucet_collector.get_switch_state(switch, port)
+        reply = self._faucet_collector.get_switch_state(switch, port)
+        self._augment_state_reply(reply, path)
+        return reply
 
     def get_dataplane_state(self, path, params):
         """Get the dataplane state overview"""
-        return self._faucet_collector.get_dataplane_state()
+        reply = self._faucet_collector.get_dataplane_state()
+        self._augment_state_reply(reply, path)
+        return reply
 
     def get_host_path(self, path, params):
         """Get active host path"""
@@ -202,11 +210,15 @@ class Forchestrator:
 
     def get_cpn_state(self, path, params):
         """Get CPN state"""
-        return self._cpn_collector.get_cpn_state()
+        reply = self._cpn_collector.get_cpn_state()
+        self._augment_state_reply(reply, path)
+        return reply
 
     def get_process_state(self, path, params):
         """Get certain processes state on the controller machine"""
-        return self._local_collector.get_process_state()
+        reply = self._local_collector.get_process_state()
+        self._augment_state_reply(reply, path)
+        return reply
 
 
 def load_config():
