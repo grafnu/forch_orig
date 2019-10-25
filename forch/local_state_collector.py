@@ -38,7 +38,7 @@ class LocalStateCollector:
         """Get the states of processes"""
         process_state = None
         with self._process_lock:
-            process_state = copy.copy(self._process_state)
+            process_state = copy.deepcopy(self._process_state)
         return process_state
 
     def _get_process_info(self):
@@ -99,9 +99,8 @@ class LocalStateCollector:
         old_proc_map = self._process_state.get(proc_name, {})
 
         proc_map['cmd_line'] = ' '.join(proc_list[0].cmdline())
-        create_time = [datetime.fromtimestamp(ps.create_time()).isoformat() for ps in proc_list]
-        proc_map['create_time'] = create_time
-        proc_map['create_time'].sort()
+        create_time = max(proc.create_time() for proc in proc_list)
+        proc_map['create_time'] = datetime.fromtimestamp(create_time).isoformat()
         proc_map['create_time_last_update'] = self._current_time
 
         if proc_map['create_time'] != old_proc_map.get('create_time'):
