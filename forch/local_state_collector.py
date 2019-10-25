@@ -49,21 +49,22 @@ class LocalStateCollector:
         broken = []
 
         # fill up process info
-        for target_name in self._target_procs:
+        for target_name, target_map in self._target_procs.items():
             state_map = {}
             process_state[target_name] = state_map
-            if target_name in procs:
-                proc_list = procs[target_name]
-                if proc_list:
-                    state_map.update(self._extract_process_state(target_name, proc_list))
-                    state_map['state'] = constants.STATE_HEALTHY
-                else:
-                    state_map['state'] = 'broken'
-                    state_map['detail'] = 'Multiple processes found'
-                    broken.append(target_name)
+            if target_name not in procs:
+                continue
+            proc_list = procs[target_name]
+            target_count = int(target_map.get('count', 1))
+            if len(proc_list) == target_count:
+                state_map.update(self._extract_process_state(target_name, proc_list))
+                state_map['state'] = constants.STATE_HEALTHY
             else:
                 state_map['state'] = 'broken'
-                state_map['detail'] = 'Process not found'
+                err_detail = f"Process {target_name}: number of process ({len(proc_list)}) " \
+                             f"does not match target count ({target_count})"
+                state_map['detail'] = err_detail
+                LOGGER.error(err_detail)
                 broken.append(target_name)
 
         state = constants.STATE_BROKEN if broken else constants.STATE_HEALTHY
@@ -81,21 +82,13 @@ class LocalStateCollector:
         """Get target processes"""
         procs = {}
         for target_name, target_map in self._target_procs.items():
-            target_count = int(target_map['count'])
             target_regex = target_map['regex']
-            proc_list = []
+            proc_list = procs.setdefault(target_name, [])
 
             for proc in psutil.process_iter():
                 cmd_line_str = ' '.join(proc.cmdline())
                 if re.search(target_regex, cmd_line_str):
                     proc_list.append(proc)
-
-            if len(proc_list) > target_count:
-                LOGGER.error("Too many duplicate process: %s", target_name)
-            elif len(proc_list) < target_count:
-                LOGGER.error("Too few duplicate process: %s", target_name)
-            else:
-                procs[target_name] = proc_list
 
         return procs
 
