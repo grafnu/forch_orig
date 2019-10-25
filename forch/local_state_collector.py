@@ -80,17 +80,23 @@ class LocalStateCollector:
     def _get_target_processes(self):
         """Get target processes"""
         procs = {}
-        for proc in psutil.process_iter():
-            for target_name, target_map in self._target_procs.items():
-                target_regex = target_map['regex']
+        for target_name, target_map in self._target_procs.items():
+            target_count = int(target_map['count'])
+            target_regex = target_map['regex']
+            proc_list = []
+
+            for proc in psutil.process_iter():
                 cmd_line_str = ' '.join(proc.cmdline())
                 if re.search(target_regex, cmd_line_str):
-                    proc_list = procs.setdefault(target_name, [])
-                    if len(proc_list) == int(target_map['count']):
-                        LOGGER.error("Too many duplicate process: %s", str(procs[target_name]))
-                        procs[target_name] = None
-                        break
                     proc_list.append(proc)
+
+            if len(proc_list) > target_count:
+                LOGGER.error("Too many duplicate process: %s", target_name)
+            elif len(proc_list) < target_count:
+                LOGGER.error("Too few duplicate process: %s", target_name)
+            else:
+                procs[target_name] = proc_list
+
         return procs
 
     def _extract_process_state(self, proc_name, proc_list):
