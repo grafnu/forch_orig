@@ -137,10 +137,12 @@ class LocalStateCollector:
         return proc_map
 
     def _periodic_get_process_info(self):
+        """Periodically gather the processes info"""
         with self._process_lock:
             self._current_time = datetime.now().isoformat()
             self._get_process_info()
         threading.Timer(self._process_interval, self._periodic_get_process_info).start()
 
     def start_process_loop(self):
+        """Start a loop to periodically gather the processes info"""
         threading.Thread(target=self._periodic_get_process_info).start()
