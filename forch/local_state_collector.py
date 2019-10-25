@@ -24,6 +24,7 @@ class LocalStateCollector:
         self._process_lock = threading.Lock()
 
     def initialize(self):
+        """Initialize LocalStateCollector"""
         self.start_process_loop()
 
     def get_process_summary(self):
