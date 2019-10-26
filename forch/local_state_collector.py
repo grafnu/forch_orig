@@ -15,12 +15,12 @@ LOGGER = logging.getLogger('localstate')
 class LocalStateCollector:
     """Storing local system states"""
 
-    def __init__(self, config, process_interval: int = 60):
+    def __init__(self, config):
         self._state = {'processes': {}}
         self._process_state = self._state['processes']
         self._target_procs = config.get('processes', {})
         self._current_time = None
-        self._process_interval = process_interval
+        self._process_interval = config.get('scan_interval_sec', 60)
         self._process_lock = threading.Lock()
 
     def initialize(self):
