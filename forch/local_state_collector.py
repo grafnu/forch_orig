@@ -20,8 +20,10 @@ class LocalStateCollector:
         self._process_state = self._state['processes']
         self._target_procs = config.get('processes', {})
         self._current_time = None
-        self._process_interval = config.get('scan_interval_sec', 60)
+        self._process_interval = int(config.get('scan_interval_sec', 60))
         self._process_lock = threading.Lock()
+        LOGGER.info('Scanning %s processes every %dsec',
+                    len(self._target_procs), self._process_interval)
 
     def initialize(self):
         """Initialize LocalStateCollector"""
