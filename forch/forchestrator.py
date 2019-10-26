@@ -97,7 +97,7 @@ class Forchestrator:
     def _get_controller_info(self, target):
         controllers = self._config.get('site', {}).get('controllers', {})
         if target not in controllers:
-            return ('unknown', _DEFAULT_PORT)
+            return (f'missing_target_{target}', _DEFAULT_PORT)
         controller = controllers[target]
         controller = controller if controller else {}
         port = controller.get('port', _DEFAULT_PORT)
@@ -118,8 +118,10 @@ class Forchestrator:
     def _get_peer_controller_info(self):
         hostname = self._get_hostname()
         controllers = self._config.get('site', {}).get('controllers', {})
-        if hostname not in controllers or len(controllers) != 2:
-            return ('misconfigured', _DEFAULT_PORT)
+        if hostname not in controllers:
+            return (f'missing_hostname_{hostname}', _DEFAULT_PORT)
+        if len(controllers) != 2:
+            return ('num_controllers_%s' % len(controllers), _DEFAULT_PORT)
         things = set(controllers.keys())
         things.remove(hostname)
         peer = list(things)[0]
