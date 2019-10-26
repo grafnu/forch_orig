@@ -100,7 +100,8 @@ class LocalStateCollector:
         proc_map = {}
         old_proc_map = self._process_state.get(proc_name, {})
 
-        proc_map['cmd_line'] = ' '.join(proc_list[0].cmdline())
+        cmd_line = ' '.join(proc_list[0].cmdline()) if len(proc_list) == 1 else 'multiple'
+        proc_map['cmd_line'] = cmd_line
         create_time = max(proc.create_time() for proc in proc_list)
         proc_map['create_time'] = datetime.fromtimestamp(create_time).isoformat()
         proc_map['create_time_last_update'] = self._current_time
