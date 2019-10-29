@@ -165,10 +165,10 @@ class Forchestrator:
                 'system_summary_last_update': max(last_updates)
             }
         except Exception as e:
-            system_summary.update({
+            system_summary = {
                 'system_summary': 'error',
                 'system_summary_detail': str(e)
-            })
+            }
             LOGGER.exception('Calculating state summary')
         return system_summary
 
