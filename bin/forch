@@ -9,8 +9,12 @@ else
     PYTHON=python3
 fi
 
-CONTROLLER_NAME=$(hostname -s)
-echo Setting controller name to $CONTROLLER_NAME
+if [ -z "$CONTROLLER_NAME" ]; then
+    CONTROLLER_NAME=$(hostname -s)
+    echo Setting controller name to $CONTROLLER_NAME
+else
+    echo Using existing controller name $CONTROLLER_NAME
+fi
 
 FSOCK=faucet_event.sock
 
