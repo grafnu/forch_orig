@@ -191,7 +191,7 @@ class Forchestrator:
             elif state != constants.STATE_HEALTHY:
                 has_warning = True
                 details.append(subsystem_name)
-        detail = ' '.join(details)
+        detail = ', '.join(details)
         if has_error:
             return constants.STATE_BROKEN, detail
         if has_warning:
