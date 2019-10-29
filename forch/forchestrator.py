@@ -106,7 +106,7 @@ class Forchestrator:
 
     def get_local_port(self):
         """Get the local port for this instance"""
-        info = self._get_controller_info(self._get_hostname())
+        info = self._get_controller_info(self._get_controller_name())
         LOGGER.info('Local controller is at %s on %s', info[0], info[1])
         return int(info[1])
 
@@ -114,25 +114,25 @@ class Forchestrator:
         return f'http://{info[0]}:{info[1]}'
 
     def _get_local_controller_url(self):
-        return self._make_controller_url(self._get_controller_info(self._get_hostname()))
+        return self._make_controller_url(self._get_controller_info(self._get_controller_name()))
 
     def _get_peer_controller_info(self):
-        hostname = self._get_hostname()
+        name = self._get_controller_name()
         controllers = self._config.get('site', {}).get('controllers', {})
-        if hostname not in controllers:
-            return (f'missing_hostname_{hostname}', _DEFAULT_PORT)
+        if name not in controllers:
+            return (f'missing_controller_name_{name}', _DEFAULT_PORT)
         if len(controllers) != 2:
             return ('num_controllers_%s' % len(controllers), _DEFAULT_PORT)
         things = set(controllers.keys())
-        things.remove(hostname)
+        things.remove(name)
         peer = list(things)[0]
         return self._get_controller_info(peer)
 
     def _get_peer_controller_url(self):
         return self._make_controller_url(self._get_peer_controller_info())
 
-    def _get_hostname(self):
-        return os.getenv('HOSTNAME')
+    def _get_controller_name(self):
+        return os.getenv('CONTROLLER_NAME')
 
     def get_system_state(self, path, params):
         """Get an overview of the system state"""
@@ -142,7 +142,7 @@ class Forchestrator:
             'peer_controller_url': self._get_peer_controller_url(),
             'state_summary_sources': state_summary,
             'site_name': self._config.get('site', {}).get('name', 'unknown'),
-            'controller_hostname': self._get_hostname()
+            'controller_name': self._get_controller_name()
         }
         overview.update(self._distill_summary(state_summary))
         return overview
