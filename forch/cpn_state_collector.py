@@ -158,8 +158,10 @@ class CPNStateCollector:
 
         if detail:
             use_detail = detail
+        elif broken:
+            use_detail = 'CPN failures at: ' + ', '.join(broken)
         else:
-            use_detail = 'CPN failures at: ' + ', '.join(broken) if broken else ''
+            use_detail = ''
 
         if new_cpn_state != self._cpn_state.get(KEY_CPN_STATE):
             cpn_state_count = self._cpn_state.get(KEY_CPN_STATE_COUNT, 0) + 1
