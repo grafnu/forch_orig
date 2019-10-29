@@ -103,7 +103,8 @@ class Forchestrator:
         controller = controllers[target]
         controller = controller if controller else {}
         port = controller.get('port', _DEFAULT_PORT)
-        return (target, port)
+        host = controller.get('fqdn', target)
+        return (host, port)
 
     def get_local_port(self):
         """Get the local port for this instance"""
@@ -187,7 +188,10 @@ class Forchestrator:
             elif state != constants.STATE_HEALTHY:
                 has_warning = True
                 details.append(subsystem_name)
-        detail = ', '.join(details)
+        if details:
+            detail = 'broken subsystems: ' + ', '.join(details)
+        else:
+            detail = 'n/a'
         if has_error:
             return constants.STATE_BROKEN, detail
         if has_warning:
