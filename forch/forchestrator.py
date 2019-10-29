@@ -6,6 +6,7 @@ import os
 import time
 import yaml
 
+import forch.constants as constants
 import forch.faucet_event_client
 import forch.http_server
 
@@ -187,7 +188,7 @@ class Forchestrator:
                 state == constants.STATE_BROKEN):
                 has_error = True
                 details.append(subsystem_name)
-            elif state != constants.STATE_HEALTHY
+            elif state != constants.STATE_HEALTHY:
                 has_warning = True
                 details.append(subsystem_name)
         detail = ' '.join(details)
