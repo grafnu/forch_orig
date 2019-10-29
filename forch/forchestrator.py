@@ -181,7 +181,6 @@ class Forchestrator:
         for subsystem_name in summary:
             subsystem = summary[subsystem_name]
             state = subsystem.get('state', constants.STATE_BROKEN)
-            detail = subsystem.get('detail', 'unknown')
             if state in (constants.STATE_DOWN, constants.STATE_BROKEN):
                 has_error = True
                 details.append(subsystem_name)
@@ -192,6 +191,11 @@ class Forchestrator:
             detail = 'broken subsystems: ' + ', '.join(details)
         else:
             detail = 'n/a'
+
+        vrrp_state = self._local_collector.get_vrrp_state()
+        if not vrrp_state.get('is_master'):
+            detail = 'This controller is inactive. Please view peer controller.'
+            return constants.STATE_INACTIVE, detail
         if has_error:
             return constants.STATE_BROKEN, detail
         if has_warning:
