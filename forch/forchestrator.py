@@ -160,16 +160,16 @@ class Forchestrator:
                                     subsystem.get('last_update', start_time), summary_values))
             summary, detail = self._get_combined_summary(summaries)
             system_summary = {
-                'system_summary': summary,
-                'system_summary_detail': detail,
-                'system_summary_change_count': sum(change_counts),
-                'system_summary_last_change': max(last_changes),
-                'system_summary_last_update': max(last_updates)
+                'system_state': summary,
+                'system_state_detail': detail,
+                'system_state_change_count': sum(change_counts),
+                'system_state_last_change': max(last_changes),
+                'system_state_last_update': max(last_updates)
             }
         except Exception as e:
             system_summary = {
-                'system_summary': 'error',
-                'system_summary_detail': str(e)
+                'system_state': 'error',
+                'system_state_detail': str(e)
             }
             LOGGER.exception('Calculating state summary')
         return system_summary
