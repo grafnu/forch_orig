@@ -155,6 +155,7 @@ class CPNStateCollector:
 
     def _update_cpn_state(self, current_time, detail=None):
         new_cpn_state, broken = self._get_cpn_state()
+        use_detail = ''
         if detail:
             use_detail = detail
         elif broken:
