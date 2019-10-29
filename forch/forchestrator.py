@@ -260,6 +260,12 @@ class Forchestrator:
         self._augment_state_reply(reply, path)
         return reply
 
+    def get_vrrp_state(self, path, params):
+        """Get VRRP state on the local machine"""
+        reply = self._local_collector.get_vrrp_state()
+        self._augment_state_reply(reply, path)
+        return reply
+
 
 def load_config():
     """Load configuration from the configuration file"""
@@ -281,6 +287,7 @@ if __name__ == '__main__':
     HTTP.map_request('switch_state', FORCH.get_switch_state)
     HTTP.map_request('cpn_state', FORCH.get_cpn_state)
     HTTP.map_request('process_state', FORCH.get_process_state)
+    HTTP.map_request('vrrp_state', FORCH.get_vrrp_state)
     HTTP.map_request('host_path', FORCH.get_host_path)
     HTTP.map_request('list_hosts', FORCH.get_list_hosts)
     HTTP.map_request('', HTTP.static_file(''))
