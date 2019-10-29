@@ -137,21 +137,19 @@ class Forchestrator:
 
     def get_system_state(self, path, params):
         """Get an overview of the system state"""
-        # TODO: These are all placeholder values, so need to be replaced.
-        state_summary = self._get_state_summary(path)
+        system_summary = self._get_system_summary(path)
         overview = {
             'peer_controller_url': self._get_peer_controller_url(),
-            'state_summary_sources': state_summary,
+            'summary_sources': system_summary,
             'site_name': self._config.get('site', {}).get('name', 'unknown'),
             'controller_name': self._get_controller_name()
         }
-        overview.update(self._distill_summary(state_summary))
+        overview.update(self._distill_summary(system_summary))
         return overview
 
     def _distill_summary(self, summary):
         try:
-            state_summary = {
-                'state_summary': 'monkey'
+            system_summary = {
             }
             start_time = self._start_time
             change_counts = list(map(lambda subsystem:
@@ -160,21 +158,21 @@ class Forchestrator:
                                     subsystem.get('last_change', start_time), summary.values()))
             last_updates = list(map(lambda subsystem:
                                     subsystem.get('last_update', start_time), summary.values()))
-            state_summary.update({
-                'state_summary_change_count': sum(change_counts),
-                'state_summary_last_change': max(last_changes),
-                'state_summary_last_update': max(last_updates)
+            system_summary.update({
+                'system_summary_change_count': sum(change_counts),
+                'system_summary_last_change': max(last_changes),
+                'system_summary_last_update': max(last_updates)
             })
             summary, detail = self._get_combined_summary(summary)
-            state_summary['state_summary'] = summary
-            state_summary['state_summary_detail'] = detail
+            system_summary['system_summary'] = summary
+            system_summary['system_summary_detail'] = detail
         except Exception as e:
-            state_summary.update({
-                'state_summary': 'error',
-                'state_summary_detail': str(e)
+            system_summary.update({
+                'system_summary': 'error',
+                'system_summary_detail': str(e)
             })
             LOGGER.exception('Calculating state summary')
-        return state_summary
+        return system_summary
 
     def _get_combined_summary(self, summary):
         has_error = False
@@ -197,7 +195,7 @@ class Forchestrator:
             return constants.STATE_DAMAGED, detail
         return constants.STATE_HEALTHY, detail
 
-    def _get_state_summary(self, path):
+    def _get_system_summary(self, path):
         states = {
             'cpn_state': self._cpn_collector.get_cpn_summary(),
             'process_state': self._local_collector.get_process_summary(),
