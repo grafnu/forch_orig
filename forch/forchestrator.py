@@ -159,7 +159,7 @@ class Forchestrator:
             summary, detail = self._get_combined_summary(summaries)
             system_summary = {
                 'system_summary': summary,
-                'system_summary_detail': detail
+                'system_summary_detail': detail,
                 'system_summary_change_count': sum(change_counts),
                 'system_summary_last_change': max(last_changes),
                 'system_summary_last_update': max(last_updates)
