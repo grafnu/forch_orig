@@ -70,16 +70,15 @@ class LocalStateCollector:
                 LOGGER.error(err_detail)
                 broken.append(target_name)
 
+        old_state = process_state.get('processes_state')
         state = constants.STATE_BROKEN if broken else constants.STATE_HEALTHY
         process_state['processes_state'] = state
         process_state['processes_state_last_update'] = self._current_time
         process_state['processes_state_detail'] = ', '.join(broken)
-        if state != process_state.get('processes_state'):
+        if state != old_state:
             process_state['processes_state_last_change'] = self._current_time
             state_change_count = process_state.get('processes_state_change_count', 0) + 1
             process_state['processes_state_change_count'] = state_change_count
-
-        self._process_state = process_state
 
     def _get_target_processes(self):
         """Get target processes"""
