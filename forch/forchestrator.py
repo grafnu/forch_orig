@@ -178,21 +178,24 @@ class Forchestrator:
     def _get_combined_summary(self, summary):
         has_error = False
         has_warning = False
+        details = []
         for subsystem_name in summary:
             subsystem = summary[subsystem_name]
-            state = subsystem.get('state', 'error')
+            state = subsystem.get('state', constants.STATE_BROKEN)
             detail = subsystem.get('detail', 'unknown')
-            if state == 'broken':
+            if (state == constants.STATE_DOWN or
+                state == constants.STATE_BROKEN):
                 has_error = True
-                error_detail = self._DETAIL_FORMAT % (subsystem_name, state, detail)
-            elif state != 'healthy':
+                details.append(subsystem_name)
+            elif state != constants.STATE_HEALTHY
                 has_warning = True
-                warning_detail = self._DETAIL_FORMAT % (subsystem_name, state, detail)
+                details.append(subsystem_name)
+        detail = ' '.join(details)
         if has_error:
-            return 'broken', error_detail
+            return constants.STATE_BROKEN, detail
         if has_warning:
-            return 'damaged', warning_detail
-        return 'healthy', None
+            return constants.STATE_DAMAGED, detail
+        return constants.STATE_HEALTHY, detail
 
     def _get_state_summary(self, path):
         states = {

@@ -11,6 +11,9 @@ fi
 
 if [ -z "$HOSTNAME" ]; then
     HOSTNAME=$(hostname -s)
+    echo Setting hostname to $HOSTNAME
+else
+    echo Using existing hostname $HOSTNAME
 fi
 
 FSOCK=faucet_event.sock
