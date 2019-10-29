@@ -147,10 +147,8 @@ class Forchestrator:
         overview.update(self._distill_summary(system_summary))
         return overview
 
-    def _distill_summary(self, summary):
+    def _distill_summary(self, summaries):
         try:
-            system_summary = {
-            }
             start_time = self._start_time
             change_counts = list(map(lambda subsystem:
                                      subsystem.get('change_count', 0), summary.values()))
@@ -158,14 +156,14 @@ class Forchestrator:
                                     subsystem.get('last_change', start_time), summary.values()))
             last_updates = list(map(lambda subsystem:
                                     subsystem.get('last_update', start_time), summary.values()))
-            system_summary.update({
+            summary, detail = self._get_combined_summary(summaries)
+            system_summary = {
+                'system_summary': summary,
+                'system_summary_detail': detail
                 'system_summary_change_count': sum(change_counts),
                 'system_summary_last_change': max(last_changes),
                 'system_summary_last_update': max(last_updates)
-            })
-            summary, detail = self._get_combined_summary(summary)
-            system_summary['system_summary'] = summary
-            system_summary['system_summary_detail'] = detail
+            }
         except Exception as e:
             system_summary.update({
                 'system_summary': 'error',
