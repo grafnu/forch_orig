@@ -184,8 +184,7 @@ class Forchestrator:
             subsystem = summary[subsystem_name]
             state = subsystem.get('state', constants.STATE_BROKEN)
             detail = subsystem.get('detail', 'unknown')
-            if (state == constants.STATE_DOWN or
-                state == constants.STATE_BROKEN):
+            if state in (constants.STATE_DOWN, constants.STATE_BROKEN):
                 has_error = True
                 details.append(subsystem_name)
             elif state != constants.STATE_HEALTHY:
