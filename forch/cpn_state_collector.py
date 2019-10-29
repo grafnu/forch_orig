@@ -155,7 +155,10 @@ class CPNStateCollector:
 
     def _update_cpn_state(self, current_time, detail=None):
         new_cpn_state, broken = self._get_cpn_state()
-        use_detail = detail if detail else ', '.join(broken)
+        if detail:
+            use_detail = detail
+        elif broken:
+            use_detail = 'CPN ping failures to: ' + ', '.join(broken)
         if new_cpn_state != self._cpn_state.get(KEY_CPN_STATE):
             cpn_state_count = self._cpn_state.get(KEY_CPN_STATE_COUNT, 0) + 1
             self._cpn_state[KEY_CPN_STATE_COUNT] = cpn_state_count
