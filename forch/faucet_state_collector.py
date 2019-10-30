@@ -84,18 +84,18 @@ class FaucetStateCollector:
         dplane_state = self.get_dataplane_state()
         egress_state = dplane_state.get(EGRESS_STATE)
         state = constants.STATE_HEALTHY
-        detail = "egress state: "+egress_state
-        broken_sw = self._get_broken_sw_dp(dplane_state)
+        detail = ["egress state: " + egress_state]
+        broken_sw = self._get_broken_switches(dplane_state)
         if broken_sw:
             state = constants.STATE_BROKEN
-            detail += "; broken switches: "+str(broken_sw)
-        broken_links = self._get_broken_link_dp(dplane_state)
+            detail.append("broken switches: " + str(broken_sw))
+        broken_links = self._get_broken_links(dplane_state)
         if broken_links:
             state = constants.STATE_BROKEN
-            detail += "; broken links: "+str(broken_links)
+            detail.append("broken links: " + str(broken_links))
         return {
             'state': state,
-            'detail': detail,
+            'detail': "; ".join(detail),
             'change_count': dplane_state.get(EGRESS_CHANGE_COUNT),
             'last_change': dplane_state.get(EGRESS_LAST_CHANGE)
         }
@@ -108,7 +108,7 @@ class FaucetStateCollector:
         self._fill_egress_state(dplane_state)
         return dplane_state
 
-    def _get_broken_sw_dp(self, dplane_state):
+    def _get_broken_switches(self, dplane_state):
         broken_sw = []
         sw_map = dplane_state.get(TOPOLOGY_DP_MAP, {})
         for switch, state in sw_map.items():
@@ -116,7 +116,7 @@ class FaucetStateCollector:
                 broken_sw.append(switch)
         return broken_sw
 
-    def _get_broken_link_dp(self, dplane_state):
+    def _get_broken_links(self, dplane_state):
         broken_links = []
         link_map = dplane_state.get(TOPOLOGY_LINK_MAP, {})
         for link, link_obj in link_map.items():
