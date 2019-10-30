@@ -143,7 +143,8 @@ class Forchestrator:
             'peer_controller_url': self._get_peer_controller_url(),
             'summary_sources': system_summary,
             'site_name': self._config.get('site', {}).get('name', 'unknown'),
-            'controller_name': self._get_controller_name()
+            'controller_name': self._get_controller_name(),
+            'event_socket_conn': self._faucet_events.connection_status
         }
         overview.update(self._distill_summary(system_summary))
         return overview

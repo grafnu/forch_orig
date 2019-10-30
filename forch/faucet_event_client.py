@@ -7,6 +7,7 @@ import select
 import socket
 import threading
 import time
+import forch.constants as constants
 
 LOGGER = logging.getLogger('fevent')
 
@@ -24,6 +25,7 @@ class FaucetEventClient():
         self.previous_state = None
         self._port_debounce_sec = int(config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC))
         self._port_timers = {}
+        self.connection_status = constants.STATE_DOWN
 
     def connect(self):
         """Make connection to sock to receive events"""
@@ -45,17 +47,25 @@ class FaucetEventClient():
         try:
             self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.sock.connect(sock_path)
+            self.connection_status = constants.STATE_UP
         except socket.error as err:
+            self.connection_status = constants.STATE_DOWN
             assert False, "Failed to connect because: %s" % err
 
     def disconnect(self):
         """Disconnect this event socket"""
-        self.sock.close()
+        if self.sock:
+            self.sock.close()
         self.sock = None
+        self.connection_status = constants.STATE_DOWN
+        with self._buffer_lock:
+            self.buffer = None
 
     def has_data(self):
         """Check to see if the event socket has any data to read"""
-        read, dummy_write, dummy_error = select.select([self.sock], [], [], 0)
+        read = None
+        if self.sock:
+            read, dummy_write, dummy_error = select.select([self.sock], [], [], 0)
         return read
 
     def has_event(self, blocking=False):
@@ -63,8 +73,11 @@ class FaucetEventClient():
         while True:
             if '\n' in self.buffer:
                 return True
-            if blocking or self.has_data():
+            if self.sock and (blocking or self.has_data()):
                 data = self.sock.recv(1024).decode('utf-8')
+                if not data:
+                    self.disconnect()
+                    return False
                 with self._buffer_lock:
                     self.buffer += data
             else:
@@ -243,10 +256,3 @@ class FaucetEventClient():
         name = event['dp_name']
         connected = (event['DP_CHANGE']['reason'] == 'cold_start')
         return (name, connected)
-
-    def close(self):
-        """Close the faucet event socket"""
-        self.sock.close()
-        self.sock = None
-        with self._buffer_lock:
-            self.buffer = None
