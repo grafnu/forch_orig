@@ -71,7 +71,7 @@ class FaucetEventClient():
     def has_event(self, blocking=False):
         """Check if there are any queued events"""
         while True:
-            if '\n' in self.buffer:
+            if self.buffer and '\n' in self.buffer:
                 return True
             if self.sock and (blocking or self.has_data()):
                 data = self.sock.recv(1024).decode('utf-8')
