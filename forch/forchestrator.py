@@ -194,7 +194,7 @@ class Forchestrator:
 
         if not self._faucet_events.event_socket_connected:
             has_error = True
-            detail += '. Faucet event socket disconnected.'
+            detail += '. Faucet disconnected.'
 
         vrrp_state = self._local_collector.get_vrrp_state()
         if not vrrp_state.get('is_master'):
