@@ -65,8 +65,7 @@ class FaucetEventClient():
         if self.sock:
             read, dummy_write, dummy_error = select.select([self.sock], [], [], 0)
             return read
-        else:
-            return False
+        return False
 
     def has_event(self, blocking=False):
         """Check if there are any queued events"""
