@@ -24,7 +24,7 @@ class FaucetEventClient():
         self.previous_state = None
         self._port_debounce_sec = int(config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC))
         self._port_timers = {}
-        self.is_connected = False
+        self.event_socket_connected = False
 
     def connect(self):
         """Make connection to sock to receive events"""
@@ -46,9 +46,9 @@ class FaucetEventClient():
         try:
             self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.sock.connect(sock_path)
-            self.is_connected = True
+            self.event_socket_connected = True
         except socket.error as err:
-            self.is_connected = False
+            self.event_socket_connected = False
             assert False, "Failed to connect because: %s" % err
 
     def disconnect(self):
@@ -56,16 +56,17 @@ class FaucetEventClient():
         if self.sock:
             self.sock.close()
         self.sock = None
-        self.is_connected = False
+        self.event_socket_connected = False
         with self._buffer_lock:
             self.buffer = None
 
     def has_data(self):
         """Check to see if the event socket has any data to read"""
-        read = None
         if self.sock:
             read, dummy_write, dummy_error = select.select([self.sock], [], [], 0)
-        return read
+            return read
+        else:
+            return False
 
     def has_event(self, blocking=False):
         """Check if there are any queued events"""
