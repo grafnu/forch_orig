@@ -145,7 +145,7 @@ class Forchestrator:
             'site_name': self._config.get('site', {}).get('name', 'unknown'),
             'controller_name': self._get_controller_name(),
             'event_socket_conn': constants.STATE_UP if self._faucet_events.is_connected
-                else constants.STATE_DOWN
+                                 else constants.STATE_DOWN
         }
         overview.update(self._distill_summary(system_summary))
         return overview
