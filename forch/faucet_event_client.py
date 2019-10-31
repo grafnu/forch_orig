@@ -7,7 +7,6 @@ import select
 import socket
 import threading
 import time
-import forch.constants as constants
 
 LOGGER = logging.getLogger('fevent')
 
@@ -75,8 +74,10 @@ class FaucetEventClient():
                 return True
             if self.sock and (blocking or self.has_data()):
                 data = self.sock.recv(1024).decode('utf-8')
-                #TODO: recv doesn't block if socket has disconnected and simply returns empty string. Hence the check.
-                #Need to alter the way disconnection is handled to reduce CPU cycles in case peer disconnects.
+                # TODO: recv doesn't block if socket has disconnected
+                # and simply returns empty string. Hence the check.
+                # Need to alter the way disconnection is handled
+                # to reduce CPU cycles in case peer disconnects.
                 if not data:
                     self.disconnect()
                     return False
