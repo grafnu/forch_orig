@@ -139,13 +139,13 @@ class Forchestrator:
     def get_system_state(self, path, params):
         """Get an overview of the system state"""
         system_summary = self._get_system_summary(path)
+        state = constants.STATE_UP if self._faucet_events.is_connected else constants.STATE_DOWN
         overview = {
             'peer_controller_url': self._get_peer_controller_url(),
             'summary_sources': system_summary,
             'site_name': self._config.get('site', {}).get('name', 'unknown'),
             'controller_name': self._get_controller_name(),
-            'event_socket_conn': constants.STATE_UP if self._faucet_events.is_connected
-                                 else constants.STATE_DOWN
+            'event_socket_conn': state
         }
         overview.update(self._distill_summary(system_summary))
         return overview
