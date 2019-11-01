@@ -118,7 +118,7 @@ class Forchestrator:
     def _get_local_controller_url(self):
         return self._make_controller_url(self._get_controller_info(self._get_controller_name()))
 
-    def _get_peer_controller_info(self):
+    def _get_peer_controller_name(self):
         name = self._get_controller_name()
         controllers = self._config.get('site', {}).get('controllers', {})
         if name not in controllers:
@@ -128,6 +128,10 @@ class Forchestrator:
         things = set(controllers.keys())
         things.remove(name)
         peer = list(things)[0]
+        return peer
+
+    def _get_peer_controller_info(self):
+        peer = self._get_peer_controller_name()
         return self._get_controller_info(peer)
 
     def _get_peer_controller_url(self):
@@ -197,7 +201,7 @@ class Forchestrator:
             detail += '. Faucet disconnected.'
 
         vrrp_state = self._local_collector.get_vrrp_state()
-        peer_controller = self._get_peer_controller_info()[0]
+        peer_controller = self._get_peer_controller_name()
         cpn_nodes = self._cpn_collector.get_cpn_state().get('cpn_nodes', {})
         peer_controller_state = cpn_nodes.get(peer_controller, {}).get('state')
 
