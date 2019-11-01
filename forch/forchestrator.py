@@ -19,6 +19,7 @@ LOGGER = logging.getLogger('forch')
 
 _FCONFIG_DEFAULT = 'forch.yaml'
 _DEFAULT_PORT = 9019
+error = None
 
 class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
@@ -292,21 +293,35 @@ def load_config():
     with open(config_path, 'r') as stream:
         return yaml.safe_load(stream)
 
+
+def show_error(path, params):
+    """Display errors"""
+    return f"<h2>Cannot initialize forch: {str(error)}</h2>"
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    CONFIG = load_config()
-    FORCH = Forchestrator(CONFIG)
-    FORCH.initialize()
+    try:
+        CONFIG = load_config()
+        FORCH = Forchestrator(CONFIG)
+        FORCH.initialize()
+    except Exception as e:
+        error = e
+
     HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}),
                                         FORCH.get_local_port())
-    HTTP.map_request('system_state', FORCH.get_system_state)
-    HTTP.map_request('dataplane_state', FORCH.get_dataplane_state)
-    HTTP.map_request('switch_state', FORCH.get_switch_state)
-    HTTP.map_request('cpn_state', FORCH.get_cpn_state)
-    HTTP.map_request('process_state', FORCH.get_process_state)
-    HTTP.map_request('host_path', FORCH.get_host_path)
-    HTTP.map_request('list_hosts', FORCH.get_list_hosts)
-    HTTP.map_request('', HTTP.static_file(''))
+
+    if error:
+        HTTP.map_request('', show_error)
+    else:
+        HTTP.map_request('system_state', FORCH.get_system_state)
+        HTTP.map_request('dataplane_state', FORCH.get_dataplane_state)
+        HTTP.map_request('switch_state', FORCH.get_switch_state)
+        HTTP.map_request('cpn_state', FORCH.get_cpn_state)
+        HTTP.map_request('process_state', FORCH.get_process_state)
+        HTTP.map_request('host_path', FORCH.get_host_path)
+        HTTP.map_request('list_hosts', FORCH.get_list_hosts)
+        HTTP.map_request('', HTTP.static_file(''))
     HTTP.start_server()
     FORCH.main_loop()
     LOGGER.warning('Exiting program')
