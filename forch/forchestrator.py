@@ -127,12 +127,10 @@ class Forchestrator:
             return ('num_controllers_%s' % len(controllers), _DEFAULT_PORT)
         things = set(controllers.keys())
         things.remove(name)
-        peer = list(things)[0]
-        return peer
+        return list(things)[0]
 
     def _get_peer_controller_info(self):
-        peer = self._get_peer_controller_name()
-        return self._get_controller_info(peer)
+        return self._get_controller_info(self._get_peer_controller_name())
 
     def _get_peer_controller_url(self):
         return self._make_controller_url(self._get_peer_controller_info())
