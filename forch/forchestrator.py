@@ -296,12 +296,13 @@ def load_config():
 
 def show_error(path, params):
     """Display errors"""
-    return f"<h2>Cannot initialize forch: {str(error)}</h2>"
+    return f"Cannot initialize forch: {str(error)}"
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     CONFIG = {}
+    FORCH = None
 
     try:
         CONFIG = load_config()
@@ -311,7 +312,6 @@ if __name__ == '__main__':
         error = e
 
     http_port = FORCH.get_local_port() if FORCH else _DEFAULT_PORT
-
     HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), http_port)
 
     if error:
