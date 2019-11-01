@@ -32,7 +32,7 @@ class Forchestrator:
         self._server = None
         self._start_time = datetime.fromtimestamp(time.time()).isoformat()
         self._faucet_collector = FaucetStateCollector()
-        self._local_collector = LocalStateCollector(config.get('process'))
+        self._local_collector = LocalStateCollector(config.get('process'), self.cleanup)
         self._cpn_collector = CPNStateCollector()
 
     def initialize(self):
@@ -238,6 +238,9 @@ class Forchestrator:
     def _augment_state_reply(self, reply, path):
         url = self._extract_url_base(path)
         reply['system_state_url'] = url
+
+    def cleanup(self):
+        self._faucet_collector.cleanup()
 
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
