@@ -301,6 +301,8 @@ def show_error(path, params):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
+    CONFIG = {}
+
     try:
         CONFIG = load_config()
         FORCH = Forchestrator(CONFIG)
@@ -308,8 +310,9 @@ if __name__ == '__main__':
     except Exception as e:
         error = e
 
-    HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}),
-                                        FORCH.get_local_port())
+    http_port = FORCH.get_local_port() if FORCH else _DEFAULT_PORT
+
+    HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), http_port)
 
     if error:
         HTTP.map_request('', show_error)
@@ -322,7 +325,17 @@ if __name__ == '__main__':
         HTTP.map_request('host_path', FORCH.get_host_path)
         HTTP.map_request('list_hosts', FORCH.get_list_hosts)
         HTTP.map_request('', HTTP.static_file(''))
+
     HTTP.start_server()
-    FORCH.main_loop()
+    http_thread = HTTP.get_thread()
+
+    if FORCH:
+        FORCH.main_loop()
+    else:
+        try:
+            http_thread.join()
+        except KeyboardInterrupt:
+            LOGGER.info('Keyboard interrupt. Exiting.')
+
     LOGGER.warning('Exiting program')
     HTTP.stop_server()

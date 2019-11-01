@@ -51,6 +51,7 @@ class HttpServer():
         self._root_path = config.get('http_root', 'public')
         self._port = port
         self._host = '0.0.0.0'
+        self._thread = None
 
     def start_server(self):
         """Start serving thread"""
@@ -59,9 +60,12 @@ class HttpServer():
         handler = functools.partial(RequestHandler, self)
         self._server = ThreadedHTTPServer(address, handler)
 
-        thread = threading.Thread(target=self._server.serve_forever)
-        thread.deamon = False
-        thread.start()
+        self._thread = threading.Thread(target=self._server.serve_forever)
+        self._thread.deamon = False
+        self._thread.start()
+
+    def get_thread(self):
+        return self._thread
 
     def _get_url_base(self):
         return 'http://%s:%s' % (self._host, self._port)
