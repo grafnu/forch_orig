@@ -178,6 +178,7 @@ class FaucetStateCollector:
         return result
 
     def cleanup(self):
+        """Clean up internal data"""
         self.learned_macs.clear()
         for switch_data in self.switch_states.values():
             switch_data.pop(LEARNED_MACS, None)

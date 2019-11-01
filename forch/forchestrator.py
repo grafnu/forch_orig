@@ -244,6 +244,7 @@ class Forchestrator:
         reply['system_state_url'] = url
 
     def cleanup(self):
+        """Clean up relevant internal data in all collectors"""
         self._faucet_collector.cleanup()
 
     def get_switch_state(self, path, params):
