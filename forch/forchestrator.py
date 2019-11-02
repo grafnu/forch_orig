@@ -304,7 +304,7 @@ def load_config():
             return yaml.safe_load(stream)
     except Exception as e:
         LOGGER.error('Cannot load config: %s', e)
-        raise
+        return None
 
 
 def show_error(path, params):
@@ -315,6 +315,10 @@ def show_error(path, params):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     CONFIG = load_config()
+    if not CONFIG:
+        LOGGER.error('Exiting program')
+        exit(1)
+
     FORCH = Forchestrator(CONFIG)
     HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), FORCH.get_local_port())
     error = None
