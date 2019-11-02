@@ -65,6 +65,7 @@ class HttpServer():
         self._thread.start()
 
     def join_thread(self):
+        """Join http server thread"""
         self._thread.join()
 
     def _get_url_base(self):
