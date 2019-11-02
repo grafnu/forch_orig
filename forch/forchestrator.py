@@ -335,6 +335,7 @@ if __name__ == '__main__':
         HTTP.map_request('', HTTP.static_file(''))
     except Exception as e:
         error = e
+        LOGGER.error("Cannot initialize forch: %s", e)
         HTTP.map_request('', show_error)
 
     HTTP.start_server()
