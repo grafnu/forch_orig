@@ -122,7 +122,7 @@ class Forchestrator:
     def _get_local_controller_url(self):
         return self._make_controller_url(self._get_controller_info(self._get_controller_name()))
 
-    def _get_peer_controller_info(self):
+    def _get_peer_controller_name(self):
         name = self._get_controller_name()
         controllers = self._config.get('site', {}).get('controllers', {})
         if name not in controllers:
@@ -131,8 +131,10 @@ class Forchestrator:
             return ('num_controllers_%s' % len(controllers), _DEFAULT_PORT)
         things = set(controllers.keys())
         things.remove(name)
-        peer = list(things)[0]
-        return self._get_controller_info(peer)
+        return list(things)[0]
+
+    def _get_peer_controller_info(self):
+        return self._get_controller_info(self._get_peer_controller_name())
 
     def _get_peer_controller_url(self):
         return self._make_controller_url(self._get_peer_controller_info())
@@ -201,7 +203,7 @@ class Forchestrator:
             detail += '. Faucet disconnected.'
 
         vrrp_state = self._local_collector.get_vrrp_state()
-        peer_controller = self._get_peer_controller_info()[0]
+        peer_controller = self._get_peer_controller_name()
         cpn_nodes = self._cpn_collector.get_cpn_state().get('cpn_nodes', {})
         peer_controller_state = cpn_nodes.get(peer_controller, {}).get('state')
 
@@ -242,6 +244,10 @@ class Forchestrator:
     def _augment_state_reply(self, reply, path):
         url = self._extract_url_base(path)
         reply['system_state_url'] = url
+
+    def cleanup(self):
+        """Clean up relevant internal data in all collectors"""
+        self._faucet_collector.cleanup()
 
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
