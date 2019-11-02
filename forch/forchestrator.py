@@ -19,7 +19,6 @@ LOGGER = logging.getLogger('forch')
 
 _FCONFIG_DEFAULT = 'forch.yaml'
 _DEFAULT_PORT = 9019
-error = None
 
 class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
@@ -30,14 +29,18 @@ class Forchestrator:
     def __init__(self, config):
         self._config = config
         self._faucet_events = None
-        self._server = None
         self._start_time = datetime.fromtimestamp(time.time()).isoformat()
-        self._faucet_collector = FaucetStateCollector()
-        self._local_collector = LocalStateCollector(config.get('process'))
-        self._cpn_collector = CPNStateCollector()
+
+        self._faucet_collector = None
+        self._local_collector = None
+        self._cpn_collector = None
 
     def initialize(self):
         """Initialize forchestrator instance"""
+        self._faucet_collector = FaucetStateCollector()
+        self._local_collector = LocalStateCollector(self._config.get('process'), self.cleanup)
+        self._cpn_collector = CPNStateCollector()
+
         LOGGER.info('Attaching event channel...')
         self._faucet_events = forch.faucet_event_client.FaucetEventClient(
             self._config.get('event_client', {}))
@@ -290,8 +293,12 @@ def load_config():
     config_root = os.getenv('FORCH_CONFIG_DIR', '.')
     config_path = os.path.join(config_root, _FCONFIG_DEFAULT)
     LOGGER.info('Reading config file %s', os.path.abspath(config_path))
-    with open(config_path, 'r') as stream:
-        return yaml.safe_load(stream)
+    try:
+        with open(config_path, 'r') as stream:
+            return yaml.safe_load(stream)
+    except Exception as e:
+        LOGGER.error('Cannot load config: %s', e)
+        raise
 
 
 def show_error(path, params):
@@ -301,22 +308,13 @@ def show_error(path, params):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    CONFIG = {}
-    FORCH = None
+    CONFIG = load_config()
+    FORCH = Forchestrator(CONFIG)
+    HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), FORCH.get_local_port())
+    error = None
 
     try:
-        CONFIG = load_config()
-        FORCH = Forchestrator(CONFIG)
         FORCH.initialize()
-    except Exception as e:
-        error = e
-
-    http_port = FORCH.get_local_port() if FORCH else _DEFAULT_PORT
-    HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), http_port)
-
-    if error:
-        HTTP.map_request('', show_error)
-    else:
         HTTP.map_request('system_state', FORCH.get_system_state)
         HTTP.map_request('dataplane_state', FORCH.get_dataplane_state)
         HTTP.map_request('switch_state', FORCH.get_switch_state)
@@ -325,15 +323,17 @@ if __name__ == '__main__':
         HTTP.map_request('host_path', FORCH.get_host_path)
         HTTP.map_request('list_hosts', FORCH.get_list_hosts)
         HTTP.map_request('', HTTP.static_file(''))
+    except Exception as e:
+        error = e
+        HTTP.map_request('', show_error)
 
     HTTP.start_server()
-    http_thread = HTTP.get_thread()
 
-    if FORCH:
+    if not error:
         FORCH.main_loop()
     else:
         try:
-            http_thread.join()
+            HTTP.join_thread()
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
 

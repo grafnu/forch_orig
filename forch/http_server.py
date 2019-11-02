@@ -64,8 +64,8 @@ class HttpServer():
         self._thread.deamon = False
         self._thread.start()
 
-    def get_thread(self):
-        return self._thread
+    def join_thread(self):
+        self._thread.join()
 
     def _get_url_base(self):
         return 'http://%s:%s' % (self._host, self._port)
