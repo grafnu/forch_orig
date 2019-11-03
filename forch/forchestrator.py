@@ -309,7 +309,7 @@ def load_config():
 
 def show_error(path, params):
     """Display errors"""
-    return f"Cannot initialize forch: {str(error)}"
+    return f"Cannot initialize forch: {str(ERROR)}"
 
 
 if __name__ == '__main__':
@@ -321,7 +321,7 @@ if __name__ == '__main__':
 
     FORCH = Forchestrator(CONFIG)
     HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), FORCH.get_local_port())
-    error = None
+    ERROR = None
 
     try:
         FORCH.initialize()
@@ -334,13 +334,13 @@ if __name__ == '__main__':
         HTTP.map_request('list_hosts', FORCH.get_list_hosts)
         HTTP.map_request('', HTTP.static_file(''))
     except Exception as e:
-        error = e
+        ERROR = e
         LOGGER.error("Cannot initialize forch: %s", e)
         HTTP.map_request('', show_error)
 
     HTTP.start_server()
 
-    if not error:
+    if not ERROR:
         FORCH.main_loop()
     else:
         try:
