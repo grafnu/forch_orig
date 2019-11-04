@@ -3,6 +3,7 @@
 from datetime import datetime
 import logging
 import os
+import sys
 import time
 import yaml
 
@@ -317,7 +318,7 @@ if __name__ == '__main__':
     CONFIG = load_config()
     if not CONFIG:
         LOGGER.error('Exiting program')
-        exit(1)
+        sys.exit(1)
 
     FORCH = Forchestrator(CONFIG)
     HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), FORCH.get_local_port())
