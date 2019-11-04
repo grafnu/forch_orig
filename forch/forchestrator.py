@@ -210,7 +210,7 @@ class Forchestrator:
             has_error = True
             detail += '. Faucet disconnected.'
 
-        cpn_state = self._cpn_collector.get_cpn_state().get('')
+        cpn_state = self._cpn_collector.get_cpn_state().get('cpn_state')
         vrrp_state = self._local_collector.get_vrrp_state()
         peer_controller = self._get_peer_controller_name()
         cpn_nodes = self._cpn_collector.get_cpn_state().get('cpn_nodes', {})
