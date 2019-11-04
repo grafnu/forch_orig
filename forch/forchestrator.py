@@ -1,6 +1,7 @@
 """Orchestrator component for controlling a Faucet SDN"""
 
 from datetime import datetime
+import functools
 import logging
 import os
 import sys
@@ -35,6 +36,7 @@ class Forchestrator:
         self._faucet_collector = None
         self._local_collector = None
         self._cpn_collector = None
+        self._initialized = False
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -49,6 +51,11 @@ class Forchestrator:
         self._local_collector.initialize()
         self._cpn_collector.initialize()
         LOGGER.info('Using peer controller %s', self._get_peer_controller_url())
+        self._initialized = True
+
+    def initialized(self):
+        """If forch is initialized or not"""
+        return self._initialized
 
     def main_loop(self):
         """Main event processing loop"""
@@ -308,9 +315,9 @@ def load_config():
         return None
 
 
-def show_error(path, params):
+def show_error(error, path, params):
     """Display errors"""
-    return f"Cannot initialize forch: {str(ERROR)}"
+    return f"Cannot initialize forch: {str(error)}"
 
 
 if __name__ == '__main__':
@@ -322,7 +329,6 @@ if __name__ == '__main__':
 
     FORCH = Forchestrator(CONFIG)
     HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), FORCH.get_local_port())
-    ERROR = None
 
     try:
         FORCH.initialize()
@@ -335,13 +341,13 @@ if __name__ == '__main__':
         HTTP.map_request('list_hosts', FORCH.get_list_hosts)
         HTTP.map_request('', HTTP.static_file(''))
     except Exception as e:
-        ERROR = e
         LOGGER.error("Cannot initialize forch: %s", e)
-        HTTP.map_request('', show_error)
+        HTTP.map_request('', functools.partial(show_error, e))
 
-    HTTP.start_server()
+    finally:
+        HTTP.start_server()
 
-    if not ERROR:
+    if FORCH.initialized():
         FORCH.main_loop()
     else:
         try:
