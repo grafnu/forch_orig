@@ -13,10 +13,10 @@ LOGGER = logging.getLogger('Ping')
 
 class PingManager:
     """Manages a thread that periodically pings the hosts"""
-    def __init__(self, hosts: dict, interval: int = 60, count: int = 10, timeout: int = 10):
+    def __init__(self, hosts: dict, interval: int = 60, count: int = 10):
         self._hosts = hosts
         self._count = count
-        self._timeout = timeout
+        self._timeout = self._count + 2
         self._interval = interval
         self._loop = asyncio.new_event_loop()
         asyncio.get_child_watcher().attach_loop(self._loop)

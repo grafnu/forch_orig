@@ -56,15 +56,15 @@ class CPNStateCollector:
 
                 for node, attr_map in cpn_nodes.items():
                     node_state_map = self._node_states.setdefault(node, {})
-                    node_state_map[KEY_NODE_ATTRIBUTES] = copy.copy(attr_map)
+                    node_state_map[KEY_NODE_ATTRIBUTES] = copy.deepcopy(attr_map)
                     self._hosts_ip[node] = attr_map['cpn_ip']
-
-                    self._ping_manager = forch.ping_manager.PingManager(self._hosts_ip)
+            if not self._hosts_ip:
+                raise Exception('No CPN components defined in file')
+            self._ping_manager = forch.ping_manager.PingManager(self._hosts_ip)
+            self._update_cpn_state(current_time, constants.STATE_INITIALIZING, "Initializing")
         except Exception as e:
             self._node_states.clear()
-            self._update_cpn_state(current_time, constants.STATE_BROKEN, detail=str(e))
-
-        self._update_cpn_state(current_time, constants.STATE_INITIALIZING, detail="Initializing")
+            self._update_cpn_state(current_time, constants.STATE_BROKEN, str(e))
 
         if self._ping_manager:
             self._ping_manager.start_loop(self._handle_ping_result)
