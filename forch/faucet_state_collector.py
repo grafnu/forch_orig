@@ -559,22 +559,22 @@ class FaucetStateCollector:
     @dump_states
     def process_stack_topo_change(self, timestamp, stack_root, graph, dps):
         """Process stack topology change event"""
-        topo_state = self.topo_state
+        t_state = self.topo_state
         change = False
         with self.lock:
             LOGGER.info('stack_topo changed to root %s', stack_root)
-            if topo_state.get(TOPOLOGY_ROOT) != stack_root:
-                topo_state[TOPOLOGY_ROOT] = stack_root
+            if t_state.get(TOPOLOGY_ROOT) != stack_root:
+                t_state[TOPOLOGY_ROOT] = stack_root
                 change = True
-            if topo_state.get(TOPOLOGY_GRAPH) != graph:
-                topo_state[TOPOLOGY_GRAPH] = graph
+            if t_state.get(TOPOLOGY_GRAPH) != graph:
+                t_state[TOPOLOGY_GRAPH] = graph
                 change = True
-            if topo_state.get(TOPOLOGY_DPS) != dps:
-                topo_state[TOPOLOGY_DPS] = dps
+            if t_state.get(TOPOLOGY_DPS) != dps:
+                t_state[TOPOLOGY_DPS] = dps
                 change = True
             if change:
-                topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
-                topo_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
+                t_state[TOPOLOGY_CHANGE_COUNT] = t_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
+                t_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
 
     @staticmethod
     def get_endpoints_from_link(link_map):
