@@ -92,22 +92,26 @@ class FaucetStateCollector:
         }
 
     def _get_dataplane_detail(self, dplane_state):
-        egress_state = dplane_state.get(EGRESS_STATE)
-        if not (dplane_state or egress_state):
-            return None, None
         state = constants.STATE_HEALTHY
-        detail = ["egress state: " + str(egress_state)]
+        detail = []
+
+        egress_state = dplane_state.get('egress', {}).get(EGRESS_STATE, {})
+        if not egress_state or egress_state == constants.STATE_DOWN:
+            state = constants.STATE_BROKEN
+            detail.append("Egress is down")
+        else:
+            detail.append("egress state: " + str(egress_state))
+
         broken_sw = self._get_broken_switches(dplane_state)
         if broken_sw:
             state = constants.STATE_BROKEN
             detail.append("broken switches: " + str(broken_sw))
+
         broken_links = self._get_broken_links(dplane_state)
         if broken_links:
             state = constants.STATE_BROKEN
             detail.append("broken links: " + str(broken_links))
-        if dplane_state.get(EGRESS_STATE) == constants.STATE_DOWN:
-            state = constants.STATE_BROKEN
-            detail.append("Egress is down")
+
         return state, "; ".join(detail)
 
     def get_dataplane_state(self):
@@ -122,8 +126,6 @@ class FaucetStateCollector:
         state, detail = self._get_dataplane_detail(dplane_state)
         dplane_state['dataplane_state'] = state
         dplane_state['dataplane_state_detail'] = detail
-        dplane_state[TOPOLOGY_CHANGE_COUNT] = self.topo_state.get(TOPOLOGY_CHANGE_COUNT)
-        dplane_state[TOPOLOGY_LAST_CHANGE] = self.topo_state.get(TOPOLOGY_LAST_CHANGE)
         return dplane_state
 
     def _get_broken_switches(self, dplane_state):
@@ -201,7 +203,7 @@ class FaucetStateCollector:
     def _fill_egress_state(self, dplane_state):
         """Return egress state obj"""
         with self.lock:
-            egress_obj = self.topo_state.get(EGRESS_STATE, {})
+            egress_obj = self.topo_state.get('egress', {})
             if egress_obj:
                 dplane_state[EGRESS_STATE] = egress_obj.get(EGRESS_STATE)
                 dplane_state[EGRESS_LAST_CHANGE] = egress_obj.get(EGRESS_LAST_CHANGE)
@@ -486,9 +488,8 @@ class FaucetStateCollector:
     @dump_states
     def process_lag_state(self, timestamp, name, port, state):
         """process lag change event"""
-        topo_state = self.topo_state
         with self.lock:
-            egress_state = topo_state.setdefault(EGRESS_STATE, {})
+            egress_state = self.topo_state.setdefault('egress', {})
             old_state = egress_state.get(EGRESS_STATE)
             new_state = name if state else constants.STATE_DOWN
             if new_state != old_state:
