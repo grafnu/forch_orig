@@ -101,7 +101,7 @@ class FaucetStateCollector:
         egress_count = egress.get(EGRESS_CHANGE_COUNT)
         egress_last = egress.get(EGRESS_LAST_CHANGE)
         # TODO: Expose last update time up the chain.
-        _egress_update = egress.get(EGRESS_LAST_UPDATE)
+        _ = egress.get(EGRESS_LAST_UPDATE)
 
         state = egress_state if egress else constants.STATE_INITIALIZING
         if egress_detail:
