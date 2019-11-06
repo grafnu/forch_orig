@@ -63,10 +63,10 @@ TOPOLOGY_ROOT = "active_root"
 DPS_CFG = "dps_config"
 DPS_CFG_CHANGE_COUNT = "config_change_count"
 DPS_CFG_CHANGE_TS = "config_change_timestamp"
-EGRESS_PORT = "port"
 EGRESS_STATE = "egress_state"
 EGRESS_DETAIL = "egress_state_detail"
 EGRESS_LAST_CHANGE = "egress_state_last_change"
+EGRESS_LAST_UPDATE = "egress_state_last_update"
 EGRESS_CHANGE_COUNT = "egress_state_change_count"
 
 
@@ -83,24 +83,28 @@ class FaucetStateCollector:
     def get_dataplane_summary(self):
         """Get summary of dataplane"""
         dplane_state = self.get_dataplane_state()
-        state, detail = self._get_dataplane_detail(dplane_state)
+        state, detail, count, last = self._get_dataplane_detail(dplane_state)
         return {
             'state': state,
             'detail': detail,
-            'change_count': dplane_state.get(EGRESS_CHANGE_COUNT),
-            'last_change': dplane_state.get(EGRESS_LAST_CHANGE)
+            'change_count': count,
+            'last_change': last
         }
 
     def _get_dataplane_detail(self, dplane_state):
         state = constants.STATE_HEALTHY
         detail = []
 
-        egress_state = dplane_state.get('egress', {}).get(EGRESS_STATE, {})
-        if not egress_state or egress_state == constants.STATE_DOWN:
-            state = constants.STATE_BROKEN
-            detail.append("Egress is down")
-        else:
-            detail.append("egress state: " + str(egress_state))
+        egress = dplane_state.get('egress', {})
+        egress_state = egress.get(EGRESS_STATE)
+        egress_detail = egress.get(EGRESS_DETAIL)
+        egress_count = egress.get(EGRESS_CHANGE_COUNT)
+        egress_last = egress.get(EGRESS_LAST_CHANGE)
+        egress_update = egress.get(EGRESS_LAST_UPDATE)
+
+        state = egress_state if egress else constants.STATE_INITIALIZING
+        if egress_detail:
+            detail.append(egress_detail)
 
         broken_sw = self._get_broken_switches(dplane_state)
         if broken_sw:
@@ -112,7 +116,7 @@ class FaucetStateCollector:
             state = constants.STATE_BROKEN
             detail.append("broken links: " + str(broken_links))
 
-        return state, "; ".join(detail)
+        return state, "; ".join(detail), egress_count, egress_last
 
     def get_dataplane_state(self):
         """get the topology state"""
@@ -123,9 +127,11 @@ class FaucetStateCollector:
         stack_state[TOPOLOGY_LINK_MAP] = self._get_stack_topo()
         egress_state = dplane_state.setdefault('egress', {})
         self._fill_egress_state(egress_state)
-        state, detail = self._get_dataplane_detail(dplane_state)
+        state, detail, count, last = self._get_dataplane_detail(dplane_state)
         dplane_state['dataplane_state'] = state
         dplane_state['dataplane_state_detail'] = detail
+        dplane_state['dataplane_state_change_count'] = count
+        dplane_state['dataplane_state_last_change'] = last
         return dplane_state
 
     def _get_broken_switches(self, dplane_state):
@@ -204,10 +210,11 @@ class FaucetStateCollector:
         """Return egress state obj"""
         with self.lock:
             egress_obj = self.topo_state.get('egress', {})
-            if egress_obj:
-                dplane_state[EGRESS_STATE] = egress_obj.get(EGRESS_STATE)
-                dplane_state[EGRESS_LAST_CHANGE] = egress_obj.get(EGRESS_LAST_CHANGE)
-                dplane_state[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
+            dplane_state[EGRESS_STATE] = egress_obj.get(EGRESS_STATE)
+            dplane_state[EGRESS_DETAIL] = egress_obj.get(EGRESS_DETAIL)
+            dplane_state[EGRESS_LAST_UPDATE] = egress_obj.get(EGRESS_LAST_UPDATE)
+            dplane_state[EGRESS_LAST_CHANGE] = egress_obj.get(EGRESS_LAST_CHANGE)
+            dplane_state[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
 
     def _get_switch_map(self):
         """returns switch map for topology overview"""
@@ -490,12 +497,13 @@ class FaucetStateCollector:
         """process lag change event"""
         with self.lock:
             egress_state = self.topo_state.setdefault('egress', {})
+            egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             old_state = egress_state.get(EGRESS_STATE)
-            new_state = name if state else constants.STATE_DOWN
+            new_state = constants.STATE_UP if state else constants.STATE_DOWN
             if new_state != old_state:
                 LOGGER.info('lag_state %s, %s -> %s', name, old_state, new_state)
                 egress_state[EGRESS_STATE] = new_state
-                egress_state[EGRESS_PORT] = port if state else None
+                egress_state[EGRESS_DETAIL] = port if state else None
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
 
