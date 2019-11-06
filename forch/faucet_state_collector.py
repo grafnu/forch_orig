@@ -58,7 +58,7 @@ TOPOLOGY_LAST_CHANGE = "dataplane_state_last_change"
 TOPOLOGY_HEALTH = "is_healthy"
 TOPOLOGY_NOT_HEALTH = "is_wounded"
 TOPOLOGY_DP_MAP = "switches"
-TOPOLOGY_LINK_MAP = "stack_links"
+TOPOLOGY_LINK_MAP = "links"
 TOPOLOGY_ROOT = "active_root"
 DPS_CFG = "dps_config"
 DPS_CFG_CHANGE_COUNT = "config_change_count"
@@ -96,7 +96,7 @@ class FaucetStateCollector:
         if not (dplane_state or egress_state):
             return None, None
         state = constants.STATE_HEALTHY
-        detail = ["egress state: " + egress_state]
+        detail = ["egress state: " + str(egress_state)]
         broken_sw = self._get_broken_switches(dplane_state)
         if broken_sw:
             state = constants.STATE_BROKEN
@@ -113,9 +113,12 @@ class FaucetStateCollector:
     def get_dataplane_state(self):
         """get the topology state"""
         dplane_state = {}
-        dplane_state[TOPOLOGY_DP_MAP] = self._get_switch_map()
-        dplane_state[TOPOLOGY_LINK_MAP] = self._get_stack_topo()
-        self._fill_egress_state(dplane_state)
+        switch_state = dplane_state.setdefault('switch', {})
+        switch_state[TOPOLOGY_DP_MAP] = self._get_switch_map()
+        stack_state = dplane_state.setdefault('stack', {})
+        stack_state[TOPOLOGY_LINK_MAP] = self._get_stack_topo()
+        egress_state = dplane_state.setdefault('egress', {})
+        self._fill_egress_state(egress_state)
         state, detail = self._get_dataplane_detail(dplane_state)
         dplane_state['dataplane_state'] = state
         dplane_state['dataplane_state_detail'] = detail
