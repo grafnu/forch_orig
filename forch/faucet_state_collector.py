@@ -100,7 +100,8 @@ class FaucetStateCollector:
         egress_detail = egress.get(EGRESS_DETAIL)
         egress_count = egress.get(EGRESS_CHANGE_COUNT)
         egress_last = egress.get(EGRESS_LAST_CHANGE)
-        egress_update = egress.get(EGRESS_LAST_UPDATE)
+        # TODO: Expose last update time up the chain.
+        _egress_update = egress.get(EGRESS_LAST_UPDATE)
 
         state = egress_state if egress else constants.STATE_INITIALIZING
         if egress_detail:
@@ -160,6 +161,11 @@ class FaucetStateCollector:
             'last_change': switch_state['switches_state_last_change']
         }
 
+    def _augment_mac_urls(self, url_base, switch_data):
+        if url_base:
+            for mac, mac_data in switch_data.get('access_port_macs', {}).items():
+                mac_data['url'] = f"{url_base}/?list_hosts?eth_src={mac}"
+
     def get_switch_state(self, switch, port, url_base=None):
         """get a set of all switches"""
         switches_data = {}
@@ -173,19 +179,17 @@ class FaucetStateCollector:
             last_change = max(last_change, switch_data.get(SW_STATE_LAST_CHANGE, ''))
             if switch_data[SW_STATE] != constants.STATE_ACTIVE:
                 broken.append(switch_name)
-            if url_base:
-                for mac, mac_data in switch_data.get('access_port_macs', {}).items():
-                    mac_data['url'] = f"{url_base}/?list_hosts?eth_src={mac}"
+            self._augment_mac_urls(url_base, switch_data)
 
         if not self.switch_states:
+            switches_state = constants.STATE_BROKEN
             state_detail = 'No switches connected'
-            switches_state = constants.STATE_BROKEN
         elif broken:
-            state_detail = 'Switches in broken state: ' + ', '.join(broken)
             switches_state = constants.STATE_BROKEN
+            state_detail = 'Switches in broken state: ' + ', '.join(broken)
         else:
-            state_detail = ''
             switches_state = constants.STATE_HEALTHY
+            state_detail = None
 
         result = {
             'switches_state': switches_state,
@@ -194,6 +198,7 @@ class FaucetStateCollector:
             'switches_state_last_change': last_change,
             'switches': switches_data
         }
+
         if switch:
             result['switches'] = {switch: switches_data[switch]}
             result['switches_restrict'] = switch

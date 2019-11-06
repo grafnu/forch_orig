@@ -128,6 +128,14 @@ class LocalStateCollector:
             create_time_change_count = old_proc_map.get('create_time_change_count', 0) + 1
             proc_map['create_time_change_count'] = create_time_change_count
 
+        error = self._aggregate_process_stats(proc_map, proc_list)
+
+        if error:
+            return None, error
+
+        return proc_map, None
+
+    def _aggregate_process_stats(self, proc_map, proc_list):
         cpu_time_user = 0.0
         cpu_time_system = 0.0
         cpu_time_iowait = None
@@ -146,7 +154,7 @@ class LocalStateCollector:
                         memory_rss += proc.memory_info().rss / 1e6
                         memory_vms += proc.memory_info().vms / 1e6
         except Exception as e:
-            return None, ("Error extracting process info: %s" % e)
+            return "Error extracting process info: %s" % e
 
         proc_map['cpu_times_s'] = {}
         proc_map['cpu_times_s']['user'] = cpu_time_user / len(proc_list)
@@ -158,7 +166,7 @@ class LocalStateCollector:
         proc_map['memory_info_mb']['rss'] = memory_rss / len(proc_list)
         proc_map['memory_info_mb']['vms'] = memory_vms / len(proc_list)
 
-        return proc_map, None
+        return None
 
     def _get_vrrp_info(self):
         """Get vrrp info"""
