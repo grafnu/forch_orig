@@ -67,7 +67,6 @@ class Forchestrator:
                     #TODO: Figure out reasonable time delay before each reconnection attempt
                     time.sleep(1)
                     self._faucet_events.connect()
-                pass
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
             self._faucet_events.disconnect()
