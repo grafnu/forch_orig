@@ -64,7 +64,7 @@ class Forchestrator:
             while self._handle_faucet_events():
                 while not self._faucet_events.event_socket_connected:
                     LOGGER.info('Attempting to reconnect...')
-                    #TODO: Figure out reasonable time delay before each reconnection attempt
+                    # TODO: Figure out reasonable time delay before each reconnection attempt
                     time.sleep(1)
                     self._faucet_events.connect()
         except KeyboardInterrupt:
