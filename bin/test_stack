@@ -136,6 +136,8 @@ function restart_forch {
 
     bin/forch inst/forch-faucet-1 2>&1 &
 
+    tail -f inst/forch-faucet-1/forch.log &
+
     # Need to wait long enough for polling mechanisms to kick in.
     sleep 20
 }
