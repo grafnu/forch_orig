@@ -349,7 +349,7 @@ def show_error(error, path, params):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(filename=os.getenv('FORCH_LOG'), level=logging.INFO)
     CONFIG = load_config()
     if not CONFIG:
         LOGGER.error('Exiting program')
