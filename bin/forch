@@ -11,7 +11,12 @@ if [ -n "$1" ]; then
     shift
     FAUCET_EVENT_SOCK=$FORCH_BASE/$FSOCK
     FORCH_CONFIG_DIR=$FORCH_BASE
-    FAUCET_LOG_DIR=$FORCH_BASE
+    FORCH_LOG_DIR=$FORCH_BASE
+else
+    FAUCET_EVENT_SOCK=${FAUCET_EVENT_SOCK:-/var/run/faucet/$FSOCK}
+    FORCH_CONFIG_DIR=${FORCH_CONFIG_DIR:-/etc/faucet}
+    FORCH_LOG_DIR=${FORCH_LOG_DIR:-/var/log/faucet}
+    mkdir -p $FORCH_LOG_DIR $FORCH_CONFIG_DIR
 fi
 
 if [ -f venv/bin/python ]; then
@@ -27,10 +32,12 @@ else
     echo Using existing controller name $CONTROLLER_NAME
 fi
 
+echo Writing forch logs to $FORCH_LOG_DIR/forch.log
+
 sudo \
-    FAUCET_EVENT_SOCK=${FAUCET_EVENT_SOCK:-/var/run/faucet/$FSOCK} \
-    FORCH_CONFIG_DIR=${FORCH_CONFIG_DIR:-/etc/faucet} \
-    FORCH_LOG_DIR=${FORCH_LOG_DIR:-/var/log/faucet} \
     CONTROLLER_NAME=$CONTROLLER_NAME \
+    FAUCET_EVENT_SOCK=$FAUCET_EVENT_SOCK \
+    FORCH_CONFIG_DIR=$FORCH_CONFIG_DIR \
+    FORCH_LOG_DIR=$FORCH_LOG_DIR \
     PYTHONPATH=$PYTHONPATH \
     $PYTHON -m forch.forchestrator
