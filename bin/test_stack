@@ -136,10 +136,10 @@ function restart_forch {
 
     bin/forch inst/forch-faucet-1 2>&1 &
 
+    # Wait for system to warm-up, including background process/cpn checks.
+    sleep 10
     tail -f inst/forch-faucet-1/forch.log &
-
-    # Need to wait long enough for polling mechanisms to kick in.
-    sleep 20
+    sleep 10
 }
 
 function fetch_forch {
