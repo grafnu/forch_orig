@@ -5,7 +5,6 @@ import functools
 import logging
 import os
 import sys
-import threading
 import time
 import yaml
 
@@ -38,14 +37,11 @@ class Forchestrator:
         self._local_collector = None
         self._cpn_collector = None
         self._initialized = False
-        self._is_active = False
-        self._active_state_lock = threading.Lock()
 
     def initialize(self):
         """Initialize forchestrator instance"""
         self._faucet_collector = FaucetStateCollector()
-        self._local_collector = LocalStateCollector(
-            self._config.get('process'), self.cleanup, self.handle_active_state)
+        self._local_collector = LocalStateCollector(self._config.get('process'), self.cleanup)
         self._cpn_collector = CPNStateCollector()
 
         LOGGER.info('Attaching event channel...')
@@ -66,11 +62,7 @@ class Forchestrator:
         LOGGER.info('Entering main event loop...')
         try:
             while self._handle_faucet_events():
-                while not self._faucet_events.event_socket_connected:
-                    LOGGER.info('Attempting to reconnect...')
-                    # TODO: Figure out reasonable time delay before each reconnection attempt
-                    time.sleep(1)
-                    self._faucet_events.connect()
+                pass
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
             self._faucet_events.disconnect()
@@ -197,10 +189,6 @@ class Forchestrator:
         return system_summary
 
     def _get_combined_summary(self, summary):
-        controller_state, controller_state_detail = self._get_controller_state()
-        if not controller_state == constants.STATE_ACTIVE:
-            return controller_state, controller_state_detail
-
         has_error = False
         has_warning = False
         details = []
@@ -222,6 +210,24 @@ class Forchestrator:
             has_error = True
             detail += '. Faucet disconnected.'
 
+        cpn_state = self._cpn_collector.get_cpn_state().get('cpn_state')
+        vrrp_state = self._local_collector.get_vrrp_state()
+        peer_controller = self._get_peer_controller_name()
+        cpn_nodes = self._cpn_collector.get_cpn_state().get('cpn_nodes', {})
+        peer_controller_state = cpn_nodes.get(peer_controller, {}).get('state')
+
+        if not peer_controller_state:
+            LOGGER.error('Cannot get peer controller state: %s', peer_controller)
+
+        if not vrrp_state.get('is_master'):
+            detail = 'This controller is inactive. Please view peer controller.'
+            return constants.STATE_INACTIVE, detail
+        if cpn_state == constants.STATE_INITIALIZING:
+            detail = 'Initializing'
+            return constants.STATE_INITIALIZING, detail
+        if not peer_controller_state == constants.STATE_HEALTHY:
+            detail = 'Lost reachability to peer controller.'
+            return constants.STATE_SPLIT, detail
         if has_error:
             return constants.STATE_BROKEN, detail
         if has_warning:
@@ -251,39 +257,9 @@ class Forchestrator:
         url = self._extract_url_base(path)
         reply['system_state_url'] = url
 
-    def _get_controller_state(self):
-        with self._active_state_lock:
-            if not self._is_active:
-                detail = 'This controller is inactive. Please view peer controller.'
-                return constants.STATE_INACTIVE, detail
-
-        cpn_state = self._cpn_collector.get_cpn_state().get('cpn_state')
-        peer_controller = self._get_peer_controller_name()
-        cpn_nodes = self._cpn_collector.get_cpn_state().get('cpn_nodes', {})
-        peer_controller_state = cpn_nodes.get(peer_controller, {}).get('state')
-
-        if not peer_controller_state:
-            LOGGER.error('Cannot get peer controller state: %s', peer_controller)
-
-        if cpn_state == constants.STATE_INITIALIZING:
-            detail = 'Initializing'
-            return constants.STATE_INITIALIZING, detail
-
-        if not peer_controller_state == constants.STATE_HEALTHY:
-            detail = 'Lost reachability to peer controller.'
-            return constants.STATE_SPLIT, detail
-
-        return constants.STATE_ACTIVE, ''
-
     def cleanup(self):
         """Clean up relevant internal data in all collectors"""
         self._faucet_collector.cleanup()
-
-    def handle_active_state(self, is_master):
-        """Handler for local state collector to handle vrrp state"""
-        with self._active_state_lock:
-            self._is_active = is_master
-        self._faucet_collector.set_active(is_master)
 
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
@@ -348,14 +324,8 @@ def show_error(error, path, params):
     return f"Cannot initialize forch: {str(error)}"
 
 
-def get_log_path():
-    """Get path for logging"""
-    forch_log_dir = os.getenv('FORCH_LOG_DIR', '/var/log/faucet')
-    return os.path.join(forch_log_dir, 'forch.log')
-
-
 if __name__ == '__main__':
-    logging.basicConfig(filename=get_log_path(), level=logging.INFO)
+    logging.basicConfig(level=logging.INFO)
     CONFIG = load_config()
     if not CONFIG:
         LOGGER.error('Exiting program')
