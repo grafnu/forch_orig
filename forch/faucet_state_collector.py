@@ -56,6 +56,8 @@ TOPOLOGY_GRAPH = "graph_obj"
 TOPOLOGY_DPS = "dps"
 TOPOLOGY_CHANGE_COUNT = "dataplane_state_change_count"
 TOPOLOGY_LAST_CHANGE = "dataplane_state_last_change"
+GRAPH_CHANGE_COUNT = "links_change_count"
+GRAPH_LAST_CHANGE = "links_state_last_change"
 TOPOLOGY_HEALTH = "is_healthy"
 TOPOLOGY_NOT_HEALTH = "is_wounded"
 TOPOLOGY_DP_MAP = "switches"
@@ -259,17 +261,22 @@ class FaucetStateCollector:
         switch_map = {}
         if not self.switch_states:
             return {}
+        change_count = 0
+        last_change = '#n/a'  # Clevery chosen to be sorted less than timestamp.
         with self.lock:
             for switch, switch_state in self.switch_states.items():
                 switch_map[switch] = {}
                 current_state = switch_state.get(SW_STATE)
+                change_count += switch_state.get(SW_STATE_CHANGE_COUNT, 0)
+                last_change = max(last_change, switch_state.get(SW_STATE_LAST_CHANGE, ''))
                 if not current_state:
                     switch_map[switch][SW_STATE] = None
                 elif current_state == SWITCH_CONNECTED:
                     switch_map[switch][SW_STATE] = constants.STATE_ACTIVE
                 else:
                     switch_map[switch][SW_STATE] = constants.STATE_DOWN
-
+            switch_map['switches_change_count'] = change_count
+            switch_map['switches_last_change'] = last_change
             return switch_map
 
     def _get_switch(self, switch_name, port):
@@ -403,7 +410,8 @@ class FaucetStateCollector:
                             link_obj[LINK_STATE] = constants.STATE_UP
                         else:
                             link_obj[LINK_STATE] = constants.STATE_DOWN
-
+            topo_map[GRAPH_CHANGE_COUNT] = self.topo_state.get(GRAPH_CHANGE_COUNT, 0)
+            topo_map[GRAPH_LAST_CHANGE] = self.topo_state.get(GRAPH_LAST_CHANGE)
         return topo_map
 
     def _is_link_up(self, key):
@@ -622,6 +630,8 @@ class FaucetStateCollector:
                 change = True
             if t_state.get(TOPOLOGY_GRAPH) != graph:
                 t_state[TOPOLOGY_GRAPH] = graph
+                t_state[GRAPH_CHANGE_COUNT] = t_state.setdefault(GRAPH_CHANGE_COUNT, 0) + 1
+                t_state[GRAPH_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 change = True
             if t_state.get(TOPOLOGY_DPS) != dps:
                 t_state[TOPOLOGY_DPS] = dps
