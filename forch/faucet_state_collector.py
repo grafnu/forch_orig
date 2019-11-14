@@ -539,7 +539,7 @@ class FaucetStateCollector:
             if old_egress_name and old_egress_name != name and not lacp_state:
                 return
 
-            lacp_up = lacp_state == 2
+            lacp_up = lacp_state == 3
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             old_state = egress_state.get(EGRESS_STATE)
             new_state = constants.STATE_UP if lacp_up else constants.STATE_DOWN
