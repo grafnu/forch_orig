@@ -13,6 +13,7 @@ import forch.constants as constants
 
 LOGGER = logging.getLogger('fstate')
 
+
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
 
@@ -30,6 +31,7 @@ def dump_states(func):
     return wrapped
 
 
+FAUCET_LACP_STATE_UP = 3
 SWITCH_CONNECTED = "CONNECTED"
 SWITCH_DOWN = "DOWN"
 
@@ -539,7 +541,7 @@ class FaucetStateCollector:
             if old_egress_name and old_egress_name != name and not lacp_state:
                 return
 
-            lacp_up = lacp_state == 3
+            lacp_up = lacp_state == FAUCET_LACP_STATE_UP
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             old_state = egress_state.get(EGRESS_STATE)
             new_state = constants.STATE_UP if lacp_up else constants.STATE_DOWN
