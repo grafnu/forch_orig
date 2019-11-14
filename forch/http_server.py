@@ -29,8 +29,11 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         """Handle a basic http request get method"""
         self.send_response(200)
         self.end_headers()
-        parsed = urllib.parse.urlparse(self.path)
         host = self.headers.get('Host')
+        if not host:
+            LOGGER.warning("Host is empty. Path: %s", self.path)
+            return
+        parsed = urllib.parse.urlparse(self.path)
         opts = {}
         opt_pairs = urllib.parse.parse_qsl(parsed.query)
         for pair in opt_pairs:
