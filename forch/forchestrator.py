@@ -87,7 +87,7 @@ class Forchestrator:
             try:
                 self._handle_faucet_event(event)
             except Exception as e:
-                LOGGER.warning('While processing event %s', e)
+                LOGGER.warning('While processing event %s', event)
                 raise e
         return False
 
