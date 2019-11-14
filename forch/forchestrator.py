@@ -105,10 +105,10 @@ class Forchestrator:
             if stack_root is not None:
                 LOGGER.debug('stack dataplane_state change root:%s', stack_root)
                 self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, dps)
-            (name, port, active) = self._faucet_events.as_lag_status(event)
+            (name, port, state) = self._faucet_events.as_lag_state(event)
             if name and port:
-                LOGGER.debug('LAG state %s %s %s', name, port, active)
-                self._faucet_collector.process_lag_state(timestamp, name, port, active)
+                LOGGER.debug('LAG state %s %s %s', name, port, state)
+                self._faucet_collector.process_lag_state(timestamp, name, port, state)
             (name, connected) = self._faucet_events.as_dp_change(event)
             if name:
                 LOGGER.debug('DP %s connected %r', name, connected)
