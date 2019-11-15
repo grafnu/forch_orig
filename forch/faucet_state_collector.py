@@ -106,7 +106,8 @@ class FaucetStateCollector:
     def get_dataplane_summary(self):
         """Get summary of dataplane"""
         dplane_state = self._get_dataplane_state()
-        state, detail = self._get_dataplane_detail(dplane_state)
+        state = dplane_state.get('dataplane_state')
+        detail = dplane_state.get('dataplane_state_detail')
         count = dplane_state.get('dataplane_state_change_count')
         last = dplane_state.get('dataplane_state_last_change')
         return {
@@ -116,7 +117,7 @@ class FaucetStateCollector:
             'last_change': last
         }
 
-    def _get_dataplane_detail(self, dplane_state):
+    def _update_dataplane_detail(self, dplane_state):
         state = constants.STATE_HEALTHY
         detail = []
         egress = dplane_state.get('egress', {})
@@ -128,7 +129,7 @@ class FaucetStateCollector:
 
         state = egress_state if egress else constants.STATE_INITIALIZING
         if egress_detail:
-            detail.append(egress_detail)
+            detail.append("egress:" + str(egress_detail))
 
         broken_sw = self._get_broken_switches(dplane_state)
         if broken_sw:
@@ -140,7 +141,8 @@ class FaucetStateCollector:
             state = constants.STATE_BROKEN
             detail.append("broken links: " + str(broken_links))
 
-        return state, "; ".join(detail)
+        dplane_state['dataplane_state'] = state
+        dplane_state['dataplane_state_detail'] = "; ".join(detail)
 
     @_check_active(state_name='dataplane_state')
     def get_dataplane_state(self):
@@ -152,41 +154,46 @@ class FaucetStateCollector:
         dplane_state = {}
         change_count = 0
         last_change = '#n/a'  # Clevery chosen to be sorted less than timestamp.
-        switch_state = dplane_state.setdefault('switch', {})
+
         switch_map = self._get_switch_map()
-        switch_state[TOPOLOGY_DP_MAP] = switch_map
+        dplane_state['switch'] = switch_map
         change_count += switch_map.get(SW_STATE_CHANGE_COUNT, 0)
         last_change = max(last_change, switch_map.get(SW_STATE_LAST_CHANGE, ''))
-        stack_state = dplane_state.setdefault('stack', {})
+
         stack_topo = self._get_stack_topo()
-        stack_state[TOPOLOGY_LINK_MAP] = stack_topo
+        dplane_state['stack'] = stack_topo
         change_count += stack_topo.get(LINKS_CHANGE_COUNT, 0)
         last_change = max(last_change, stack_topo.get(LINKS_LAST_CHANGE, ''))
+
         egress_state = dplane_state.setdefault('egress', {})
         self._fill_egress_state(egress_state)
-        state, detail = self._get_dataplane_detail(dplane_state)
         change_count += egress_state.get(EGRESS_CHANGE_COUNT, 0)
         last_change = max(last_change, egress_state.get(EGRESS_LAST_CHANGE, ''))
-        dplane_state['dataplane_state'] = state
-        dplane_state['dataplane_state_detail'] = detail
+
+        self._update_dataplane_detail(dplane_state)
         dplane_state['dataplane_state_change_count'] = change_count
         dplane_state['dataplane_state_last_change'] = last_change
+
         return dplane_state
 
     def _get_broken_switches(self, dplane_state):
         broken_sw = []
-        sw_map = dplane_state.get(TOPOLOGY_DP_MAP, {})
+        sw_map = dplane_state.get('switch', {}).get(TOPOLOGY_DP_MAP, {})
+        LOGGER.info('Anurag sw_map: %s', sw_map)
         for switch, state in sw_map.items():
+            LOGGER.info('Anurag state: %s', state)
             if state.get(SW_STATE) == constants.STATE_DOWN:
                 broken_sw.append(switch)
         return broken_sw
 
     def _get_broken_links(self, dplane_state):
         broken_links = []
-        link_map = dplane_state.get(TOPOLOGY_LINK_MAP, {})
+        link_map = dplane_state.get('stack', {}).get(TOPOLOGY_LINK_MAP, {})
         for link, link_obj in link_map.items():
+            LOGGER.info('Anurag link:%s', link_obj)
             if link_obj.get(LINK_STATE) == constants.STATE_DOWN:
                 broken_links.append(link)
+        LOGGER.info('Anurag broken links: %s', broken_links)
         return broken_links
 
     @_check_active(state_name='state')
@@ -269,6 +276,7 @@ class FaucetStateCollector:
     def _get_switch_map(self):
         """returns switch map for topology overview"""
         switch_map = {}
+        switch_map_obj = {}
         if not self.switch_states:
             return {}
         change_count = 0
@@ -285,9 +293,10 @@ class FaucetStateCollector:
                     switch_map[switch][SW_STATE] = constants.STATE_ACTIVE
                 else:
                     switch_map[switch][SW_STATE] = constants.STATE_DOWN
-            switch_map[SW_STATE_CHANGE_COUNT] = change_count
-            switch_map[SW_STATE_LAST_CHANGE] = last_change
-            return switch_map
+            switch_map_obj[TOPOLOGY_DP_MAP] = switch_map
+            switch_map_obj[SW_STATE_CHANGE_COUNT] = change_count
+            switch_map_obj[SW_STATE_LAST_CHANGE] = last_change
+            return switch_map_obj
 
     def _get_switch(self, switch_name, port):
         """lock protect get_switch_raw"""
@@ -398,6 +407,7 @@ class FaucetStateCollector:
     def _get_stack_topo(self):
         """Returns formatted topology object"""
         topo_map = {}
+        topo_map_obj = {}
         with self.lock:
             config_obj = self.faucet_config.get(DPS_CFG, {})
             dps = self.topo_state.get(TOPOLOGY_DPS, {})
@@ -420,9 +430,10 @@ class FaucetStateCollector:
                             link_obj[LINK_STATE] = constants.STATE_UP
                         else:
                             link_obj[LINK_STATE] = constants.STATE_DOWN
-            topo_map[LINKS_CHANGE_COUNT] = self.topo_state.get(LINKS_CHANGE_COUNT, 0)
-            topo_map[LINKS_LAST_CHANGE] = self.topo_state.get(LINKS_LAST_CHANGE)
-        return topo_map
+            topo_map_obj[TOPOLOGY_LINK_MAP] = topo_map
+            topo_map_obj[LINKS_CHANGE_COUNT] = self.topo_state.get(LINKS_CHANGE_COUNT, 0)
+            topo_map_obj[LINKS_LAST_CHANGE] = self.topo_state.get(LINKS_LAST_CHANGE)
+        return topo_map_obj
 
     def _is_link_up(self, key):
         """iterates through links in graph obj and returns if link with key is in graph"""
