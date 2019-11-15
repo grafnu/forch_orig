@@ -631,7 +631,7 @@ class FaucetStateCollector:
                 topo_state[TOPOLOGY_DPS] = dps
                 change = True
             if change:
-                topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
+                topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.get(TOPOLOGY_CHANGE_COUNT, 0) + 1
                 topo_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
 
     @staticmethod
