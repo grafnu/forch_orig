@@ -645,10 +645,10 @@ class FaucetStateCollector:
             if topo_state.get(TOPOLOGY_ROOT) != stack_root:
                 topo_state[TOPOLOGY_ROOT] = stack_root
                 change = True
-            if t_state.get(TOPOLOGY_GRAPH) != graph:
-                t_state[TOPOLOGY_GRAPH] = graph
-                t_state[LINKS_CHANGE_COUNT] = t_state.get(LINKS_CHANGE_COUNT, 0) + 1
-                t_state[LINKS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
+            if topo_state.get(TOPOLOGY_GRAPH) != graph:
+                topo_state[TOPOLOGY_GRAPH] = graph
+                topo_state[LINKS_CHANGE_COUNT] = topo_state.get(LINKS_CHANGE_COUNT, 0) + 1
+                topo_state[LINKS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 change = True
             if topo_state.get(TOPOLOGY_DPS) != dps:
                 topo_state[TOPOLOGY_DPS] = dps
