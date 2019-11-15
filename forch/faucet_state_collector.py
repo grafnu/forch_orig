@@ -106,15 +106,11 @@ class FaucetStateCollector:
     def get_dataplane_summary(self):
         """Get summary of dataplane"""
         dplane_state = self._get_dataplane_state()
-        state = dplane_state.get('dataplane_state')
-        detail = dplane_state.get('dataplane_state_detail')
-        count = dplane_state.get('dataplane_state_change_count')
-        last = dplane_state.get('dataplane_state_last_change')
         return {
-            'state': state,
-            'detail': detail,
-            'change_count': count,
-            'last_change': last
+            'state': dplane_state.get('dataplane_state'),
+            'detail': dplane_state.get('dataplane_state_detail'),
+            'change_count': dplane_state.get('dataplane_state_change_count'),
+            'last_change': dplane_state.get('dataplane_state_last_change')
         }
 
     def _update_dataplane_detail(self, dplane_state):
