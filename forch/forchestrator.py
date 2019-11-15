@@ -114,7 +114,7 @@ class Forchestrator:
 
         (stack_root, graph, dps) = self._faucet_events.as_stack_topo_change(event)
         if stack_root is not None:
-            LOGGER.debug('stack dataplane_state change root:%s', stack_root)
+            LOGGER.info('stack dataplane_state change root:%s', stack_root)
             self._faucet_collector.process_stack_topo_change(timestamp, stack_root, graph, dps)
 
         (name, port, state) = self._faucet_events.as_lag_state(event)
