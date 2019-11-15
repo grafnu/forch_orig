@@ -2,6 +2,7 @@
 
 out_dir=test_out/
 rm -rf $out_dir
+mkdir -p $out_dir
 
 export CONTROLLER_NAME=127.0.0.1
 
@@ -131,6 +132,7 @@ function test_stack {
 function restart_forch {
     echo Killing any old instances of forch...
     sudo kill `ps ax | fgrep forchestrator | fgrep -v fgrep | awk '{print $1}'`
+    sudo kill `ps ax | fgrep inst/forch-faucet-1/forch.log | fgrep -v fgrep | awk '{print $1}'`
 
     PYTHONPATH=faucet bin/forch inst/forch-faucet-1 2>&1 &
 
