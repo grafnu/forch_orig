@@ -13,6 +13,7 @@ import forch.constants as constants
 
 LOGGER = logging.getLogger('fstate')
 
+
 def dump_states(func):
     """Decorator to dump the current states after the states map is modified"""
 
@@ -30,6 +31,7 @@ def dump_states(func):
     return wrapped
 
 
+FAUCET_LACP_STATE_UP = 3
 SWITCH_CONNECTED = "CONNECTED"
 SWITCH_DOWN = "DOWN"
 
@@ -255,15 +257,16 @@ class FaucetStateCollector:
             for switch_data in self.switch_states.values():
                 switch_data.get(LEARNED_MACS, set()).clear()
 
-    def _fill_egress_state(self, dplane_state):
+    def _fill_egress_state(self, target_obj):
         """Return egress state obj"""
         with self.lock:
             egress_obj = self.topo_state.get('egress', {})
-            dplane_state[EGRESS_STATE] = egress_obj.get(EGRESS_STATE)
-            dplane_state[EGRESS_DETAIL] = egress_obj.get(EGRESS_DETAIL)
-            dplane_state[EGRESS_LAST_UPDATE] = egress_obj.get(EGRESS_LAST_UPDATE)
-            dplane_state[EGRESS_LAST_CHANGE] = egress_obj.get(EGRESS_LAST_CHANGE)
-            dplane_state[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
+            target_obj[EGRESS_STATE] = egress_obj.get(EGRESS_STATE)
+            target_obj[EGRESS_DETAIL] = egress_obj.get(EGRESS_DETAIL)
+            target_obj[EGRESS_LAST_UPDATE] = egress_obj.get(EGRESS_LAST_UPDATE)
+            target_obj[EGRESS_LAST_CHANGE] = egress_obj.get(EGRESS_LAST_CHANGE)
+            target_obj[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
+            target_obj[TOPOLOGY_ROOT] = self.topo_state.get(TOPOLOGY_ROOT)
 
     def _get_switch_map(self):
         """returns switch map for topology overview"""
@@ -312,8 +315,8 @@ class FaucetStateCollector:
             switch_map[SW_STATE] = constants.STATE_ACTIVE
         else:
             switch_map[SW_STATE] = constants.STATE_DOWN
-        switch_map[SW_STATE_LAST_CHANGE] = switch_states.get(SW_STATE_LAST_CHANGE)
-        switch_map[SW_STATE_CHANGE_COUNT] = switch_states.get(SW_STATE_CHANGE_COUNT)
+        switch_map[SW_STATE_LAST_CHANGE] = switch_states.get(SW_STATE_LAST_CHANGE, '')
+        switch_map[SW_STATE_CHANGE_COUNT] = switch_states.get(SW_STATE_CHANGE_COUNT, 0)
 
         # filling port information
         switch_port_map = switch_map.setdefault('ports', {})
@@ -552,21 +555,22 @@ class FaucetStateCollector:
             port_table[PORT_STATE_COUNT] = port_table.setdefault(PORT_STATE_COUNT, 0) + 1
 
     @dump_states
-    def process_lag_state(self, timestamp, name, port, state):
+    def process_lag_state(self, timestamp, name, port, lacp_state):
         """process lag change event"""
         with self.lock:
             egress_state = self.topo_state.setdefault('egress', {})
             old_egress_name = egress_state.get(EGRESS_DETAIL)
-            if old_egress_name and old_egress_name != name and not state:
+            lacp_up = lacp_state == FAUCET_LACP_STATE_UP
+            if old_egress_name and old_egress_name != name and not lacp_up:
                 return
 
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             old_state = egress_state.get(EGRESS_STATE)
-            new_state = constants.STATE_UP if state else constants.STATE_DOWN
+            new_state = constants.STATE_UP if lacp_up else constants.STATE_DOWN
             if new_state != old_state:
                 LOGGER.info('lag_state %s, %s -> %s', name, old_state, new_state)
                 egress_state[EGRESS_STATE] = new_state
-                egress_state[EGRESS_DETAIL] = name if state else None
+                egress_state[EGRESS_DETAIL] = name if lacp_up else None
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
 
@@ -634,24 +638,24 @@ class FaucetStateCollector:
     @dump_states
     def process_stack_topo_change(self, timestamp, stack_root, graph, dps):
         """Process stack topology change event"""
-        t_state = self.topo_state
+        topo_state = self.topo_state
         change = False
         with self.lock:
             LOGGER.info('stack_topo changed to root %s', stack_root)
-            if t_state.get(TOPOLOGY_ROOT) != stack_root:
-                t_state[TOPOLOGY_ROOT] = stack_root
+            if topo_state.get(TOPOLOGY_ROOT) != stack_root:
+                topo_state[TOPOLOGY_ROOT] = stack_root
                 change = True
             if t_state.get(TOPOLOGY_GRAPH) != graph:
                 t_state[TOPOLOGY_GRAPH] = graph
                 t_state[LINKS_CHANGE_COUNT] = t_state.get(LINKS_CHANGE_COUNT, 0) + 1
                 t_state[LINKS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 change = True
-            if t_state.get(TOPOLOGY_DPS) != dps:
-                t_state[TOPOLOGY_DPS] = dps
+            if topo_state.get(TOPOLOGY_DPS) != dps:
+                topo_state[TOPOLOGY_DPS] = dps
                 change = True
             if change:
-                t_state[TOPOLOGY_CHANGE_COUNT] = t_state.setdefault(TOPOLOGY_CHANGE_COUNT, 0) + 1
-                t_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
+                topo_state[TOPOLOGY_CHANGE_COUNT] = topo_state.get(TOPOLOGY_CHANGE_COUNT, 0) + 1
+                topo_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
 
     @staticmethod
     def get_endpoints_from_link(link_map):
