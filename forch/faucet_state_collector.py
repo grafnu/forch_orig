@@ -179,9 +179,7 @@ class FaucetStateCollector:
     def _get_broken_switches(self, dplane_state):
         broken_sw = []
         sw_map = dplane_state.get('switch', {}).get(TOPOLOGY_DP_MAP, {})
-        LOGGER.info('Anurag sw_map: %s', sw_map)
         for switch, state in sw_map.items():
-            LOGGER.info('Anurag state: %s', state)
             if state.get(SW_STATE) == constants.STATE_DOWN:
                 broken_sw.append(switch)
         return broken_sw
@@ -190,10 +188,8 @@ class FaucetStateCollector:
         broken_links = []
         link_map = dplane_state.get('stack', {}).get(TOPOLOGY_LINK_MAP, {})
         for link, link_obj in link_map.items():
-            LOGGER.info('Anurag link:%s', link_obj)
             if link_obj.get(LINK_STATE) == constants.STATE_DOWN:
                 broken_links.append(link)
-        LOGGER.info('Anurag broken links: %s', broken_links)
         return broken_links
 
     @_check_active(state_name='state')
