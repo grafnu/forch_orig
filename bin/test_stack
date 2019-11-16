@@ -41,8 +41,8 @@ function comp {
 }
 
 function test_stack {
-    desc=$1
-    echo Starting $desc stack test... | tee -a $TEST_RESULTS
+    desc=stack$1
+    echo Starting $desc test... | tee -a $TEST_RESULTS
 
     ip link  | fgrep t1sw | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/' | tee -a $TEST_RESULTS
 
@@ -54,7 +54,7 @@ function test_stack {
     echo $desc Waiting for network stability...
     sleep 30
 
-    desc_dir=$out_dir/stack-$desc
+    desc_dir=$out_dir/$desc
     t1sw1p6_pcap=$desc_dir/t1sw1-eth6.pcap
     t1sw1p28_pcap=$desc_dir/t1sw1-eth28.pcap
     t1sw2p28_pcap=$desc_dir/t1sw2-eth28.pcap
@@ -126,7 +126,7 @@ function test_stack {
 
     cat $nodes_dir/* | tee -a $TEST_RESULTS
 
-    echo Done with $desc stack test. | tee -a $TEST_RESULTS
+    echo Done with $desc test. | tee -a $TEST_RESULTS
 }
 
 function restart_forch {
@@ -174,6 +174,7 @@ function test_forch {
     fetch_forch dataplane_state
     fetch_forch switch_state '?switch=nz-kiwi-t2sw1&port=1' 1
     fetch_forch switch_state '?switch=nz-kiwi-t1sw2&port=10' 2
+    fetch_forch switch_state '?switch=nz-kiwi-t2sw3&port=1' 3
     fetch_forch cpn_state
     fetch_forch process_state
     fetch_forch list_hosts '' 1
@@ -205,6 +206,8 @@ function test_forch {
     api_result=$fout_dir/switch_state2.json
     jq '.switches_state_detail' $api_result | tee -a $TEST_RESULTS
     jq '.switches."nz-kiwi-t1sw2".switch_state' $api_result | tee -a $TEST_RESULTS
+    api_result=$fout_dir/switch_state3.json
+    jq '.switches."nz-kiwi-t2sw3".switch_state_change_count' $api_result | tee -a $TEST_RESULTS
 
     echo cpn_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/cpn_state.json
@@ -254,17 +257,17 @@ docker exec forch-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESU
 rm faucet/faucet/python_test.py
 
 echo Stacking Tests | tee -a $TEST_RESULTS
-test_stack stack-solid
+test_stack -solid
 test_forch -solid
 
 echo Bring t2sw3 down | tee -a $TEST_RESULTS
 sudo ovs-vsctl del-controller t2sw3
 ip addr add 240.0.0.253/24 dev lo
 ip link set t1sw1-eth9 down
-test_stack stack-linkd
+test_stack -linkd
 
 ip link set t1sw2-eth10 down
-test_stack stack-twod
+test_stack -twod
 echo sleep start `date`
 sleep 50.3231 &
 sleep 32
@@ -278,14 +281,14 @@ sudo ovs-vsctl set-controller t2sw3 $controllers
 ip addr add 240.0.0.1/24 dev lo
 ip link set t1sw1-eth6 down
 ip link set t1sw1-eth11 down
-test_stack stack-broken
-test_forch -broke
+test_stack -broken
+test_forch -broken
 
 ip addr del 240.0.0.1/24 dev lo
 ip link set t1sw1-eth10 down
 ip link set t1sw2-eth10 up
 ip link set t1sw1-eth6 up
-test_stack stack-restored
+test_stack -restored
 sleep 12
 test_forch -restored
 
