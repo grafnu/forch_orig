@@ -22,12 +22,12 @@ Done with stack-solid test.
 Running forch-solid tests
 system_state
 "nz-kiwi"
-39
+58
 "http://localhost.n:9020"
 "split"
 dataplane_state
 "up"
-22
+41
 "active"
 "active"
 switch_state
