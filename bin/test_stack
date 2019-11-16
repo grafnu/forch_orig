@@ -45,8 +45,7 @@ function test_stack {
     echo Starting $desc test... | tee -a $TEST_RESULTS
 
     # Some race-condition with links going down being properly recognized.
-    sleep 1
-
+    ip link | fgrep sw
     ip link | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/' | tee -a $TEST_RESULTS
 
     # Some versions of OVS are somewhat unstable, so restart for consistency.
