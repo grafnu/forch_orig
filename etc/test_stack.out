@@ -283,18 +283,18 @@ Running forch-reset tests
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
-"broken"
-"egress:nz-kiwi-t1sw1; broken switches: ['nz-kiwi-t2sw3']; broken links: ['nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50', 'nz-kiwi-t1sw2:11@nz-kiwi-t2sw3:52']"
+"up"
+"egress:nz-kiwi-t1sw1"
 67
 "active"
 "active"
 @switch_state
 40
-"nz-kiwi-t1sw2"
+"nz-kiwi-t1sw1"
 9
 6
 2352
-"Switches in broken state: nz-kiwi-t2sw3"
+null
 "active"
 4
 @cpn_state
@@ -314,9 +314,9 @@ null
 "http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 @host_path
 "192.168.1.2"
-"nz-kiwi-t1sw2"
-6
-"192.168.1.1"
-"nz-kiwi-t1sw2"
 null
-3
+null
+"192.168.1.1"
+"nz-kiwi-t1sw1"
+28
+2
