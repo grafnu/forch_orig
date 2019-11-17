@@ -9,7 +9,7 @@ export CONTROLLER_NAME=127.0.0.1
 TEST_RESULTS=${TEST_RESULTS:-$out_dir/test_stack.out}
 GOLDEN_RESULTS=etc/test_stack.out
 TCPSUDO="sudo tcpdump"
-controllers=`sudo ovs-vsctl get-controller t1sw2`
+controllers=`sudo ovs-vsctl get-controller t1sw1`
 
 local=
 if [ "$1" == local ]; then
@@ -70,9 +70,9 @@ function test_stack {
     echo Starting $desc test... | tee -a $TEST_RESULTS
 
     for bridge in $(sudo ovs-vsctl list-br); do
-        controllers=`sudo ovs-vsctl get-controller $bridge | fgrep tcp | wc -l`
-        if [ $controllers != 2 ]; then
-            echo Switch $bridge down
+        cont_count=`sudo ovs-vsctl get-controller $bridge | wc -l`
+        if [ $cont_count != 2 ]; then
+            echo Switch $bridge down: (sudo ovs-vsctl get-controller $bridge)
         fi
     done
 
@@ -305,7 +305,7 @@ sudo ip addr add 240.0.0.253/24 dev lo
 sudo ip link set t1sw1-eth9 down
 test_stack -linkd
 
-echo %%% t1ss1-eth10 down | tee -a $TEST_RESULTS
+echo %%% t1sw1-eth10 down | tee -a $TEST_RESULTS
 sudo ip link set t1sw2-eth10 down
 test_stack -twod
 sleep 50.3231 &

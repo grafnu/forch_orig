@@ -83,7 +83,7 @@ forch-faux-3: ping -c 10 192.168.1.0 0
 forch-faux-3: ping -c 10 192.168.1.1 0
 forch-faux-3: ping -c 10 192.168.1.2 0
 Done with stack-linkd test.
-%%% t1ss1-eth10 down
+%%% t1sw1-eth10 down
 Starting stack-twod test...
 (UNKNOWN) [192.168.1.1] 23 (?) : Connection timed out
 (UNKNOWN) [192.168.1.1] 443 (?) : Connection refused
