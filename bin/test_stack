@@ -72,7 +72,7 @@ function test_stack {
     for bridge in $(sudo ovs-vsctl list-br); do
         cont_count=`sudo ovs-vsctl get-controller $bridge | wc -l`
         if [ $cont_count != 2 ]; then
-            echo Switch $bridge down: (sudo ovs-vsctl get-controller $bridge)
+            echo Switch $bridge down: $(sudo ovs-vsctl get-controller $bridge)
         fi
     done
 
