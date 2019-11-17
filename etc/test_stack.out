@@ -22,13 +22,13 @@ Done with stack-solid test.
 Running forch-solid tests
 @system_state
 "nz-kiwi"
-58
+39
 "http://localhost.n:9020"
 "split"
 @dataplane_state
 "up"
 "egress:nz-kiwi-t1sw1"
-41
+22
 "active"
 "active"
 @switch_state
@@ -106,13 +106,13 @@ Done with stack-twod test.
 Running forch-twod tests
 @system_state
 "nz-kiwi"
-104
+85
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
 "broken"
 "egress:nz-kiwi-t1sw1; broken switches: ['nz-kiwi-t2sw3']; broken links: ['nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50', 'nz-kiwi-t1sw2:10@nz-kiwi-t2sw2:52', 'nz-kiwi-t1sw2:11@nz-kiwi-t2sw3:52']"
-69
+50
 "active"
 "active"
 @switch_state
@@ -170,13 +170,13 @@ Done with stack-broken test.
 Running forch-broken tests
 @system_state
 "nz-kiwi"
-125
+113
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
 "broken"
 "egress:nz-kiwi-t1sw1; broken links: ['nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6', 'nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50', 'nz-kiwi-t1sw2:10@nz-kiwi-t2sw2:52']"
-88
+67
 "active"
 "down"
 @switch_state
@@ -234,24 +234,24 @@ Done with stack-restored test.
 Running forch-restored tests
 @system_state
 "nz-kiwi"
-185
+140
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
 "broken"
 "egress:nz-kiwi-t1sw1; broken links: ['nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw1:10@nz-kiwi-t2sw2:50', 'nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50']"
-119
+84
 "active"
 "active"
 @switch_state
-63
+53
 "nz-kiwi-t1sw2"
 9
 6
 2352
 null
 "active"
-11
+9
 @cpn_state
 3
 "127.0.0.1"
@@ -279,24 +279,24 @@ null
 Running forch-reset tests
 @system_state
 "nz-kiwi"
-110
+165
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
 "up"
 "egress:nz-kiwi-t1sw1"
-67
+99
 "active"
 "active"
 @switch_state
-40
+63
 "nz-kiwi-t1sw1"
 9
-6
+null
 2352
 null
 "active"
-4
+11
 @cpn_state
 3
 "127.0.0.1"
@@ -314,8 +314,8 @@ null
 "http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 @host_path
 "192.168.1.2"
-null
-null
+"nz-kiwi-t1sw1"
+10
 "192.168.1.1"
 "nz-kiwi-t1sw1"
 28
