@@ -37,7 +37,6 @@ cap_length=$((cap_base + ping_count + num_pairs * 2))
 faucet_log=inst/forch-faucet-1/faucet.log
 
 function reset_stack {
-    sudo ip link set t1sw1-eth9 up
     sudo ovs-vsctl set-controller t2sw3 $controllers
     sudo ip addr del 240.0.0.253/24 dev lo
     sudo ip addr del 240.0.0.1/24 dev lo
@@ -231,6 +230,7 @@ function test_forch {
     jq '.egress.egress_state' $api_result | tee -a $TEST_RESULT
     jq '.egress.egress_state_detail' $api_result | tee -a $TEST_RESULT
     jq '.egress.egress_state_change_count' $api_result | tee -a $TEST_RESULT
+    jq '.egress.active_root' $api_result | tee -a $TEST_RESULT
 
     echo @switch_state | tee -a $TEST_RESULTS
     api_result=$fout_dir/switch_state1.json
@@ -276,6 +276,7 @@ function test_forch {
     jq .src_ip $api_result | tee -a $TEST_RESULTS
     jq .path[1].switch $api_result | tee -a $TEST_RESULTS
     jq .path[1].egress $api_result | tee -a $TEST_RESULTS
+    jq '.path | length' $api_result | tee -a $TEST_RESULTS
 }
 
 reset_stack
@@ -323,14 +324,14 @@ sudo ip addr add 240.0.0.2/24 dev lo
 sudo ip link set t1sw1-eth10 down
 sudo ip link set t1sw2-eth10 up
 sudo ip link set t1sw1-eth6 up
-test_stack -restored
-sleep 12
 test_forch -restored
+
+echo %%% reset stack | tee -a $TEST_RESULTS
+reset_stack
+test_forch -reset
 
 echo Killing forch...
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
-
-reset_stack
 
 echo Comparing $GOLDEN_RESULTS with $TEST_RESULTS
 diff -b $GOLDEN_RESULTS $TEST_RESULTS
