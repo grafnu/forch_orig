@@ -36,6 +36,18 @@ cap_length=$((cap_base + ping_count + num_pairs * 2))
 
 faucet_log=inst/forch-faucet-1/faucet.log
 
+function diagnose_stack {
+    echo Stack health
+    for bridge in $(sudo ovs-vsctl list-br); do
+        cont_count=`sudo ovs-vsctl get-controller $bridge | wc -l`
+        if [ $cont_count != 2 ]; then
+            echo Switch $bridge config: $(sudo ovs-vsctl get-controller $bridge)
+        fi
+    done
+
+    ip link | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/'
+}
+
 function reset_stack {
     sudo ovs-vsctl set-controller t2sw3 $controllers
     sudo ip addr del 240.0.0.253/24 dev lo
@@ -46,6 +58,8 @@ function reset_stack {
     sudo ip link set t1sw1-eth10 up
     sudo ip link set t1sw1-eth11 up
     sudo ip link set t1sw2-eth10 up
+
+    diagnose_stack
 }
 
 function test_pair {
@@ -69,14 +83,7 @@ function test_stack {
     desc=stack$1
     echo Starting $desc test... | tee -a $TEST_RESULTS
 
-    for bridge in $(sudo ovs-vsctl list-br); do
-        cont_count=`sudo ovs-vsctl get-controller $bridge | wc -l`
-        if [ $cont_count != 2 ]; then
-            echo Switch $bridge down: $(sudo ovs-vsctl get-controller $bridge)
-        fi
-    done
-
-    ip link | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/'
+    diagnose_stack
 
     # Some versions of OVS are somewhat unstable, so restart for consistency.
     echo $desc Restarting ovs...
