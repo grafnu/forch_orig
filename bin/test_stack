@@ -70,7 +70,8 @@ function test_stack {
     echo Starting $desc test... | tee -a $TEST_RESULTS
 
     for bridge in $(sudo ovs-vsctl list-br); do
-        if ! sudo ovs-vsctl get-controller $bridge | fgrep tcp; then
+        controllers=`sudo ovs-vsctl get-controller $bridge | fgrep tcp | wc -l`
+        if [ $controllers != 2 ]; then
             echo Switch $bridge down
         fi
     done
