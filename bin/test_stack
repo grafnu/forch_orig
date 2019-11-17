@@ -70,9 +70,13 @@ function test_stack {
     desc=stack$1
     echo Starting $desc test... | tee -a $TEST_RESULTS
 
-    # Some race-condition with links going down being properly recognized.
-    ip link | fgrep sw
-    ip link | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/' | tee -a $TEST_RESULTS
+    for bridge in $(sudo ovs-vsctl list-br); do
+        if ! sudo ovs-vsctl get-controller $bridge | fgrep tcp; then
+            echo Switch $bridge down
+        fi
+    done
+
+    ip link | fgrep M-DOWN | sed -E 's/.*:(.*):.*/\1/'
 
     # Some versions of OVS are somewhat unstable, so restart for consistency.
     echo $desc Restarting ovs...
