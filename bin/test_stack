@@ -295,7 +295,7 @@ echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.p
 docker exec forch-faucet-1 python -m faucet.python_test 2>&1 | tee -a $TEST_RESULTS
 rm faucet/faucet/python_test.py
 
-echo Stacking Tests | tee -a $TEST_RESULTS
+echo %%% initial solid state | tee -a $TEST_RESULTS
 test_stack -solid
 test_forch -solid
 
@@ -325,10 +325,12 @@ sudo ip addr add 240.0.0.2/24 dev lo
 sudo ip link set t1sw1-eth10 down
 sudo ip link set t1sw2-eth10 up
 sudo ip link set t1sw1-eth6 up
+test_stack -restored
 test_forch -restored
 
 echo %%% reset stack | tee -a $TEST_RESULTS
 reset_stack
+sleep 15
 test_forch -reset
 
 echo Killing forch...
