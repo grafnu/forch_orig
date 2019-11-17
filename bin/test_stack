@@ -9,11 +9,24 @@ export CONTROLLER_NAME=127.0.0.1
 TEST_RESULTS=${TEST_RESULTS:-$out_dir/test_stack.out}
 GOLDEN_RESULTS=etc/test_stack.out
 TCPSUDO="sudo tcpdump"
+controllers=`sudo ovs-vsctl get-controller t1sw2`
 
 local=
 if [ "$1" == local ]; then
     local=y
     shift
+fi
+
+bridges=$(sudo ovs-vsctl show | fgrep Bridge | wc -l)
+if [ $bridges != 6 ]; then
+    echo System misconfiguration: found $bridges bridges, expected 6.
+    exit 2
+fi
+
+containers=$(docker ps  | fgrep forch- | wc -l)
+if [ $containers != 7 ]; then
+    echo System misconfiguration: found $containers containers, expected 7.
+    exit 2
 fi
 
 cap_base=10
@@ -22,6 +35,19 @@ num_pairs=12
 cap_length=$((cap_base + ping_count + num_pairs * 2))
 
 faucet_log=inst/forch-faucet-1/faucet.log
+
+function reset_stack {
+    sudo ip link set t1sw1-eth9 up
+    sudo ovs-vsctl set-controller t2sw3 $controllers
+    sudo ip addr del 240.0.0.253/24 dev lo
+    sudo ip addr del 240.0.0.1/24 dev lo
+    sudo ip addr del 240.0.0.2/24 dev lo
+    sudo ip link set t1sw1-eth6 up
+    sudo ip link set t1sw1-eth9 up
+    sudo ip link set t1sw1-eth10 up
+    sudo ip link set t1sw1-eth11 up
+    sudo ip link set t1sw2-eth10 up
+}
 
 function test_pair {
     src=$1
@@ -248,6 +274,8 @@ function test_forch {
     jq .path[1].egress $api_result | tee -a $TEST_RESULTS
 }
 
+reset_stack
+
 if [ -n "$local" ]; then
     echo Restarting Faucet | tee -a $TEST_RESULTS
     docker restart forch-faucet-1
@@ -255,7 +283,6 @@ if [ -n "$local" ]; then
 fi
 
 restart_forch
-controllers=`sudo ovs-vsctl get-controller t1sw2`
 
 # Test that the 'local' mode of faucet is working properly.
 echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.py
@@ -299,9 +326,7 @@ test_forch -restored
 echo Killing forch...
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
-sudo ip addr del 240.0.0.253/24 dev lo || true
-sudo ip addr del 240.0.0.1/24 dev lo || true
-sudo ip addr del 240.0.0.2/24 dev lo || true
+reset_stack
 
 echo Comparing $GOLDEN_RESULTS with $TEST_RESULTS
 diff -b $GOLDEN_RESULTS $TEST_RESULTS
