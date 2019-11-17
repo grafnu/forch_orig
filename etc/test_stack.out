@@ -170,24 +170,24 @@ Done with stack-broken test.
 Running forch-broken tests
 @system_state
 "nz-kiwi"
-147
+127
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
 "broken"
 "egress:nz-kiwi-t1sw1; broken links: ['nz-kiwi-t1sw1:6@nz-kiwi-t1sw2:6', 'nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50', 'nz-kiwi-t1sw2:10@nz-kiwi-t2sw2:52']"
-91
+81
 "active"
 "down"
 @switch_state
-53
+43
 null
 null
 null
 2352
 null
 "active"
-9
+7
 @cpn_state
 3
 "127.0.0.1"
@@ -234,24 +234,24 @@ Done with stack-restored test.
 Running forch-restored tests
 @system_state
 "nz-kiwi"
-174
+154
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
 "broken"
 "egress:nz-kiwi-t1sw1; broken links: ['nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw1:10@nz-kiwi-t2sw2:50', 'nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50']"
-108
+98
 "active"
 "active"
 @switch_state
-63
+53
 "nz-kiwi-t1sw2"
 9
 6
 2352
 null
 "active"
-11
+9
 @cpn_state
 3
 "127.0.0.1"
@@ -279,24 +279,24 @@ null
 Running forch-reset tests
 @system_state
 "nz-kiwi"
-199
+157
 "http://localhost.n:9020"
 "broken"
 @dataplane_state
 "up"
 "egress:nz-kiwi-t1sw1"
-123
+101
 "active"
 "active"
 @switch_state
-73
+53
 "nz-kiwi-t1sw1"
 9
 null
 2352
 null
 "active"
-13
+9
 @cpn_state
 3
 "127.0.0.1"

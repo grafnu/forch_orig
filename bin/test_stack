@@ -344,14 +344,13 @@ echo Killing forch...
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
 echo
-echo Begin test results
+echo '########## Begin complete test results ##########'
 cat $TEST_RESULTS
-echo End test_results
+echo '########## End complete test_results ##########'
 echo
 echo Comparing $GOLDEN_RESULTS with $TEST_RESULTS
 diff -b $GOLDEN_RESULTS $TEST_RESULTS
 result=$?
 
 echo Result diff returned $result
-# TODO: Fix the test diff and then enable this exit code.
-#exit $result
+exit $result
