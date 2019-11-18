@@ -118,14 +118,11 @@ class FaucetStateCollector:
         }
 
     def _update_dataplane_detail(self, dplane_state):
-        state = constants.STATE_HEALTHY
         detail = []
+
         egress = dplane_state.get('egress', {})
         egress_state = egress.get(EGRESS_STATE)
         egress_detail = egress.get(EGRESS_DETAIL)
-
-        # TODO: Expose last update time up the chain.
-        _ = egress.get(EGRESS_LAST_UPDATE)
 
         state = egress_state if egress else constants.STATE_INITIALIZING
         if egress_detail:
@@ -188,7 +185,7 @@ class FaucetStateCollector:
         broken_links = []
         link_map = dplane_state.get('stack', {}).get(TOPOLOGY_LINK_MAP, {})
         for link, link_obj in link_map.items():
-            if link_obj.get(LINK_STATE) == constants.STATE_DOWN:
+            if link_obj.get(LINK_STATE) not in { constants.STATE_ACTIVE, constants.STATE_UP }:
                 broken_links.append(link)
         return broken_links
 
