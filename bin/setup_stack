@@ -87,10 +87,9 @@ function add_oeth {
 
 ###########################################################
 
-echo Configuring mode $mode...
+bin/net_clean
 
-docker kill forch-faucet-1 || true
-docker kill forch-faucet-corp || true
+echo Configuring mode $mode...
 
 add_br corp  0x111 6683
 add_br t1sw1 177 6001 7001
@@ -188,6 +187,7 @@ docker exec forch-faux-3 ping -q -c 10 192.168.1.1 &
 echo Waiting for warm-ups to complete...
 wait
 
+echo Connection sanity check...
 docker exec forch-faux-0 ping -q -c 1 192.168.1.2
 docker exec forch-faux-1 ping -q -c 1 192.168.1.3
 docker exec forch-faux-2 ping -q -c 1 192.168.1.1
