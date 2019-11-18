@@ -185,7 +185,7 @@ class FaucetStateCollector:
         broken_links = []
         link_map = dplane_state.get('stack', {}).get(TOPOLOGY_LINK_MAP, {})
         for link, link_obj in link_map.items():
-            if link_obj.get(LINK_STATE) not in { constants.STATE_ACTIVE, constants.STATE_UP }:
+            if link_obj.get(LINK_STATE) not in {constants.STATE_ACTIVE, constants.STATE_UP}:
                 broken_links.append(link)
         return broken_links
 
@@ -417,13 +417,13 @@ class FaucetStateCollector:
     def _get_link_state(self, local_dp, local_port, peer_dp, peer_port):
         dps = self.topo_state.get(TOPOLOGY_DPS, {})
         if (dps.get(local_dp, {}).get('root_hop_port') == int(local_port) or
-            dps.get(peer_dp, {}).get('root_hop_port') == int(peer_port)):
+                dps.get(peer_dp, {}).get('root_hop_port') == int(peer_port)):
             return constants.STATE_ACTIVE
         dp_state = self.topo_state.setdefault(LINKS_STATE, {}).setdefault(local_dp, {})
         port_state = dp_state.setdefault(int(local_port), {}).get('state')
         if port_state == FAUCET_STACK_STATE_UP:
             return constants.STATE_UP
-        elif port_state == FAUCET_STACK_STATE_BAD:
+        if port_state == FAUCET_STACK_STATE_BAD:
             return constants.STATE_BROKEN
         return constants.STATE_DOWN
 
