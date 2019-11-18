@@ -1,3 +1,5 @@
+# Utility functions for working with the stacked setup.
+
 function add_br {
     bname=$1
     dpid=$(printf %016x $2)
