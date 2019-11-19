@@ -50,10 +50,6 @@ class Forchestrator:
         LOGGER.info('Attaching event channel...')
         self._faucet_events = forch.faucet_event_client.FaucetEventClient(
             self._config.get('event_client', {}))
-        try:
-            self._faucet_events.connect()
-        except ConnectionError as e:
-            LOGGER.error("Couldn't connect to faucet: %s", e)
         self._local_collector.initialize()
         self._cpn_collector.initialize()
         LOGGER.info('Using peer controller %s', self._get_peer_controller_url())
@@ -69,7 +65,7 @@ class Forchestrator:
         try:
             while self._handle_faucet_events():
                 while not self._faucet_events.event_socket_connected:
-                    LOGGER.info('Attempting to reconnect...')
+                    LOGGER.info('Attempting connection...')
                     # TODO: Figure out reasonable time delay before each reconnection attempt
                     time.sleep(1)
                     try:
