@@ -31,7 +31,7 @@ def dump_states(func):
     return wrapped
 
 
-RESTORE_METHODS = set()
+RESTORE_METHODS = {}
 
 
 FAUCET_LACP_STATE_UP = 3
@@ -110,45 +110,44 @@ class FaucetStateCollector:
         return check_active
 
     # pylint: disable=no-self-argument
-    def _register_restore_methods(func):
-        RESTORE_METHODS.add(func)
-        return func
+    def _register_restore_method(metric_name):
+        def register(func):
+            RESTORE_METHODS[metric_name] = func
+            return func
+        return register
 
-    @_register_restore_methods
-    def _restore_port_status(self, metrics, timestamp):
+    @_register_restore_method(metric_name='port_status')
+    def _restore_port_status(self, metric, timestamp):
         """Restore port status"""
-        if 'port_status' not in metrics:
-            return
-        for sample in metrics['port_status'].samples:
+        for sample in metric.samples:
             switch = sample.labels['dp_name']
             port = int(sample.labels['port'])
             active = bool(sample.value)
             self.process_port_state(timestamp, switch, port, active)
 
-    @_register_restore_methods
-    def _restore_lacp_state(self, metrics, timestamp):
+    @_register_restore_method(metric_name='port_lacp_state')
+    def _restore_lacp_state(self, metric, timestamp):
         """Restore port lacp state"""
-        if 'port_lacp_state' in metrics:
-            for sample in metrics['port_lacp_state'].samples:
-                switch = sample.labels['dp_name']
-                port = int(sample.labels['port'])
-                lacp_state = int(sample.value)
-                self.process_lag_state(timestamp, switch, port, lacp_state)
+        for sample in metric.samples:
+            switch = sample.labels['dp_name']
+            port = int(sample.labels['port'])
+            lacp_state = int(sample.value)
+            self.process_lag_state(timestamp, switch, port, lacp_state)
 
-    @_register_restore_methods
-    def _restore_dp_status(self, metrics, timestamp):
+    @_register_restore_method(metric_name='dp_status')
+    def _restore_dp_status(self, metric, timestamp):
         """restore dp status"""
-        if 'dp_status' in metrics:
-            for sample in metrics['dp_status'].samples:
-                switch = sample.labels['dp_name']
-                connected = bool(sample.value)
-                self.process_dp_change(timestamp, switch, connected)
+        for sample in metric.samples:
+            switch = sample.labels['dp_name']
+            connected = bool(sample.value)
+            self.process_dp_change(timestamp, switch, connected)
 
     def restore_states_from_metrics(self, metrics):
         """Restore internal states from prometheus metrics"""
         current_time = time.time()
-        for restore_method in RESTORE_METHODS:
-            restore_method(self, metrics, current_time)
+        for metric_name, restore_method in RESTORE_METHODS.items():
+            if metric_name in metrics:
+                restore_method(self, metrics[metric_name], current_time)
 
     @_check_active(state_name='state')
     def get_dataplane_summary(self):

@@ -17,18 +17,19 @@ class VarzStateCollector:
         metric_map = {}
 
         response = requests.get(self._endpoint)
-        if response.status_code == requests.status_codes.codes.ok: # pylint: disable=no-member
+        if response.status_code == requests.status_codes.codes.ok:  # pylint: disable=no-member
             content = response.content.decode('utf-8', 'strict')
             metrics = prometheus_client.parser.text_string_to_metric_families(content)
-            for metric in metrics:
-                if metric.name not in self._target_metrics:
-                    continue
+            for metric in [m for m in metrics if m.name in self._target_metrics]:
                 metric_map[metric.name] = metric
 
         return metric_map
 
     def get_metrics(self, retries=3):
         """Get a list of target metrics"""
+        if not self._endpoint:
+            LOGGER.warning("Endpoint is not defined")
+            return None
         for retry in range(retries):
             try:
                 return self._get_metrics()

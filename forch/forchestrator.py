@@ -22,6 +22,8 @@ LOGGER = logging.getLogger('forch')
 
 _FCONFIG_DEFAULT = 'forch.yaml'
 _DEFAULT_PORT = 9019
+_PROMETHEUS_host = '127.0.0.1'
+_TARGET_METRICS = {'port_status', 'port_lacp_state', 'dp_status'}
 
 class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
@@ -49,10 +51,13 @@ class Forchestrator:
             self._config.get('process'), self.cleanup, self.handle_active_state)
         self._cpn_collector = CPNStateCollector()
 
-        prom_port = os.getenv('PROMETHEUS_PORT', 9302)
-        prom_url = f"http://127.0.0.1:{prom_port}"
-        target_metrics = {'port_status', 'port_lacp_state', 'dp_status'}
-        self._varz_collector = VarzStateCollector(prom_url, target_metrics)
+        prom_url = None
+        prom_port = os.getenv('PROMETHEUS_PORT', None)
+        if not prom_port:
+            LOGGER.warning('Prometheus port is not set')
+        else:
+            prom_url = f"http://127.0.0.1:{prom_port}"
+        self._varz_collector = VarzStateCollector(prom_url, _TARGET_METRICS)
 
         self._restore_states()
 
@@ -73,6 +78,8 @@ class Forchestrator:
         metrics = self._varz_collector.get_metrics()
         if metrics:
             self._faucet_collector.restore_states_from_metrics(metrics)
+        else:
+            LOGGER.warning('Cannot find target metrics')
 
     def main_loop(self):
         """Main event processing loop"""
@@ -82,8 +89,8 @@ class Forchestrator:
                 while not self._faucet_events.event_socket_connected:
                     LOGGER.info('Attempting to reconnect...')
                     # TODO: Figure out reasonable time delay before each reconnection attempt
-                    self._restore_states()
                     time.sleep(1)
+                    self._restore_states()
                     self._faucet_events.connect()
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
