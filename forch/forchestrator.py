@@ -16,6 +16,7 @@ import forch.http_server
 from forch.cpn_state_collector import CPNStateCollector
 from forch.faucet_state_collector import FaucetStateCollector
 from forch.local_state_collector import LocalStateCollector
+from forch.varz_state_collector import VarzStateCollector
 
 LOGGER = logging.getLogger('forch')
 
@@ -34,6 +35,7 @@ class Forchestrator:
         self._start_time = datetime.fromtimestamp(time.time()).isoformat()
 
         self._faucet_collector = None
+        self._varz_collector = None
         self._local_collector = None
         self._cpn_collector = None
         self._initialized = False
@@ -46,6 +48,13 @@ class Forchestrator:
         self._local_collector = LocalStateCollector(
             self._config.get('process'), self.cleanup, self.handle_active_state)
         self._cpn_collector = CPNStateCollector()
+
+        prom_port = os.getenv('PROMETHEUS_PORT', 9302)
+        prom_url = f"http://127.0.0.1:{prom_port}"
+        target_metrics = {'port_status', 'port_lacp_state', 'dp_status'}
+        self._varz_collector = VarzStateCollector(prom_url, target_metrics)
+
+        self._restore_states()
 
         LOGGER.info('Attaching event channel...')
         self._faucet_events = forch.faucet_event_client.FaucetEventClient(
@@ -60,6 +69,11 @@ class Forchestrator:
         """If forch is initialized or not"""
         return self._initialized
 
+    def _restore_states(self):
+        metrics = self._varz_collector.get_metrics()
+        if metrics:
+            self._faucet_collector.restore_states_from_metrics(metrics)
+
     def main_loop(self):
         """Main event processing loop"""
         LOGGER.info('Entering main event loop...')
@@ -68,6 +82,7 @@ class Forchestrator:
                 while not self._faucet_events.event_socket_connected:
                     LOGGER.info('Attempting to reconnect...')
                     # TODO: Figure out reasonable time delay before each reconnection attempt
+                    self._restore_states()
                     time.sleep(1)
                     self._faucet_events.connect()
         except KeyboardInterrupt:
