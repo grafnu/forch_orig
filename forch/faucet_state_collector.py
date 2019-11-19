@@ -8,7 +8,7 @@ import time
 import threading
 from threading import RLock
 
-from faucet.constants import \
+from forch.constants import \
     STATE_INACTIVE, STATE_HEALTHY, STATE_UP, STATE_INITIALIZING, \
     STATE_BROKEN, STATE_DOWN, STATE_ACTIVE
 
