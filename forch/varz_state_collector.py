@@ -9,6 +9,7 @@ LOGGER = logging.getLogger('vstate')
 
 
 class VarzStateCollector:
+    """Collecting varz"""
     def __init__(self, endpoint, target_metrics):
         self._endpoint = endpoint
         self._target_metrics = target_metrics
@@ -22,18 +23,20 @@ class VarzStateCollector:
             metrics = prometheus_client.parser.text_string_to_metric_families(content)
             for metric in [m for m in metrics if m.name in self._target_metrics]:
                 metric_map[metric.name] = metric
+        else:
+            raise Exception(f"Error response code: {response.status_code}")
 
         return metric_map
 
     def get_metrics(self, retries=3):
         """Get a list of target metrics"""
-        if not self._endpoint:
-            LOGGER.warning("Endpoint is not defined")
-            return None
         for retry in range(retries):
             try:
-                return self._get_metrics()
+                metrics = self._get_metrics()
+                if metrics:
+                    return metrics
+                LOGGER.error("Metrics are empty, retry: %d", retry)
             except Exception as e:
-                LOGGER.error('Cannot retrieve prometheus metrics: %s, retry: %d', e, retry)
+                LOGGER.error("Cannot retrieve prometheus metrics: %s, retry: %d", e, retry)
                 time.sleep(1)
-        return None
+        raise Exception(f"Cannot retrieve prometheus metrics after {retries} retries")

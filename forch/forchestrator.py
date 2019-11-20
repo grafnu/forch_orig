@@ -22,7 +22,7 @@ LOGGER = logging.getLogger('forch')
 
 _FCONFIG_DEFAULT = 'forch.yaml'
 _DEFAULT_PORT = 9019
-_PROMETHEUS_host = '127.0.0.1'
+_PROMETHEUS_HOST = '127.0.0.1'
 _TARGET_METRICS = {'port_status', 'port_lacp_state', 'dp_status'}
 
 class Forchestrator:
@@ -43,6 +43,7 @@ class Forchestrator:
         self._initialized = False
         self._is_active = False
         self._active_state_lock = threading.Lock()
+        self._connection_state_lock = threading.Lock()
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -51,19 +52,15 @@ class Forchestrator:
             self._config.get('process'), self.cleanup, self.handle_active_state)
         self._cpn_collector = CPNStateCollector()
 
-        prom_url = None
-        prom_port = os.getenv('PROMETHEUS_PORT', None)
+        prom_port = os.getenv('PROMETHEUS_PORT')
         if not prom_port:
-            LOGGER.warning('Prometheus port is not set')
-        else:
-            prom_url = f"http://127.0.0.1:{prom_port}"
+            raise Exception("PROMETHEUS_PORT is not set")
+        prom_url = f"http://{_PROMETHEUS_HOST}:{prom_port}"
         self._varz_collector = VarzStateCollector(prom_url, _TARGET_METRICS)
-
-        self._restore_states()
 
         LOGGER.info('Attaching event channel...')
         self._faucet_events = forch.faucet_event_client.FaucetEventClient(
-            self._config.get('event_client', {}))
+            self._config.get('event_client', {}), self.handle_connection_state)
         self._local_collector.initialize()
         self._cpn_collector.initialize()
         LOGGER.info('Using peer controller %s', self._get_peer_controller_url())
@@ -75,10 +72,8 @@ class Forchestrator:
 
     def _restore_states(self):
         metrics = self._varz_collector.get_metrics()
-        if metrics:
-            self._faucet_collector.restore_states_from_metrics(metrics)
-        else:
-            LOGGER.warning('Cannot find target metrics')
+        self._faucet_collector.restore_states_from_metrics(metrics)
+        print(self._faucet_collector.switch_states)
 
     def main_loop(self):
         """Main event processing loop"""
@@ -89,11 +84,12 @@ class Forchestrator:
                     LOGGER.info('Attempting connection...')
                     # TODO: Figure out reasonable time delay before each reconnection attempt
                     time.sleep(1)
-                    self._restore_states()
                     try:
+                        self._restore_states()
                         self._faucet_events.connect()
                     except ConnectionError as e:
-                        LOGGER.error("Couldn't connect to faucet: %s", e)
+                        LOGGER.error("Cannot restore states or connect to faucet: %s", e)
+                self._faucet_collector.set_connected(True)
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
             self._faucet_events.disconnect()
@@ -324,6 +320,10 @@ class Forchestrator:
         with self._active_state_lock:
             self._is_active = is_master
         self._faucet_collector.set_active(is_master)
+
+    def handle_connection_state(self, is_connected):
+        """Handler for faucet event client to handle connection state"""
+        self._faucet_collector.set_connected(is_connected)
 
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
