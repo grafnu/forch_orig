@@ -23,6 +23,7 @@ LOGGER = logging.getLogger('forch')
 _FCONFIG_DEFAULT = 'forch.yaml'
 _DEFAULT_PORT = 9019
 _PROMETHEUS_HOST = '127.0.0.1'
+# TODO: Move this down into some other class so metrics aren't exposed in forchestrator.
 _TARGET_METRICS = {'port_status', 'port_lacp_state', 'dp_status', 'faucet_event_id'}
 
 class Forchestrator:
@@ -71,6 +72,7 @@ class Forchestrator:
         return self._initialized
 
     def _restore_states(self):
+        # Make sure the event socket is connected so there's no loss of information.
         assert self._faucet_events.event_socket_connected, 'restore states without connection'
         metrics = self._varz_collector.get_metrics()
         self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
@@ -112,6 +114,7 @@ class Forchestrator:
         return False
 
     def _handle_faucet_event(self, event):
+        # TODO: Move this down into some other class so 'event_id' isn't exposed in forchestrator.
         if int(event.get('event_id')) < self._event_horizon:
             LOGGER.warning('Outdated faucet event #%d', event.get('event_id'))
             # TODO: Actually flush event (no-op) when varz sufficient.
