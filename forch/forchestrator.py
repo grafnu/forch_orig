@@ -23,7 +23,7 @@ LOGGER = logging.getLogger('forch')
 _FCONFIG_DEFAULT = 'forch.yaml'
 _DEFAULT_PORT = 9019
 _PROMETHEUS_HOST = '127.0.0.1'
-_TARGET_METRICS = {'port_status', 'port_lacp_state', 'dp_status'}
+_TARGET_METRICS = {'port_status', 'port_lacp_state', 'dp_status', 'faucet_event_id'}
 
 class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
@@ -43,7 +43,7 @@ class Forchestrator:
         self._initialized = False
         self._is_active = False
         self._active_state_lock = threading.Lock()
-        self._connection_state_lock = threading.Lock()
+        self._event_horizon = 0
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -71,9 +71,10 @@ class Forchestrator:
         return self._initialized
 
     def _restore_states(self):
+        assert self._faucet_events.event_socket_connected, 'restore states without connection'
         metrics = self._varz_collector.get_metrics()
-        self._faucet_collector.restore_states_from_metrics(metrics)
-        print(self._faucet_collector.switch_states)
+        self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
+        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
 
     def main_loop(self):
         """Main event processing loop"""
@@ -81,12 +82,11 @@ class Forchestrator:
         try:
             while self._handle_faucet_events():
                 while not self._faucet_events.event_socket_connected:
-                    LOGGER.info('Attempting connection...')
-                    # TODO: Figure out reasonable time delay before each reconnection attempt
+                    LOGGER.info('Attempting faucet event sock connection...')
                     time.sleep(1)
                     try:
-                        self._restore_states()
                         self._faucet_events.connect()
+                        self._restore_states()
                     except ConnectionError as e:
                         LOGGER.error("Cannot restore states or connect to faucet: %s", e)
                 self._faucet_collector.set_connected(True)
@@ -112,6 +112,10 @@ class Forchestrator:
         return False
 
     def _handle_faucet_event(self, event):
+        if int(event.get('event_id')) < self._event_horizon:
+            LOGGER.warning('Outdated faucet event #%d', event.get('event_id'))
+            # TODO: Actually flush event (no-op) when varz sufficient.
+
         timestamp = event.get("time")
         LOGGER.debug("Event: %r", event)
         (name, dpid, port, active) = self._faucet_events.as_port_state(event)
@@ -150,7 +154,7 @@ class Forchestrator:
         (name, connected) = self._faucet_events.as_dp_change(event)
         if name:
             LOGGER.debug('DP %s connected %r', name, connected)
-            self._faucet_collector.process_dp_change(timestamp, name, connected)
+            self._faucet_collector.process_dp_change(timestamp, name, None, connected)
 
     def _get_controller_info(self, target):
         controllers = self._config.get('site', {}).get('controllers', {})
