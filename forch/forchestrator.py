@@ -25,6 +25,8 @@ _DEFAULT_PORT = 9019
 _PROMETHEUS_HOST = '127.0.0.1'
 # TODO: Move this down into some other class so metrics aren't exposed in forchestrator.
 _TARGET_METRICS = {'port_status', 'port_lacp_state', 'dp_status', 'faucet_event_id'}
+_LOG_FORMAT = '%(asctime)s %(name)-6s %(levelname)-8s %(message)s'
+_LOG_DATE_FORMAT = '%b %d %H:%M:%S'
 
 class Forchestrator:
     """Main class encompassing faucet orchestrator components for dynamically
@@ -404,7 +406,10 @@ def get_log_path():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename=get_log_path(), level=logging.INFO)
+    logging.basicConfig(filename=get_log_path(),
+                        format=_LOG_FORMAT,
+                        datefmt=_LOG_DATE_FORMAT,
+                        level=logging.INFO)
     CONFIG = load_config()
     if not CONFIG:
         LOGGER.error('Invalid config, exiting.')
