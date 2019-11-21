@@ -397,7 +397,10 @@ def get_log_path():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename=get_log_path(), level=logging.INFO)
+    logging.basicConfig(filename=get_log_path(),
+                        format='%(asctime)s %(name)-6s %(levelname)-9s %(message)s',
+                        datefmt='%b %d %H:%M:%S',
+                        level=logging.INFO)
     CONFIG = load_config()
     if not CONFIG:
         LOGGER.error('Invalid config, exiting.')
