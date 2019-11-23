@@ -137,7 +137,7 @@ class FaucetStateCollector:
                 for sample in metrics[metric_name].samples:
                     switch = sample.labels['dp_name']
                     label = int(sample.labels.get(label_name, 0))
-                    restore_method(self, current_time, switch, label, sample.value)
+                    restore_method(self, current_time, switch, label, int(sample.value))
         return int(metrics['faucet_event_id'].samples[0].value)
 
     @_pre_check(state_name='state')
