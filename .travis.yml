@@ -16,3 +16,10 @@ script:
   - bin/docker_build
   - bin/setup_stack local
   - bin/test_stack
+env:
+  matrix:
+    - MATRIX_SHARD=1
+    - MATRIX_SHARD=2
+    - MATRIX_SHARD=3
+    - MATRIX_SHARD=4
+    - MATRIX_SHARD=5
