@@ -46,7 +46,6 @@ class Forchestrator:
         self._initialized = False
         self._is_active = False
         self._active_state_lock = threading.Lock()
-        self._event_horizon = 0
 
     def initialize(self):
         """Initialize forchestrator instance"""
@@ -79,11 +78,13 @@ class Forchestrator:
         return self._initialized
 
     def _restore_states(self):
-        # Make sure the event socket is connected so there's no loss of information.
+        # Make sure the event socket is connected so there's no loss of information. Ordering
+        # is important here, need to connect the socket before scraping current state to avoid
+        # loss of events inbetween.
         assert self._faucet_events.event_socket_connected, 'restore states without connection'
         metrics = self._varz_collector.get_metrics()
-        self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
-        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
+        event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
+        self._faucet_events.set_event_horizon(event_horizon)
 
         current_time = time.time()
         with open(self._faucet_config_file) as faucet_config_file:
@@ -128,11 +129,6 @@ class Forchestrator:
         return False
 
     def _handle_faucet_event(self, event):
-        # TODO: Move this down into some other class so 'event_id' isn't exposed in forchestrator.
-        if int(event.get('event_id')) < self._event_horizon:
-            LOGGER.warning('Outdated faucet event #%d', event.get('event_id'))
-            # TODO: Actually flush event (no-op) when varz sufficient.
-
         timestamp = event.get("time")
         LOGGER.debug("Event: %r", event)
         (name, dpid, port, active) = self._faucet_events.as_port_state(event)

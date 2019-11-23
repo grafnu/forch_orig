@@ -27,6 +27,7 @@ class FaucetEventClient():
         self._port_timers = {}
         self.event_socket_connected = False
         self._connection_state_handler = connection_state_handler
+        self._event_horizon = None
 
     def connect(self):
         """Make connection to sock to receive events"""
@@ -167,6 +168,11 @@ class FaucetEventClient():
                 self.buffer = '%s\n%s%s' % (self.buffer[:index], event_str, self.buffer[index:])
             LOGGER.debug('appended %s\n%s*', event_str, self.buffer)
 
+    def set_event_horizon(self, event_horizon):
+        """Set the event horizon to throw away unnecessary events"""
+        self._event_horizon = event_horizon
+        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
+
     def next_event(self, blocking=False):
         """Return the next event from the queue"""
         while self.event_socket_connected and self.has_event(blocking=blocking):
@@ -177,8 +183,12 @@ class FaucetEventClient():
                 event = json.loads(line)
             except Exception as e:
                 LOGGER.info('Error (%s) parsing\n%s*\nwith\n%s*', str(e), line, remainder)
+                continue
             event = self._filter_faucet_event(event)
             if event:
+                if int(event.get('event_id')) <= self._event_horizon:
+                    LOGGER.debug('Outdated faucet event #%d', event.get('event_id'))
+                    continue
                 return event
         return None
 
