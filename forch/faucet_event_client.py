@@ -27,8 +27,7 @@ class FaucetEventClient():
         self._port_timers = {}
         self.event_socket_connected = False
         self._connection_state_handler = connection_state_handler
-        self._event_horizon = None
-        self._prev_event_id = None
+        self._last_event_id = None
 
     def connect(self):
         """Make connection to sock to receive events"""
@@ -92,9 +91,13 @@ class FaucetEventClient():
 
     def _filter_faucet_event(self, event):
         event_id = int(event.get('event_id'))
-        expected_event_id = self._prev_event_id + 1
-        if event_id != expected_event_id:
+        if event_id <= self._last_event_id:
+            LOGGER.debug('Outdated faucet event #%d', event_id)
+            return False
+        self._last_event_id += 1
+        if event_id != self._last_event_id:
             raise Exception('Out-of-sequence event id #%d' % event_id)
+
         (name, dpid, port, active) = self.as_port_state(event)
         if dpid and port:
             if not event.get('debounced'):
@@ -175,8 +178,8 @@ class FaucetEventClient():
 
     def set_event_horizon(self, event_horizon):
         """Set the event horizon to throw away unnecessary events"""
-        self._event_horizon = event_horizon
-        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
+        self._last_event_id = event_horizon
+        LOGGER.info('Setting event horizon to event #%d', event_horizon)
 
     def next_event(self, blocking=False):
         """Return the next event from the queue"""
@@ -190,10 +193,6 @@ class FaucetEventClient():
                 LOGGER.info('Error (%s) parsing\n%s*\nwith\n%s*', str(e), line, remainder)
                 continue
             if self._filter_faucet_event(event):
-                event_id = int(event.get('event_id'))
-                if event_id <= self._event_horizon:
-                    LOGGER.debug('Outdated faucet event #%d', event_id)
-                    continue
                 return event
         return None
 
