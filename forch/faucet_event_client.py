@@ -28,6 +28,7 @@ class FaucetEventClient():
         self.event_socket_connected = False
         self._connection_state_handler = connection_state_handler
         self._event_horizon = None
+        self._prev_event_id = None
 
     def connect(self):
         """Make connection to sock to receive events"""
@@ -90,25 +91,29 @@ class FaucetEventClient():
                 return False
 
     def _filter_faucet_event(self, event):
+        event_id = int(event.get('event_id'))
+        expected_event_id = self._prev_event_id + 1
+        if event_id != expected_event_id:
+            raise Exception('Out-of-sequence event id #%d' % event_id)
         (name, dpid, port, active) = self.as_port_state(event)
         if dpid and port:
             if not event.get('debounced'):
                 self._debounce_port_event(event, port, active)
             elif self._process_state_update(dpid, port, active):
-                return event
-            return None
+                return True
+            return False
 
         (name, dpid, status) = self.as_ports_status(event)
         if dpid:
             for port in status:
                 # Prepend events so they functionally replace the current one in the queue.
                 self._prepend_event(event, self._make_port_state(port, status[port]))
-            return None
+            return False
         (name, macs) = self._as_learned_macs(event)
         if name:
             for mac in macs:
                 self._prepend_event(event, self._make_l2_learn(mac))
-        return event
+        return True
 
     def _process_state_update(self, dpid, port, active):
         state_key = '%s-%d' % (dpid, port)
@@ -184,10 +189,10 @@ class FaucetEventClient():
             except Exception as e:
                 LOGGER.info('Error (%s) parsing\n%s*\nwith\n%s*', str(e), line, remainder)
                 continue
-            event = self._filter_faucet_event(event)
-            if event:
-                if int(event.get('event_id')) <= self._event_horizon:
-                    LOGGER.debug('Outdated faucet event #%d', event.get('event_id'))
+            if self._filter_faucet_event(event):
+                event_id = int(event.get('event_id'))
+                if event_id <= self._event_horizon:
+                    LOGGER.debug('Outdated faucet event #%d', event_id)
                     continue
                 return event
         return None
