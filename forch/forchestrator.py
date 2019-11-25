@@ -53,7 +53,7 @@ class Forchestrator:
         self._faucet_collector = FaucetStateCollector()
         self._local_collector = LocalStateCollector(
             self._config.get('process'), self.cleanup, self.handle_active_state)
-        self._cpn_collector = CPNStateCollector()
+        self._cpn_collector = CPNStateCollector(self._config.get('cpn'))
 
         self._faucet_config_file = os.path.join(
             os.getenv('FAUCET_CONFIG_DIR'), _FAUCET_CONFIG_DEFAULT)

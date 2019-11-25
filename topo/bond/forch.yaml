@@ -5,6 +5,8 @@ site:
     nz-kiwi-ctl1:
       fqdn: localhost.n
       port: 9020
+cpn:
+  ping_interval: 20
 process:
   scan_interval_sec: 10
   processes:

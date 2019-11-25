@@ -36,12 +36,13 @@ PING_SUMMARY_REGEX = {'transmitted': r'\d+(?= packets transmitted)',
 
 class CPNStateCollector:
     """Processing and storing CPN components states"""
-    def __init__(self):
+    def __init__(self, config):
         self._cpn_state = {}
         self._node_states = self._cpn_state.setdefault(KEY_NODES, {})
         self._hosts_ip = {}
         self._lock = threading.Lock()
         self._ping_manager = None
+        self._config = config
 
     def initialize(self):
         """Initialize this instance and make it go"""
@@ -60,7 +61,8 @@ class CPNStateCollector:
                     self._hosts_ip[node] = attr_map['cpn_ip']
             if not self._hosts_ip:
                 raise Exception('No CPN components defined in file')
-            self._ping_manager = forch.ping_manager.PingManager(self._hosts_ip)
+            self._ping_manager = forch.ping_manager.PingManager(
+                self._hosts_ip, int(self._config.get('ping_interval', 60)))
             self._update_cpn_state(current_time, constants.STATE_INITIALIZING, "Initializing")
         except Exception as e:
             self._node_states.clear()

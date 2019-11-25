@@ -318,7 +318,7 @@ sudo ip addr add 240.0.0.1/24 dev lo
 sudo ip addr add 240.0.0.2/24 dev lo
 sudo ip addr add 240.0.0.253/24 dev lo
 sleep 50.3231 &
-sleep 32
+sleep 34
 test_forch -healthy
 
 echo Removing IP addresses
