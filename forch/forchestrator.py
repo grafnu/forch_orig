@@ -390,6 +390,16 @@ class Forchestrator:
         self._augment_state_reply(reply, path)
         return reply
 
+    def get_faucet_config(self, path, params):
+        """Get faucet config from facuet config file"""
+        try:
+            with open(self._faucet_config_file) as config_file:
+                reply = yaml.safe_load(config_file)
+                self._augment_state_reply(reply, path)
+                return reply
+        except Exception as e:
+            return f"Cannot read faucet config file: {e}"
+
 
 def load_config():
     """Load configuration from the configuration file"""
@@ -439,6 +449,7 @@ if __name__ == '__main__':
         HTTP.map_request('process_state', FORCH.get_process_state)
         HTTP.map_request('host_path', FORCH.get_host_path)
         HTTP.map_request('list_hosts', FORCH.get_list_hosts)
+        HTTP.map_request('faucet_config', FORCH.get_faucet_config)
         HTTP.map_request('', HTTP.static_file(''))
     except Exception as e:
         LOGGER.error("Cannot initialize forch: %s", e)
