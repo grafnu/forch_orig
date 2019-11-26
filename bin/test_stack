@@ -319,11 +319,8 @@ sleep 50.3231 &
 sleep 32
 test_forch -healthy
 
-echo Removing IP addresses
-sudo ip addr del 240.0.0.1/24 dev lo
-sudo ip addr del 240.0.0.2/24 dev lo
-sudo ip addr del 240.0.0.253/24 dev lo
-sleep 15
+reset_stack
+sleep 32
 
 echo %%% t2sw3 down, cpn nz-kiwi-ctl1 up, t1sw1-eth9 down | tee -a $TEST_RESULTS
 sudo ovs-vsctl del-controller t2sw3
