@@ -6,7 +6,7 @@ site:
       fqdn: localhost.n
       port: 9020
 cpn:
-  ping_interval: 20
+  ping_interval: 10
 process:
   scan_interval_sec: 10
   processes:
