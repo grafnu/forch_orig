@@ -192,7 +192,7 @@ class LocalStateCollector:
                 self._active_state_handler(self._vrrp_state['is_master'])
 
         except Exception as e:
-            LOGGER.error("Cannot get VRRP info: %s\nSetting is_master to False", e)
+            LOGGER.error("Cannot get VRRP info, setting controller to inactive: %s", e)
             self._active_state_handler(False)
 
     def _extract_vrrp_state(self, stats):
