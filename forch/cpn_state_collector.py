@@ -7,9 +7,9 @@ import os.path
 import re
 import threading
 
-from proto.cpn_config_pb2 import CpnConfig
-from proto.cpn_state_pb2 import CpnState
-from proto.system_state_pb2 import StateSummary
+from forch.proto.cpn_config_pb2 import CpnConfig
+from forch.proto.cpn_state_pb2 import CpnState
+from forch.proto.system_state_pb2 import StateSummary
 
 import forch.constants as constants
 import forch.ping_manager
