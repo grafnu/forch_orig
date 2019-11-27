@@ -6,3 +6,5 @@ cd $ROOT
 rm -rf forch/proto
 
 protoc --python_out=forch proto/*.proto
+
+touch forch/proto/__init__.py
