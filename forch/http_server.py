@@ -9,8 +9,9 @@ import socketserver
 import threading
 import urllib
 
-from forch.utils import proto_json
 from google.protobuf.message import Message
+
+from forch.utils import proto_json
 
 LOGGER = logging.getLogger('httpserv')
 
