@@ -9,6 +9,8 @@ import socketserver
 import threading
 import urllib
 
+from forch.utils import proto_json
+from google.protobuf.message import Message
 
 LOGGER = logging.getLogger('httpserv')
 
@@ -95,6 +97,8 @@ class HttpServer():
                     result = self._paths[a_path](full_path, params)
                     if isinstance(result, (bytes, str)):
                         return result
+                    if isinstance(result, Message):
+                        return proto_json(result)
                     return json.dumps(result)
             return str(self._paths)
         except Exception as e:
