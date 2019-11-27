@@ -16,9 +16,11 @@ def proto_dict(message):
     """Convert a proto message to a standard dict object"""
     return json_format.MessageToDict(message, preserving_proto_field_name=True)
 
+
 def proto_json(message):
     """Convert a proto message to a json string"""
     return json_format.MessageToJson(message, preserving_proto_field_name=True)
+
 
 def dict_proto(message, proto_func):
     """Convert a standard dict object to a proto object"""

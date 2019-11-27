@@ -63,7 +63,6 @@ class CPNStateCollector:
                 self._hosts_ip[node] = attr_map.cpn_ip
 
             ping_interval = cpn_data.ping_interval if cpn_data.ping_interval else 60
-
             if not self._hosts_ip:
                 raise Exception('No CPN components defined in file')
 

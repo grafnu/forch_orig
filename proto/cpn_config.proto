@@ -3,7 +3,6 @@ syntax = "proto3";
 message CpnConfig {
   map<string, CpnAttributes> cpn_nodes = 1;
   int32 ping_interval = 2;
-
 }
 
 message CpnAttributes {
@@ -11,4 +10,4 @@ message CpnAttributes {
   string role = 2;
   string vendor = 3;
   string model = 4;
-}
+}      
