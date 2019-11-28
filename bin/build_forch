@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
@@ -9,6 +9,8 @@ proto_files=`ls proto/*.proto`
 
 mkdir -p build/forch/proto
 cp $proto_files build/forch/proto/
+
+ls -l build/forch/proto/
 
 for proto in $proto_files; do
     protoc --python_out=. -Ibuild forch/$proto
