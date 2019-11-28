@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "proto/cpn_config.proto";
+import "forch/proto/cpn_config.proto";
 
 message CpnState {
   map<string, CpnNode> cpn_nodes = 1;
