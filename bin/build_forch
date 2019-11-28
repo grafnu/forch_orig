@@ -3,17 +3,19 @@
 ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 
-rm -rf forch/proto build/forch
+rm -rf build/ forch/proto
 
 proto_files=`ls proto/*.proto`
 
-mkdir -p build/forch/proto
+mkdir -p build/forch/proto build/proto
 cp $proto_files build/forch/proto/
 
 ls -l build/forch/proto/
 
 for proto in $proto_files; do
-    protoc --python_out=. -Ibuild forch/$proto
+    (cd build; protoc --python_out=. forch/$proto)
 done
 
+mkdir -p forch/proto/
 touch forch/proto/__init__.py
+cp build/forch/proto/*.py forch/proto/
