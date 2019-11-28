@@ -93,6 +93,7 @@ class FaucetStateCollector:
         self.process_lag_state(time.time(), None, None, False)
         self._is_active = False
         self._is_connected = False
+        self._has_faucet_config = False
 
     def set_active(self, is_active):
         """Set active state"""
@@ -104,6 +105,11 @@ class FaucetStateCollector:
         with self._lock:
             self._is_connected = is_connected
 
+    def set_faucet_config(self, has_faucet_config):
+        """Set faucet config"""
+        with self._lock:
+            self._has_faucet_config = has_faucet_config
+
     # pylint: disable=no-self-argument, protected-access
     def _pre_check(state_name):
         def pre_check(func):
@@ -114,6 +120,9 @@ class FaucetStateCollector:
                         return {state_name: STATE_INACTIVE, 'detail': detail}
                     if not self._is_connected:
                         detail = 'Diconnected from Faucet event socket.'
+                        return {state_name: STATE_BROKEN, 'detail': detail}
+                    if not self._has_faucet_config:
+                        detail = 'Cannot get faucet config'
                         return {state_name: STATE_BROKEN, 'detail': detail}
                 return func(self, *args, **kwargs)
             return wrapped

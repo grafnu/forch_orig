@@ -87,9 +87,9 @@ class Forchestrator:
 
         current_time = time.time()
         faucet_config = self._get_faucet_config()
-        if faucet_config:
-            self._faucet_collector.process_dataplane_config_change(
-                current_time, faucet_config.get('dps', {}))
+        self._faucet_collector.set_faucet_config(True)
+        self._faucet_collector.process_dataplane_config_change(
+            current_time, faucet_config.get('dps', {}))
 
     def main_loop(self):
         """Main event processing loop"""
@@ -336,8 +336,8 @@ class Forchestrator:
             with open(self._faucet_config_file) as config_file:
                 return yaml.safe_load(config_file)
         except Exception as e:
-            LOGGER.error(f"Cannot read faucet config file: {e}")
-        return None
+            LOGGER.error(f"Cannot read faucet config: %s", e)
+            raise e
 
     def cleanup(self):
         """Clean up relevant internal data in all collectors"""
@@ -399,11 +399,12 @@ class Forchestrator:
 
     def get_faucet_config(self, path, params):
         """Get faucet config from facuet config file"""
-        reply = self._get_faucet_config()
-        if reply:
+        try:
+            reply = self._get_faucet_config()
             self._augment_state_reply(reply, path)
             return reply
-        return f"Cannot read faucet config file"
+        except Exception as e:
+            return f"Cannot read faucet config: {e}"
 
 
 def load_config():
