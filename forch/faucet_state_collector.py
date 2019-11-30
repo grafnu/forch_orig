@@ -34,6 +34,9 @@ def _dump_states(func):
 
 _RESTORE_METHODS = {'port': {}, 'dp': {}}
 
+SUBKEY_FORMAT = "%s:%d"
+KEY_FORMAT = "%s~%s"
+
 FAUCET_LACP_STATE_UP = 3
 FAUCET_STACK_STATE_BAD = 2
 FAUCET_STACK_STATE_UP = 3
@@ -433,10 +436,10 @@ class FaucetStateCollector:
 
     @staticmethod
     def _make_key(start_dp, start_port, peer_dp, peer_port):
-        subkey1 = start_dp+":"+start_port
-        subkey2 = peer_dp+":"+peer_port
-        keep_order = subkey1 < subkey2
-        return subkey1+"@"+subkey2 if keep_order else subkey2+"@"+subkey1
+        key1 = SUBKEY_FORMAT % (start_dp, start_port)
+        key2 = SUBKEY_FORMAT % (peer_dp, peer_port)
+        keep_order = key1 < key2
+        return KEY_FORMAT % (key1, key2) if keep_order else KEY_FORMAT % (key2, key1)
 
     def _get_topo_map(self):
         topo_map = {}
