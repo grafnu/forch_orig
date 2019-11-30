@@ -105,17 +105,21 @@ class FaucetStateCollector:
             self._is_connected = is_connected
 
     # pylint: disable=no-self-argument, protected-access
-    def _pre_check(state_name):
+    def _pre_check(state_key_name):
         def pre_check(func):
             def wrapped(self, *args, **kwargs):
                 with self._lock:
                     if not self._is_active:
                         detail = 'This controller is inactive. Please view peer controller.'
-                        return {state_name: STATE_INACTIVE, 'detail': detail}
+                        return {state_key_name: STATE_INACTIVE, 'detail': detail}
                     if not self._is_connected:
                         detail = 'Diconnected from Faucet event socket.'
-                        return {state_name: STATE_BROKEN, 'detail': detail}
-                return func(self, *args, **kwargs)
+                        return {state_key_name: STATE_BROKEN, 'detail': detail}
+                try:
+                    return func(self, *args, **kwargs)
+                except Exception as e:
+                    LOGGER.exception(e)
+                    return {state_key_name: STATE_BROKEN, 'detail': str(e)}
             return wrapped
         return pre_check
 
@@ -140,7 +144,7 @@ class FaucetStateCollector:
                     restore_method(self, current_time, switch, label, int(sample.value))
         return int(metrics['faucet_event_id'].samples[0].value)
 
-    @_pre_check(state_name='state')
+    @_pre_check('state')
     def get_dataplane_summary(self):
         """Get summary of dataplane"""
         dplane_state = self._get_dataplane_state()
@@ -177,7 +181,7 @@ class FaucetStateCollector:
         dplane_state['dataplane_state'] = state
         dplane_state['dataplane_state_detail'] = "; ".join(detail)
 
-    @_pre_check(state_name='dataplane_state')
+    @_pre_check('dataplane_state')
     def get_dataplane_state(self):
         """get the topology state"""
         return self._get_dataplane_state()
@@ -225,7 +229,7 @@ class FaucetStateCollector:
                 broken_links.append(link)
         return broken_links
 
-    @_pre_check(state_name='state')
+    @_pre_check('state')
     def get_switch_summary(self):
         """Get summary of switch state"""
         switch_state = self._get_switch_state(None, None)
@@ -241,7 +245,7 @@ class FaucetStateCollector:
             for mac, mac_data in switch_data.get('access_port_macs', {}).items():
                 mac_data['url'] = f"{url_base}/?list_hosts?eth_src={mac}"
 
-    @_pre_check(state_name='switch_state')
+    @_pre_check('switch_state')
     def get_switch_state(self, switch, port, url_base=None):
         """get a set of all switches"""
         return self._get_switch_state(switch, port, url_base)
@@ -531,7 +535,7 @@ class FaucetStateCollector:
                 hop = next_hop
         return res
 
-    @_pre_check(state_name='host_path_state')
+    @_pre_check('host_path_state')
     def get_host_path(self, src_mac, dst_mac, to_egress):
         """Given two MAC addresses in the core network, find the active path between them"""
         if not src_mac:
@@ -750,7 +754,7 @@ class FaucetStateCollector:
                 return switch, port
         return None, None
 
-    @_pre_check(state_name='state')
+    @_pre_check('state')
     def get_host_summary(self):
         """Get a summary of the learned hosts"""
         with self.lock:
@@ -760,7 +764,7 @@ class FaucetStateCollector:
             'detail': f'{num_hosts} learned host MACs'
         }
 
-    @_pre_check(state_name='hosts_list_state')
+    @_pre_check('hosts_list_state')
     def get_list_hosts(self, url_base, src_mac):
         """Get access devices"""
         host_macs = {}
