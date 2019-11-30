@@ -9,9 +9,12 @@ import threading
 import time
 import yaml
 
+from google.protobuf.message import Message
+
 import forch.constants as constants
 import forch.faucet_event_client
 import forch.http_server
+from forch.utils import proto_dict
 
 from forch.cpn_state_collector import CPNStateCollector
 from forch.faucet_state_collector import FaucetStateCollector
@@ -110,9 +113,8 @@ class Forchestrator:
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
             self._faucet_events.disconnect()
-        except Exception as e:
-            LOGGER.error("Exception: %s", e)
-            raise
+        except Exception:
+            pass
 
     # TODO: This should likely be moved into the faucet_state_collector.
     # pylint: disable=too-many-locals
@@ -283,7 +285,7 @@ class Forchestrator:
 
     def _get_system_summary(self, path):
         states = {
-            'cpn_state': self._cpn_collector.get_cpn_summary(),
+            'cpn_state': proto_dict(self._cpn_collector.get_cpn_summary()),
             'process_state': self._local_collector.get_process_summary(),
             'dataplane_state': self._faucet_collector.get_dataplane_summary(),
             'switch_state': self._faucet_collector.get_switch_summary(),
@@ -302,7 +304,10 @@ class Forchestrator:
 
     def _augment_state_reply(self, reply, path):
         url = self._extract_url_base(path)
-        reply['system_state_url'] = url
+        if isinstance(reply, Message):
+            reply.system_state_url = url
+        else:
+            reply['system_state_url'] = url
 
     def _get_controller_state(self):
         with self._active_state_lock:
@@ -310,15 +315,15 @@ class Forchestrator:
                 detail = 'This controller is inactive. Please view peer controller.'
                 return constants.STATE_INACTIVE, detail
 
-        cpn_state = self._cpn_collector.get_cpn_state().get('cpn_state')
+        cpn_state = self._cpn_collector.get_cpn_state()
         peer_controller = self._get_peer_controller_name()
-        cpn_nodes = self._cpn_collector.get_cpn_state().get('cpn_nodes', {})
+        cpn_nodes = proto_dict(cpn_state).get('cpn_nodes')
         peer_controller_state = cpn_nodes.get(peer_controller, {}).get('state')
 
         if not peer_controller_state:
             LOGGER.error('Cannot get peer controller state: %s', peer_controller)
 
-        if cpn_state == constants.STATE_INITIALIZING:
+        if cpn_state.cpn_state == constants.STATE_INITIALIZING:
             detail = 'Initializing'
             return constants.STATE_INITIALIZING, detail
 
