@@ -113,8 +113,9 @@ class Forchestrator:
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
             self._faucet_events.disconnect()
-        except Exception:
-            pass
+        except Exception as e:
+            LOGGER.error("Exception: %s", e)
+            raise
 
     # TODO: This should likely be moved into the faucet_state_collector.
     # pylint: disable=too-many-locals
