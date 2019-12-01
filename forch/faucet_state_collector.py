@@ -35,7 +35,7 @@ def _dump_states(func):
 _RESTORE_METHODS = {'port': {}, 'dp': {}}
 
 SUBKEY_FORMAT = "%s:%d"
-KEY_FORMAT = "%s~%s"
+KEY_FORMAT = "%s@%s"
 
 FAUCET_LACP_STATE_UP = 3
 FAUCET_STACK_STATE_BAD = 2
