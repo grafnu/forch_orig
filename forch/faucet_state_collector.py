@@ -689,7 +689,7 @@ class FaucetStateCollector:
         with self.lock:
             cfg_state = self.faucet_config
             change_count = cfg_state.get(DPS_CFG_CHANGE_COUNT, 0) + 1
-            LOGGER.info('dataplane_config #%d change', change_count)
+            LOGGER.info('dataplane_config #%d change: %r', change_count, dps_config)
             cfg_state[DPS_CFG] = dps_config
             cfg_state[DPS_CFG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
             cfg_state[DPS_CFG_CHANGE_COUNT] = change_count
