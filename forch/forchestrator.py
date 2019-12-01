@@ -338,7 +338,7 @@ class Forchestrator:
             with open(self._faucet_config_file) as config_file:
                 return yaml.safe_load(config_file)
         except Exception as e:
-            LOGGER.error(f"Cannot read faucet config: %s", e)
+            LOGGER.error('Cannot read faucet config: %s', e)
             raise e
 
     def cleanup(self):
