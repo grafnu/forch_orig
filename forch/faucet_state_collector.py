@@ -449,7 +449,7 @@ class FaucetStateCollector:
         for local_dp, dp_obj in config_obj.items():
             for local_port, iface_obj in dp_obj.get("interfaces", {}).items():
                 peer_dp = iface_obj.get("stack", {}).get("dp")
-                peer_port = str(iface_obj.get("stack", {}).get("port"))
+                peer_port = iface_obj.get("stack", {}).get("port")
                 if peer_dp and peer_port:
                     key = self._make_key(local_dp, local_port, peer_dp, peer_port)
                     if key not in topo_map:
