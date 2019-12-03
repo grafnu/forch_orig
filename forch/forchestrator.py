@@ -70,7 +70,7 @@ class Forchestrator:
 
         LOGGER.info('Attaching event channel...')
         self._faucet_events = forch.faucet_event_client.FaucetEventClient(
-            self._config.get('event_client', {}), self.handle_connection_state)
+            self._config.get('event_client', {}))
         self._local_collector.initialize()
         self._cpn_collector.initialize()
         LOGGER.info('Using peer controller %s', self._get_peer_controller_url())
@@ -106,9 +106,10 @@ class Forchestrator:
                     try:
                         self._faucet_events.connect()
                         self._restore_states()
-                    except ConnectionError as e:
+                        self._faucet_collector.set_state_restored(True)
+                    except Exception as e:
                         LOGGER.error("Cannot restore states or connect to faucet: %s", e)
-                self._faucet_collector.set_connected(True)
+                        self._faucet_collector.set_state_restored(False, e)
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
             self._faucet_events.disconnect()
@@ -350,10 +351,6 @@ class Forchestrator:
         with self._active_state_lock:
             self._is_active = is_master
         self._faucet_collector.set_active(is_master)
-
-    def handle_connection_state(self, is_connected):
-        """Handler for faucet event client to handle connection state"""
-        self._faucet_collector.set_connected(is_connected)
 
     def get_switch_state(self, path, params):
         """Get the state of the switches"""
