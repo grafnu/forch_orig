@@ -19,7 +19,7 @@ def proto_dict(message):
 
 def proto_json(message):
     """Convert a proto message to a json string"""
-    return json_format.MessageToJson(message, preserving_proto_field_name=True)
+    return json_format.MessageToJson(message, preserving_proto_field_name=True, float_precision=8)
 
 
 def dict_proto(message, proto_func):

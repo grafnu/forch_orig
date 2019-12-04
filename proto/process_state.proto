@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+import "forch/proto/state.proto";
+
+message ProcessState {
+  map<string, ProcessData> processes = 1;
+  State processes_state = 2;
+  string processes_state_detail = 3;
+  int32 processes_state_change_count = 4;
+  string processes_state_last_update = 5;
+  string processes_state_last_change = 6;
+  string system_state_url = 7;
+
+  message ProcessData {
+    State state = 1;
+    string detail = 2;
+    string cmd_line = 3;
+    string create_time = 4;
+    int32 create_time_change_count = 5;
+    string create_time_last_update = 6;
+    string create_time_last_change = 7;
+    CpuTime cpu_times_s = 8;
+    MemoryInfo memory_info_mb = 9;
+  }
+
+  message CpuTime {
+    float user = 1;
+    float system = 2;
+    float iowait = 3;
+  }
+
+  message MemoryInfo {
+    float rss = 1;
+    float vms = 2;
+  }
+}
