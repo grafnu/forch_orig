@@ -12,7 +12,7 @@ import psutil
 import yaml
 
 from forch.proto.process_state_pb2 import ProcessState
-import forch.proto.state_pb2 as state_pb2
+from forch.proto.shared_constants_pb2 import State
 from forch.proto.system_state_pb2 import StateSummary
 from forch.utils import dict_proto
 
@@ -50,18 +50,17 @@ class LocalStateCollector:
         """Return a summary of process table"""
         process_state = self.get_process_state()
         return dict_proto({
-            'state': process_state.get('processes_state'),
-            'detail': process_state.get('processes_state_detail'),
-            'change_count': process_state.get('processes_state_change_count'),
-            'last_update': process_state.get('processes_state_last_update'),
-            'last_changed': process_state.get('processes_state_last_change')
+            'state': process_state.processes_state,
+            'detail': process_state.processes_state_detail,
+            'change_count': process_state.processes_state_change_count,
+            'last_update': process_state.processes_state_last_update,
+            'last_changed': process_state.processes_state_last_change
         }, StateSummary)
 
     def get_process_state(self):
         """Get the states of processes"""
         with self._lock:
-            process_state = copy.deepcopy(self._process_state)
-        return dict_proto(process_state, ProcessState)
+            return dict_proto(self._process_state, ProcessState)
 
     def _get_process_info(self):
         """Get the raw information of processes"""
@@ -79,11 +78,11 @@ class LocalStateCollector:
             state, detail = self._extract_process_state(target_name, target_count, proc_list)
             state_map['detail'] = detail
             if state:
-                state_map['state'] = state_pb2.healthy
+                state_map['state'] = State.healthy
                 state_map.update(state)
                 self._last_error.pop(target_name, None)
                 continue
-            state_map['state'] = state_pb2.broken
+            state_map['state'] = State.broken
             if detail != self._last_error.get(target_name):
                 LOGGER.error(detail)
                 self._last_error[target_name] = detail
@@ -92,7 +91,7 @@ class LocalStateCollector:
         process_state['processes'] = process_map
 
         old_state = process_state.get('processes_state')
-        state = state_pb2.broken if broken else state_pb2.healthy
+        state = State.broken if broken else State.healthy
         process_state['processes_state_last_update'] = self._current_time
         state_detail = 'Processes in broken state: ' + ', '.join(broken) if broken else ''
         if state != old_state:
@@ -196,7 +195,7 @@ class LocalStateCollector:
 
     def _extract_vrrp_state(self, stats):
         """Extract vrrp state from keepalived stats data"""
-        vrrp_map = {'state': state_pb2.healthy}
+        vrrp_map = {'state': State.healthy}
         vrrp_erros = []
         old_vrrp_map = self._state.get('vrrp', {})
 
@@ -215,7 +214,7 @@ class LocalStateCollector:
         for error_type in ['Packet Errors', 'Authentication Errors']:
             for error_key, error_count in stats.get(error_type, {}).items():
                 if int(error_count) > 0:
-                    vrrp_map['state'] = state_pb2.broken
+                    vrrp_map['state'] = State.broken
                     vrrp_erros.append(error_key)
 
         vrrp_map['state_last_update'] = self._current_time
