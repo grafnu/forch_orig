@@ -17,7 +17,6 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 version = os.popen('git describe').read().strip()
-print('Using version %s from most recent annotated tag' % version)
 
 setuptools.setup(
     name="forch",
