@@ -714,15 +714,14 @@ class FaucetStateCollector:
                 LOGGER.info('stack_topo_links #%d links: %s', link_change_count, graph_links)
 
             stack_root = topo_change.stack_root
-            dps_hash = str(topo_change.dps)
-            prev_hash = topo_state.get(TOPOLOGY_DPS_HASH)
-            if topo_state.get(TOPOLOGY_ROOT) != stack_root or prev_hash != dps_hash:
+            msg_str = "root %s: %s" % (stack_root, self._list_root_hops(topo_change.dps))
+            prev_msg = topo_state.get(TOPOLOGY_DPS_HASH)
+            if prev_msg != msg_str:
                 topo_change_count = topo_state.get(TOPOLOGY_CHANGE_COUNT, 0) + 1
-                LOGGER.info('stack_topo change #%d to root %s: %s',
-                            topo_change_count, stack_root, self._list_root_hops(topo_change.dps))
+                LOGGER.info('stack_topo_change #%d to %s', topo_change_count, msg_str)
                 topo_state[TOPOLOGY_ROOT] = topo_change.stack_root
                 topo_state[TOPOLOGY_DPS] = topo_change.dps
-                topo_state[TOPOLOGY_DPS_HASH] = dps_hash
+                topo_state[TOPOLOGY_DPS_HASH] = msg_str
                 topo_state[TOPOLOGY_CHANGE_COUNT] = topo_change_count
                 topo_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
 
