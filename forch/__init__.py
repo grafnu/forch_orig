@@ -1,3 +1,3 @@
-"""forch (faucet orchestrator) code module"""
+"""Module initialization for forch"""
 
 pass
