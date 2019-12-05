@@ -33,7 +33,6 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        'google-cloud',
         'prometheus_client',
         'protobuf',
         'psutil',
