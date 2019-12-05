@@ -4,8 +4,17 @@ ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 
 rm -rf build/ forch/proto public/proto
+mkdir build
 
 proto_files=`ls proto/*.proto`
+
+if [ "$1" == check ]; then
+    sha1sum $proto_files > build/protos.hash
+    diff build/protos.hash public/protos.hash
+    exit 0
+fi
+
+sha1sum $proto_files > public/protos.hash
 
 (
     export PATH=$PATH:/usr/local/go/bin/
@@ -42,5 +51,3 @@ mkdir -p forch/proto/
 touch forch/proto/__init__.py
 cp build/forch/proto/*.py forch/proto/
 cp build/protos.html public/
-
-sha1sum proto/*.proto > public/protos.hash
