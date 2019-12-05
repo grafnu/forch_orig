@@ -42,3 +42,5 @@ mkdir -p forch/proto/
 touch forch/proto/__init__.py
 cp build/forch/proto/*.py forch/proto/
 cp build/protos.html public/
+
+sha1sum proto/*.proto > public/protos.hash
