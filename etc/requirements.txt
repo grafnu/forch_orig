@@ -1,4 +1,4 @@
-google-cloud
+wheel
 prometheus_client
 protobuf
 psutil
