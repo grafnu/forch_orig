@@ -3,9 +3,6 @@
 ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 
-rm -rf build/ forch/proto public/proto
-mkdir build
-
 proto_files=`ls proto/*.proto`
 
 if [ "$1" == check ]; then
@@ -13,6 +10,9 @@ if [ "$1" == check ]; then
     diff build/protos.hash public/protos.hash
     exit 0
 fi
+
+rm -rf build/ forch/proto public/proto
+mkdir build
 
 sha1sum $proto_files > public/protos.hash
 
