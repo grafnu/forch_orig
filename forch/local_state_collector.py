@@ -158,7 +158,7 @@ class LocalStateCollector:
                 if hasattr(proc.info['cpu_times'], 'iowait'):
                     if not cpu_time_iowait:
                         cpu_time_iowait = 0.0
-                        cpu_time_iowait += proc.cpu_times().iowait
+                    cpu_time_iowait += proc.cpu_times().iowait
 
                 memory_rss += proc.info['memory_info'].rss / 1e6
                 memory_vms += proc.info['memory_info'].vms / 1e6
