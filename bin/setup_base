@@ -10,7 +10,7 @@ sudo apt-get install openvswitch-switch protobuf-compiler python3-venv jq
 python3 -m venv venv
 source venv/bin/activate
 
-pip install -r etc/requirements.txt
+pip3 install -r etc/requirements.txt
 
 
 DEF_IFACE=`route -n | fgrep UG | awk '{print $8}'`
