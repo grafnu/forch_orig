@@ -216,7 +216,6 @@ class FaucetStateCollector:
         dplane_state['dataplane_state_change_count'] = change_count
         dplane_state['dataplane_state_last_change'] = last_change
 
-
         return dict_proto(dplane_state, DataplaneState)
 
     def _get_broken_switches(self, dplane_state):
