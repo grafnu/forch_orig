@@ -25,7 +25,7 @@ class VarzStateCollector:
         metric_map = {}
 
         response = requests.get(self._endpoint)
-        if response.status_code == requests.status_codes.codes.ok:
+        if response.status_code == requests.status_codes.codes.ok:  # pylint: disable=no-member
             content = response.content.decode('utf-8', 'strict')
             metrics = prometheus_client.parser.text_string_to_metric_families(content)
             for metric in [m for m in metrics if m.name in self._target_metrics]:
