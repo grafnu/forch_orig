@@ -5,7 +5,7 @@ GO_VERSION=1.13.3
 ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 
-sudo apt-get install openvswitch-switch protobuf-compiler
+sudo apt-get install openvswitch-switch protobuf-compiler python3-venv jq
 
 python3 -m venv venv
 source venv/bin/activate
