@@ -12,6 +12,10 @@ from forch.constants import \
     STATE_INACTIVE, STATE_HEALTHY, STATE_UP, STATE_INITIALIZING, \
     STATE_BROKEN, STATE_DOWN, STATE_ACTIVE
 
+from forch.utils import dict_proto
+from forch.proto.system_state_pb2 import StateSummary
+from forch.proto.dataplane_state_pb2 import DataplaneState
+
 LOGGER = logging.getLogger('fstate')
 
 
@@ -160,12 +164,12 @@ class FaucetStateCollector:
     def get_dataplane_summary(self):
         """Get summary of dataplane"""
         dplane_state = self._get_dataplane_state()
-        return {
-            'state': dplane_state.get('dataplane_state'),
-            'detail': dplane_state.get('dataplane_state_detail'),
-            'change_count': dplane_state.get('dataplane_state_change_count'),
-            'last_change': dplane_state.get('dataplane_state_last_change')
-        }
+        return dict_proto({
+            'state': dplane_state.dataplane_state,
+            'detail': dplane_state.dataplane_state_detail,
+            'change_count': dplane_state.dataplane_state_change_count,
+            'last_changed': dplane_state.dataplane_state_last_change
+        }, StateSummary)
 
     def _update_dataplane_detail(self, dplane_state):
         detail = []
@@ -223,7 +227,7 @@ class FaucetStateCollector:
         dplane_state['dataplane_state_change_count'] = change_count
         dplane_state['dataplane_state_last_change'] = last_change
 
-        return dplane_state
+        return dict_proto(dplane_state, DataplaneState)
 
     def _get_broken_switches(self, dplane_state):
         broken_sw = []

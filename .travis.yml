@@ -12,19 +12,16 @@ install:
   - set -e
   - bin/setup_base
   - bin/build_proto check
-  - false
 script:
   - set -e
-  - bin/package_forch
   - bin/check_style
-  - bin/build_proto
   - bin/build_docker
   - bin/setup_stack local
   - bin/test_stack
+  - bin/build_proto
+  - bin/package_forch
 env:
   matrix:
     - MATRIX_SHARD=1
     - MATRIX_SHARD=2
     - MATRIX_SHARD=3
-    - MATRIX_SHARD=4
-    - MATRIX_SHARD=5
