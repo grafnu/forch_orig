@@ -3,6 +3,7 @@ dps:
     dp_id: 177
     faucet_dp_mac: 0e:00:00:00:01:01
     hardware: Generic
+    ofchannel_log: /var/log/faucet/ofchannel.log
     lacp_timeout: 5
     stack:
       priority: 1

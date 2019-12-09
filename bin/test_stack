@@ -94,11 +94,12 @@ function dump_flows {
 }
 
 function restart_ovs {
-    # Some versions of OVS are somewhat unstable, so restart for consistency.
-    echo Restarting ovs...
+    desc=$1
+
+    echo $desc Restarting ovs...
     sudo /etc/init.d/openvswitch-switch restart
 
-    echo Waiting for network stability...
+    echo $desc Waiting for network stability...
     sleep 15
 }
 
@@ -107,7 +108,9 @@ function test_stack {
     echo Starting $desc test... | tee -a $TEST_RESULTS
 
     diagnose_stack
-    restart_ovs
+
+    # Some versions of OVS are somewhat unstable, so restart for consistency.
+    restart_ovs $desc
 
     desc_dir=$out_dir/$desc
     t1sw1p6_pcap=$desc_dir/t1sw1-eth6.pcap
@@ -339,8 +342,7 @@ rm -f $faucet_log
 tail --retry -f $faucet_log &
 
 reset_stack
-
-restart_ovs
+restart_ovs init
 
 # Test that the 'local' mode of faucet is working properly.
 echo 'print("supercalifragilisticexpialidocious")' > faucet/faucet/python_test.py
@@ -410,6 +412,7 @@ test_forch -restored
 
 echo %%% reset stack | tee -a $TEST_RESULTS
 reset_stack
+restart_ovs reset
 sleep 32
 test_forch -reset
 
