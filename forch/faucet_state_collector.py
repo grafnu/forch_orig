@@ -118,18 +118,21 @@ class FaucetStateCollector:
             self._is_state_restored = is_restored
             self._state_restore_error = restore_error
 
+    def _make_summary(self, state, detail):
+        summary = StateSummary()
+        summary.state = state
+        summary.detail = detail
+        return summary
+
     # pylint: disable=no-self-argument, protected-access
     def _pre_check(state_name):
         def pre_check(func):
             def wrapped(self, *args, **kwargs):
                 with self._lock:
                     if not self._is_active:
-                        detail = 'This controller is inactive. Please view peer controller.'
-                        return {state_name: STATE_INACTIVE, 'detail': detail}
-                    if not self._is_state_restored:
-                        error = self._state_restore_error
-                        detail = f'Cannot restore states or connect to Faucet: {error}'
-                        return {state_name: STATE_BROKEN, 'detail': detail}
+                        return self._make_summary(State.inactive, 'This controller is inactive. Please view peer controller.')
+                    elif not self._is_state_restored:
+                        return self._make_summary(State.broken, f'Cannot restore states or connect to Faucet: {self._state_restore_error}')
                 return func(self, *args, **kwargs)
             return wrapped
         return pre_check
