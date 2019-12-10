@@ -9,7 +9,7 @@ import threading
 from threading import RLock
 
 from forch.constants import \
-    STATE_INACTIVE, STATE_HEALTHY, STATE_UP, STATE_INITIALIZING, \
+    STATE_HEALTHY, STATE_UP, STATE_INITIALIZING, \
     STATE_BROKEN, STATE_DOWN, STATE_ACTIVE
 
 from forch.utils import dict_proto
@@ -130,9 +130,11 @@ class FaucetStateCollector:
             def wrapped(self, *args, **kwargs):
                 with self._lock:
                     if not self._is_active:
-                        return self._make_summary(State.inactive, 'This controller is inactive. Please view peer controller.')
-                    elif not self._is_state_restored:
-                        return self._make_summary(State.broken, f'Cannot restore states or connect to Faucet: {self._state_restore_error}')
+                        detail = 'This controller is inactive. Please view peer controller.'
+                        return self._make_summary(State.inactive, detail)
+                    if not self._is_state_restored:
+                        detail = f'Cannot state not restored: {self._state_restore_error}'
+                        return self._make_summary(State.broken, detail)
                 return func(self, *args, **kwargs)
             return wrapped
         return pre_check
@@ -249,10 +251,10 @@ class FaucetStateCollector:
         """Get summary of switch state"""
         switch_state = self._get_switch_state(None, None)
         return dict_proto({
-            'state': switch_state['switch_state'],
-            'detail': switch_state['switch_state_detail'],
-            'change_count': switch_state['switch_state_change_count'],
-            'last_change': switch_state['switch_state_last_change']
+            'state': switch_state.switch_state,
+            'detail': switch_state.switch_state_detail,
+            'change_count': switch_state.switch_state_change_count,
+            'last_change': switch_state.switch_state_last_change
         }, StateSummary)
 
     def _augment_mac_urls(self, url_base, switch_data):
