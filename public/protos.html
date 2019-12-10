@@ -422,6 +422,34 @@
                   <a href="#SwitchState"><span class="badge">M</span>SwitchState</a>
                 </li>
               
+                <li>
+                  <a href="#SwitchState.Port"><span class="badge">M</span>SwitchState.Port</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.Port.Attributes"><span class="badge">M</span>SwitchState.Port.Attributes</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.SwitchNode"><span class="badge">M</span>SwitchState.SwitchNode</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.SwitchNode.Attributes"><span class="badge">M</span>SwitchState.SwitchNode.Attributes</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.SwitchNode.NodePath"><span class="badge">M</span>SwitchState.SwitchNode.NodePath</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.SwitchNode.PortsEntry"><span class="badge">M</span>SwitchState.SwitchNode.PortsEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.SwitchesEntry"><span class="badge">M</span>SwitchState.SwitchesEntry</a>
+                </li>
+              
               
               
               
@@ -2130,13 +2158,373 @@ to peer controller</p></td>
       <div class="file-heading">
         <h2 id="forch/proto/switch_state.proto">forch/proto/switch_state.proto</h2><a href="#title">Top</a>
       </div>
-      <p>switch_state API result.</p>
+      <p>switch_state API result</p>
 
       
         <h3 id="SwitchState">SwitchState</h3>
-        <p>State of switches.</p>
+        <p>State of switches</p>
 
         
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>switch_state</td>
+                  <td><a href="#State.State">State.State</a></td>
+                  <td></td>
+                  <td><p>Overall status of the switches </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switch_state_detail</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Summary detail of the switch state </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switch_state_change_count</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Number of times switch state has changed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switch_state_last_change</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>The last time switch state changed </p></td>
+                </tr>
+              
+                <tr>
+                  <td>system_state_url</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Link to top level system state </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switches</td>
+                  <td><a href="#SwitchState.SwitchesEntry">SwitchState.SwitchesEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Detailed information about individual switches </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switches_restrict</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Restriction information about this query </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.Port">SwitchState.Port</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>attributes</td>
+                  <td><a href="#SwitchState.Port.Attributes">SwitchState.Port.Attributes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>port_state</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>state_last_change</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>state_change_count</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.Port.Attributes">SwitchState.Port.Attributes</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>description</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>port_type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>stack_peer_switch</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>stack_peer_port</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.SwitchNode">SwitchState.SwitchNode</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>attributes</td>
+                  <td><a href="#SwitchState.SwitchNode.Attributes">SwitchState.SwitchNode.Attributes</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switch_state</td>
+                  <td><a href="#State.State">State.State</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>restart_type_event_count</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>restart_type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>restart_type_last_change</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switch_state_change_count</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>switch_state_last_change</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ports</td>
+                  <td><a href="#SwitchState.SwitchNode.PortsEntry">SwitchState.SwitchNode.PortsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>root_path</td>
+                  <td><a href="#SwitchState.SwitchNode.NodePath">SwitchState.SwitchNode.NodePath</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.SwitchNode.Attributes">SwitchState.SwitchNode.Attributes</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>dp_id</td>
+                  <td><a href="#int64">int64</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.SwitchNode.NodePath">SwitchState.SwitchNode.NodePath</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>switch</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>in</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>out</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>egress</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.SwitchNode.PortsEntry">SwitchState.SwitchNode.PortsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#SwitchState.Port">SwitchState.Port</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.SwitchesEntry">SwitchState.SwitchesEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#SwitchState.SwitchNode">SwitchState.SwitchNode</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
 
         
       

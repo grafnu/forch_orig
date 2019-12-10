@@ -249,10 +249,10 @@ class FaucetStateCollector:
         """Get summary of switch state"""
         switch_state = self._get_switch_state(None, None)
         return dict_proto({
-            'state': switch_state['switches_state'],
-            'detail': switch_state['switches_state_detail'],
-            'change_count': switch_state['switches_state_change_count'],
-            'last_change': switch_state['switches_state_last_change']
+            'state': switch_state['switch_state'],
+            'detail': switch_state['switch_state_detail'],
+            'change_count': switch_state['switch_state_change_count'],
+            'last_change': switch_state['switch_state_last_change']
         }, StateSummary)
 
     def _augment_mac_urls(self, url_base, switch_data):
@@ -281,20 +281,20 @@ class FaucetStateCollector:
             self._augment_mac_urls(url_base, switch_data)
 
         if not self.switch_states:
-            switches_state = STATE_BROKEN
+            switch_state = State.broken
             state_detail = 'No switches connected'
         elif broken:
-            switches_state = STATE_BROKEN
+            switch_state = State.broken
             state_detail = 'Switches in broken state: ' + ', '.join(broken)
         else:
-            switches_state = STATE_HEALTHY
+            switch_state = State.healthy
             state_detail = None
 
         result = {
-            'switches_state': switches_state,
-            'switches_state_detail': state_detail,
-            'switches_state_change_count': change_count,
-            'switches_state_last_change': last_change,
+            'switch_state': switch_state,
+            'switch_state_detail': state_detail,
+            'switch_state_change_count': change_count,
+            'switch_state_last_change': last_change,
             'switches': switches_data
         }
 
@@ -302,7 +302,7 @@ class FaucetStateCollector:
             result['switches'] = {switch: switches_data[switch]}
             result['switches_restrict'] = switch
 
-        return result
+        return dict_proto(result, SwitchState)
 
     def cleanup(self):
         """Clean up internal data"""
