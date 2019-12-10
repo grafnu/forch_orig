@@ -38,7 +38,7 @@ Running forch-solid tests
 9
 0
 2352
-null
+""
 "active"
 3
 @cpn_state
@@ -231,7 +231,7 @@ null
 null
 null
 2352
-null
+""
 "active"
 7
 @cpn_state
@@ -295,7 +295,7 @@ Running forch-restored tests
 9
 6
 2352
-null
+""
 "active"
 9
 @cpn_state
@@ -340,7 +340,7 @@ Running forch-reset tests
 9
 0
 2352
-null
+""
 "active"
 11
 @cpn_state
