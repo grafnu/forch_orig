@@ -168,7 +168,7 @@ class FaucetStateCollector:
             'state': dplane_state.dataplane_state,
             'detail': dplane_state.dataplane_state_detail,
             'change_count': dplane_state.dataplane_state_change_count,
-            'last_changed': dplane_state.dataplane_state_last_change
+            'last_change': dplane_state.dataplane_state_last_change
         }, StateSummary)
 
     def _update_dataplane_detail(self, dplane_state):

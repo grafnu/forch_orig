@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1e\x66orch/proto/system_state.proto\x1a\"forch/proto/shared_constants.proto\"\xa3\x01\n\x0cStateSummary\x12\x1b\n\x05state\x18\x01 \x01(\x0e\x32\x0c.State.State\x12\x0e\n\x06\x64\x65tail\x18\x02 \x01(\t\x12\x14\n\x0c\x63hange_count\x18\x03 \x01(\x05\x12\x13\n\x0blast_update\x18\x04 \x01(\t\x12\x14\n\x0clast_changed\x18\x05 \x01(\t\x12\x0b\n\x03url\x18\x06 \x01(\t\x12\x18\n\x10system_state_url\x18\x07 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x1e\x66orch/proto/system_state.proto\x1a\"forch/proto/shared_constants.proto\"\xa2\x01\n\x0cStateSummary\x12\x1b\n\x05state\x18\x01 \x01(\x0e\x32\x0c.State.State\x12\x0e\n\x06\x64\x65tail\x18\x02 \x01(\t\x12\x14\n\x0c\x63hange_count\x18\x03 \x01(\x05\x12\x13\n\x0blast_update\x18\x04 \x01(\t\x12\x13\n\x0blast_change\x18\x05 \x01(\t\x12\x0b\n\x03url\x18\x06 \x01(\t\x12\x18\n\x10system_state_url\x18\x07 \x01(\tb\x06proto3')
   ,
   dependencies=[forch_dot_proto_dot_shared__constants__pb2.DESCRIPTOR,])
 
@@ -63,7 +63,7 @@ _STATESUMMARY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='last_changed', full_name='StateSummary.last_changed', index=4,
+      name='last_change', full_name='StateSummary.last_change', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -96,7 +96,7 @@ _STATESUMMARY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=71,
-  serialized_end=234,
+  serialized_end=233,
 )
 
 _STATESUMMARY.fields_by_name['state'].enum_type = forch_dot_proto_dot_shared__constants__pb2._STATE_STATE
