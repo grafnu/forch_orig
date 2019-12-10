@@ -242,12 +242,12 @@ class FaucetStateCollector:
     def get_switch_summary(self):
         """Get summary of switch state"""
         switch_state = self._get_switch_state(None, None)
-        return {
+        return dict_proto({
             'state': switch_state['switches_state'],
             'detail': switch_state['switches_state_detail'],
             'change_count': switch_state['switches_state_change_count'],
             'last_change': switch_state['switches_state_last_change']
-        }
+        }, StateSummary)
 
     def _augment_mac_urls(self, url_base, switch_data):
         if url_base:

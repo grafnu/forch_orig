@@ -292,7 +292,7 @@ class Forchestrator:
             'cpn_state': proto_dict(self._cpn_collector.get_cpn_summary()),
             'process_state': proto_dict(self._local_collector.get_process_summary()),
             'dataplane_state': proto_dict(self._faucet_collector.get_dataplane_summary()),
-            'switch_state': self._faucet_collector.get_switch_summary(),
+            'switch_state': proto_dict(self._faucet_collector.get_switch_summary()),
             'list_hosts': proto_dict(self._faucet_collector.get_host_summary())
         }
         url_base = self._extract_url_base(path)
