@@ -78,7 +78,7 @@ message SwitchState {
 
     // Information for a path
     message NodePath {
-      // Which switch name
+      // Switch name
       string switch = 1;
 
       // In port
