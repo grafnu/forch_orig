@@ -253,7 +253,7 @@ class FaucetStateCollector:
         state_summary = StateSummary()
         state_summary.state = switch_state.switch_state
         state_summary.detail = switch_state.switch_state_detail
-        state_summary.change_count = switch_state.switch_state_chagnge_count
+        state_summary.change_count = switch_state.switch_state_change_count
         state_summary.last_change = switch_state.switch_state_last_change
         return state_summary
 
