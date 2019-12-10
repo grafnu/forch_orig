@@ -1,8 +1,6 @@
 #!/bin/bash -e
 
-version=`git describe`
 testing=
-
 rm -rf dist/
 
 if [ "$1" == testing ]; then
@@ -12,6 +10,8 @@ if [ "$1" == testing ]; then
     git tag -d 0.0.0 || true
     git tag -a 0.0.0 -m "Testing"
 fi
+
+version=`git describe`
 
 sudo apt-get install devscripts equivs
 
