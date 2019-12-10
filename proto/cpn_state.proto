@@ -26,7 +26,7 @@ message CpnState {
   string cpn_state_last_update = 5;
 
   // Last time the state changed value.
-  string cpn_state_last_changed = 6;
+  string cpn_state_last_change = 6;
 
   // Link to top-level system state.
   string system_state_url = 7;
