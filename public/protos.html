@@ -2228,7 +2228,7 @@ to peer controller</p></td>
         
       
         <h3 id="SwitchState.Port">SwitchState.Port</h3>
-        <p></p>
+        <p>Information about a port</p>
 
         
           <table class="field-table">
@@ -2241,28 +2241,28 @@ to peer controller</p></td>
                   <td>attributes</td>
                   <td><a href="#SwitchState.Port.Attributes">SwitchState.Port.Attributes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Static port attributes </p></td>
                 </tr>
               
                 <tr>
                   <td>port_state</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Port state </p></td>
                 </tr>
               
                 <tr>
                   <td>state_last_change</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Port state last change time </p></td>
                 </tr>
               
                 <tr>
                   <td>state_change_count</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Port state change count </p></td>
                 </tr>
               
             </tbody>
@@ -2273,7 +2273,7 @@ to peer controller</p></td>
         
       
         <h3 id="SwitchState.Port.Attributes">SwitchState.Port.Attributes</h3>
-        <p></p>
+        <p>Static port attributes</p>
 
         
           <table class="field-table">
@@ -2286,28 +2286,28 @@ to peer controller</p></td>
                   <td>description</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Port description </p></td>
                 </tr>
               
                 <tr>
                   <td>port_type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Port type </p></td>
                 </tr>
               
                 <tr>
                   <td>stack_peer_switch</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Peer stacking switch </p></td>
                 </tr>
               
                 <tr>
                   <td>stack_peer_port</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Peer stacking port </p></td>
                 </tr>
               
             </tbody>
@@ -2318,7 +2318,7 @@ to peer controller</p></td>
         
       
         <h3 id="SwitchState.SwitchNode">SwitchState.SwitchNode</h3>
-        <p></p>
+        <p>Information about a single switch</p>
 
         
           <table class="field-table">
@@ -2331,63 +2331,63 @@ to peer controller</p></td>
                   <td>attributes</td>
                   <td><a href="#SwitchState.SwitchNode.Attributes">SwitchState.SwitchNode.Attributes</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Static attributes </p></td>
                 </tr>
               
                 <tr>
                   <td>switch_state</td>
                   <td><a href="#State.State">State.State</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>State of this switch </p></td>
                 </tr>
               
                 <tr>
                   <td>restart_type_event_count</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Number of times it has been restarted </p></td>
                 </tr>
               
                 <tr>
                   <td>restart_type</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Type of last restart </p></td>
                 </tr>
               
                 <tr>
                   <td>restart_type_last_change</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Last restart change time </p></td>
                 </tr>
               
                 <tr>
                   <td>switch_state_change_count</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Number of times switch state has changed </p></td>
                 </tr>
               
                 <tr>
                   <td>switch_state_last_change</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Last change time of switch state </p></td>
                 </tr>
               
                 <tr>
                   <td>ports</td>
                   <td><a href="#SwitchState.SwitchNode.PortsEntry">SwitchState.SwitchNode.PortsEntry</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Information about all switch ports </p></td>
                 </tr>
               
                 <tr>
                   <td>root_path</td>
                   <td><a href="#SwitchState.SwitchNode.NodePath">SwitchState.SwitchNode.NodePath</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
+                  <td><p>Path from this switch to root </p></td>
                 </tr>
               
             </tbody>
@@ -2398,7 +2398,7 @@ to peer controller</p></td>
         
       
         <h3 id="SwitchState.SwitchNode.Attributes">SwitchState.SwitchNode.Attributes</h3>
-        <p></p>
+        <p>Attributes about this switch</p>
 
         
           <table class="field-table">
@@ -2422,7 +2422,7 @@ to peer controller</p></td>
         
       
         <h3 id="SwitchState.SwitchNode.NodePath">SwitchState.SwitchNode.NodePath</h3>
-        <p></p>
+        <p>Information for a path</p>
 
         
           <table class="field-table">
@@ -2435,28 +2435,28 @@ to peer controller</p></td>
                   <td>switch</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Which switch name </p></td>
                 </tr>
               
                 <tr>
                   <td>in</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>In port </p></td>
                 </tr>
               
                 <tr>
                   <td>out</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Out port </p></td>
                 </tr>
               
                 <tr>
                   <td>egress</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>Egress port </p></td>
                 </tr>
               
             </tbody>
