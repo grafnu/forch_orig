@@ -73,7 +73,7 @@ message SwitchState {
 
     // Attributes about this switch
     message Attributes {
-      int64 dp_id = 1;
+      int32 dp_id = 1;
     }
 
     // Information for a path

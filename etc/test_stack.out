@@ -36,7 +36,7 @@ Running forch-solid tests
 15
 "nz-kiwi-t1sw1"
 9
-null
+0
 2352
 null
 "active"
@@ -81,7 +81,7 @@ Running forch-healthy tests
 15
 "nz-kiwi-t1sw1"
 9
-null
+0
 2352
 null
 "active"
@@ -229,7 +229,7 @@ Running forch-broken tests
 43
 null
 null
-null
+0
 2352
 null
 "active"
@@ -338,7 +338,7 @@ Running forch-reset tests
 63
 "nz-kiwi-t1sw1"
 9
-null
+0
 2352
 null
 "active"
