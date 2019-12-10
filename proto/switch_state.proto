@@ -131,6 +131,9 @@ message SwitchState {
 
     // Learning timestamp
     string timestamp = 3;
+
+    // url for host learning info
+    string url = 4;
   }
 
 }
