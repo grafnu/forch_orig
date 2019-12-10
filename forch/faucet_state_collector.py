@@ -13,11 +13,14 @@ from forch.constants import \
     STATE_BROKEN, STATE_DOWN, STATE_ACTIVE
 
 from forch.utils import dict_proto
+
+from forch.proto.shared_constants_pb2 import State
+from forch.proto.system_state_pb2 import StateSummary
+
 from forch.proto.dataplane_state_pb2 import DataplaneState
 from forch.proto.host_path_pb2 import HostPath
 from forch.proto.list_hosts_pb2 import HostList
-from forch.proto.shared_constants_pb2 import State
-from forch.proto.system_state_pb2 import StateSummary
+from forch.proto.switch_state_pb2 import SwitchState
 
 LOGGER = logging.getLogger('fstate')
 

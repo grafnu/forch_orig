@@ -1,0 +1,10 @@
+/*
+ * switch_state API result.
+ */
+syntax = "proto3";
+
+/*
+ * State of switches.
+ */
+message SwitchState {
+}

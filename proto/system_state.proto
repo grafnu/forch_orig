@@ -1,5 +1,5 @@
 /*
- * State summary of a component
+ * system_state API result.
  */
 syntax = "proto3";
 
