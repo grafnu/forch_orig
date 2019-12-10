@@ -5,6 +5,7 @@ testing=
 if [ "$1" == testing ]; then
     testing=$1
     shift
+    echo Forcing tag 0.0.0 for testing.
     git tag -d 0.0.0 || true
     git tag -a 0.0.0 -m "Testing"
 fi
@@ -14,12 +15,11 @@ version=`git describe`
 rm -rf dist/
 
 python3 setup.py sdist bdist_wheel
-
-#- apt-get update && apt-get upgrade -y
 sudo apt-get install devscripts equivs
 
 sudo mk-build-deps -i -r -t 'apt-get -f -y'
-#export DEBEMAIL='testuser@' && export DEBFULLNAME='Faucet Maintainers'
+export DEBEMAIL='faucet-dev@'
+export DEBFULLNAME='Forch Cabal'
 debchange --newversion $version -b "New upstream release"
 dpkg-buildpackage -b -us -uc -rfakeroot
 mv ../*.deb dist/
