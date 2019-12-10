@@ -1,6 +1,9 @@
 #!/bin/bash -e
 
+version=`git describe`
 testing=
+
+rm -rf dist/
 
 if [ "$1" == testing ]; then
     testing=$1
@@ -10,13 +13,12 @@ if [ "$1" == testing ]; then
     git tag -a 0.0.0 -m "Testing"
 fi
 
-version=`git describe`
-
-rm -rf dist/
-
-python3 setup.py sdist bdist_wheel
 sudo apt-get install devscripts equivs
 
+# Build pip package
+python3 setup.py sdist bdist_wheel
+
+# Build debian package
 sudo mk-build-deps -i -r -t 'apt-get -f -y'
 export DEBEMAIL='faucet-dev@'
 export DEBFULLNAME='Forch Cabal'
