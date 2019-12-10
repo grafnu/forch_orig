@@ -289,8 +289,6 @@ class Forchestrator:
         return constants.STATE_HEALTHY, detail
 
     def _get_system_summary(self, path):
-        print(self._faucet_collector.get_dataplane_summary())
-
         states = {
             'cpn_state': proto_dict(self._cpn_collector.get_cpn_summary()),
             'process_state': proto_dict(self._local_collector.get_process_summary()),
