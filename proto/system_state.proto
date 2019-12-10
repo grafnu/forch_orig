@@ -24,6 +24,9 @@ message StateSummary {
   // Last time the state was changed
   string last_changed = 5;
 
-  //  Link to top-level system state
+  // Link to top-level system state
   string url = 6;
+
+  // Link to top-level system state in long form
+  string system_state_url = 7;
 }
