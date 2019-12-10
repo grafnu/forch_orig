@@ -56,8 +56,11 @@ message SwitchState {
     // Information about all switch ports
     map<int32, Port> ports = 8;
 
+    // Any port restrictions in effect
+    string ports_restrict = 9;
+
     // Path from this switch to root
-    repeated NodePath root_path = 9;
+    repeated NodePath root_path = 10;
 
     // Attributes about this switch
     message Attributes {
@@ -94,7 +97,7 @@ message SwitchState {
     // Port state change count
     int32 state_change_count = 4;
 
-    // Static port attributes  
+    // Static port attributes
     message Attributes {
       // Port description
       string description = 1;
