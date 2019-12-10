@@ -62,6 +62,15 @@ message SwitchState {
     // Path from this switch to root
     repeated NodePath root_path = 10;
 
+    // All the access port macs on this switch
+    map<string, PortInfo> access_port_macs = 11;
+
+    // All the stacking port macs on this switch
+    map<string, PortInfo> stacking_port_macs = 12;
+
+    // All the egress port macs on this switch
+    map<string, PortInfo> egress_port_macs = 13;
+
     // Attributes about this switch
     message Attributes {
       int64 dp_id = 1;
@@ -111,6 +120,17 @@ message SwitchState {
       // Peer stacking port
       int32 stack_peer_port = 4;
     }
+  }
+
+  message PortInfo {
+    // Port number on this switch
+    int32 port = 1;
+
+    // Learned IP address for this MAC
+    string ip_address = 2;
+
+    // Learning timestamp
+    string timestamp = 3;
   }
 
 }
