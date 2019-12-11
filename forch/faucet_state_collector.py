@@ -104,14 +104,14 @@ class FaucetStateCollector:
         self.lock = RLock()
         self._lock = threading.Lock()
         self.process_lag_state(time.time(), None, None, False)
-        self._is_active = False
+        self._active_state = State.initializing
         self._is_state_restored = False
         self._state_restore_error = None
 
-    def set_active(self, is_active):
+    def set_active(self, active_state):
         """Set active state"""
         with self._lock:
-            self._is_active = is_active
+            self._active_state = active_state
 
     def set_state_restored(self, is_restored, restore_error=None):
         """Set state restore result"""
@@ -130,9 +130,13 @@ class FaucetStateCollector:
         def pre_check(func):
             def wrapped(self, *args, **kwargs):
                 with self._lock:
-                    if not self._is_active:
+                    if self._active_state == State.inactive:
                         detail = 'This controller is inactive. Please view peer controller.'
                         return self._make_summary(State.inactive, detail)
+                    if self._active_state != State.active:
+                        state_name = State.State.Name(self._active_state)
+                        detail = f'This controller is {state_name}'
+                        return self._make_summary(self._active_state, detail)
                     if not self._is_state_restored:
                         detail = f'Cannot state not restored: {self._state_restore_error}'
                         return self._make_summary(State.broken, detail)
