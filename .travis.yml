@@ -14,12 +14,12 @@ install:
   - bin/build_proto check
 script:
   - set -e
+  - bin/package_forch testing
   - bin/check_style
   - bin/build_docker
   - bin/setup_stack local
   - bin/test_stack
   - bin/build_proto
-  - bin/package_forch
 env:
   matrix:
     - MATRIX_SHARD=1
