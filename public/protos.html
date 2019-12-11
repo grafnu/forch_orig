@@ -2116,15 +2116,15 @@ or to host_path API to list path </p></td>
           <tbody>
             
               <tr>
-                <td>active</td>
+                <td>broken</td>
                 <td>0</td>
-                <td><p>active: in function</p></td>
+                <td><p>broken: unable to function because of error (default)</p></td>
               </tr>
             
               <tr>
-                <td>broken</td>
+                <td>active</td>
                 <td>1</td>
-                <td><p>broken: unable to function because of error</p></td>
+                <td><p>active: in function</p></td>
               </tr>
             
               <tr>
@@ -2148,7 +2148,7 @@ or to host_path API to list path </p></td>
               <tr>
                 <td>inactive</td>
                 <td>5</td>
-                <td><p>inactive: specific to controller, not VRRP master</p></td>
+                <td><p>inactive: controller not active</p></td>
               </tr>
             
               <tr>
@@ -2160,8 +2160,7 @@ or to host_path API to list path </p></td>
               <tr>
                 <td>split</td>
                 <td>7</td>
-                <td><p>split: specific to controller, being VRRP master but not able to connect
-to peer controller</p></td>
+                <td><p>split: controller master but can not reach peer controller</p></td>
               </tr>
             
               <tr>

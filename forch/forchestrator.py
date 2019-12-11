@@ -258,15 +258,14 @@ class Forchestrator:
         has_error = False
         has_warning = False
         details = []
-        for subsystem_name in summary:
-            subsystem = summary[subsystem_name]
-            state = subsystem.get('state', State.broken)
+        for field, subsystem in summary.ListFields():
+            state = subsystem.state
             if state in (State.down, State.broken):
                 has_error = True
-                details.append(subsystem_name)
+                details.append(field.name)
             elif state != State.healthy:
                 has_warning = True
-                details.append(subsystem_name)
+                details.append(field.name)
         if details:
             detail = 'broken subsystems: ' + ', '.join(details)
         else:
