@@ -557,15 +557,15 @@ class FaucetStateCollector:
     def get_host_path(self, src_mac, dst_mac, to_egress):
         """Given two MAC addresses in the core network, find the active path between them"""
         if not src_mac:
-            return self._make_summary(State.error,
+            return self._make_summary(State.broken,
                                       'Empty eth_src. Please use list_hosts to get a list of hosts')
         if not dst_mac and not to_egress:
-            return self._make_summary(State.error,
+            return self._make_summary(State.broken,
                                       'Empty eth_dst. Use list_hosts, or set to_egress=true')
 
         if src_mac not in self.learned_macs or dst_mac and dst_mac not in self.learned_macs:
             error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
-            return self._make_summary(State.error, error_msg)
+            return self._make_summary(State.broken, error_msg)
 
         if to_egress:
             ret_map = self.get_active_egress_path(src_mac)
@@ -794,7 +794,7 @@ class FaucetStateCollector:
         host_macs = {}
         if src_mac and src_mac not in self.learned_macs:
             error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
-            return self._make_summary(State.error, error_msg)
+            return self._make_summary(State.broken, error_msg)
         for mac, mac_state in self.learned_macs.items():
             if mac == src_mac:
                 continue
