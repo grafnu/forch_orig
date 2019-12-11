@@ -20,3 +20,8 @@ script:
   - bin/setup_stack local
   - bin/test_stack
   - bin/build_proto
+env:
+  matrix:
+    - SHARD=1
+    - SHARD=2
+    - SHARD=3
