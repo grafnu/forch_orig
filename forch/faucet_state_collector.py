@@ -180,7 +180,7 @@ class FaucetStateCollector:
         egress_detail = egress.get(EGRESS_DETAIL)
 
         if egress:
-            state = State.healthy if egress_state == STATE_UP else STATE_BROKEN
+            state = State.healthy if egress_state == STATE_UP else State.broken
         if egress_detail:
             detail.append("egress:" + str(egress_detail))
 
