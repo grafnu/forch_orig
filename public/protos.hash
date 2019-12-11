@@ -1,6 +1,6 @@
 a25e80c06dc7630cf1babf5161feb3e43aa90181  proto/cpn_config.proto
 3f1365cdc6f9268230ee009999e4dba254b33c12  proto/cpn_state.proto
-883f43fb32552007469766f201025e53466be8b6  proto/dataplane_state.proto
+ca4888746a5fbe1a16746e4eea63bf4bb456a472  proto/dataplane_state.proto
 51271978cc9b89ff2e39ae2a70ed14452337d3e9  proto/faucet_event.proto
 af9a160b73eb912bd4aadb6e03c19be08711dc7a  proto/host_path.proto
 ff5a5588400aef3a9952b3ccfd8d24e854d4b153  proto/list_hosts.proto
