@@ -92,7 +92,7 @@ class Forchestrator:
 
         current_time = time.time()
         faucet_config = self._get_faucet_config()
-        self._faucet_collector.set_faucet_config(True)
+        self._faucet_collector.set_faucet_config(faucet_config)
         self._faucet_collector.process_dataplane_config_change(
             current_time, faucet_config.get('dps', {}))
 

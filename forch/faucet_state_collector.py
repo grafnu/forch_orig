@@ -116,6 +116,11 @@ class FaucetStateCollector:
         with self._lock:
             self._is_active = is_active
 
+    def set_faucet_config(self, faucet_config):
+        """Set the top-level faucet configuration"""
+        with self._lock:
+            self.faucet_config = faucet_config
+
     def set_state_restored(self, is_restored, restore_error=None):
         """Set state restore result"""
         with self._lock:
