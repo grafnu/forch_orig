@@ -104,7 +104,7 @@ class FaucetStateCollector:
         self.faucet_config = {}
         self.lock = RLock()
         self._lock = threading.Lock()
-        self.process_lag_state(time.time(), None, None, False)
+        self._process_lag_state(time.time(), None, None, False)
         self._active_state = State.initializing
         self._is_state_restored = False
         self._state_restore_error = None
@@ -621,10 +621,14 @@ class FaucetStateCollector:
             port_table[PORT_STATE_TS] = datetime.fromtimestamp(timestamp).isoformat()
             port_table[PORT_STATE_COUNT] = port_table.setdefault(PORT_STATE_COUNT, 0) + 1
 
+    def process_lag_event(self, lag_change):
+        """Process a LagChange event"""
+        self._process_lag_state(lag_change.timestamp, lag_change.dp_name, lag_change.port_no,
+                                lag_change.state)
+
     @_dump_states
     @_register_restore_state_method(label_name='port', metric_name='port_lacp_state')
-    def process_lag_state(self, timestamp, name, port, lacp_state):
-        """process lag change event"""
+    def _process_lag_state(self, timestamp, name, port, lacp_state):
         with self.lock:
             egress_state = self.topo_state.setdefault('egress', {})
             old_egress_name = egress_state.get(EGRESS_DETAIL)
@@ -723,7 +727,7 @@ class FaucetStateCollector:
                             dp_name, port, new_state)
 
     @_dump_states
-    def process_stack_topo_change(self, topo_change):
+    def process_stack_topo_change_event(self, topo_change):
         """Process stack topology change event"""
         topo_state = self.topo_state
         timestamp = topo_change.timestamp
