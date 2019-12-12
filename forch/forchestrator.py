@@ -10,6 +10,7 @@ import time
 import yaml
 
 from google.protobuf.message import Message
+from forch.proto import faucet_event_pb2 as FaucetEvent
 
 from faucet import config_parser
 
@@ -78,11 +79,20 @@ class Forchestrator:
         self._local_collector.initialize()
         self._cpn_collector.initialize()
         LOGGER.info('Using peer controller %s', self._get_peer_controller_url())
+        self._register_handlers()
         self._initialized = True
 
     def initialized(self):
         """If forch is initialized or not"""
         return self._initialized
+
+    def _register_handlers(self):
+        fcoll = self._faucet_collector
+        self._faucet_events.register_handlers([
+            (FaucetEvent.StackTopoChange, fcoll.process_stack_topo_change_event),
+            (FaucetEvent.LagChange, lambda event: fcoll.process_lag_state(
+                event.timestamp, event.dp_name, event.port_no, event.state)),
+        ])
 
     def _restore_states(self):
         # Make sure the event socket is connected so there's no loss of information.
@@ -163,20 +173,10 @@ class Forchestrator:
             LOGGER.debug('Config change. New config: %s', config_info['hashes'])
             self._restore_faucet_config(timestamp, config_info['hashes'])
 
-        topo_change = self._faucet_events.as_stack_topo_change(event)
-        if topo_change:
-            LOGGER.debug('stack dataplane_state change root:%s', topo_change.stack_root)
-            self._faucet_collector.process_stack_topo_change(topo_change)
-
         (name, port, state) = self._faucet_events.as_stack_state(event)
         if name is not None:
             LOGGER.debug('stack stack_state change: %s:%d, %d', name, port, state)
             self._faucet_collector.process_stack_state(timestamp, name, port, state)
-
-        (name, port, state) = self._faucet_events.as_lag_state(event)
-        if name and port:
-            LOGGER.debug('LAG state %s %s %s', name, port, state)
-            self._faucet_collector.process_lag_state(timestamp, name, port, state)
 
         (name, connected) = self._faucet_events.as_dp_change(event)
         if name:
