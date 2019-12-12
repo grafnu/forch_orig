@@ -561,15 +561,15 @@ class FaucetStateCollector:
         return res
 
     # pylint: disable=too-many-arguments
-    def _add_endpoint_to_next_hops(self, switch, mac, sw_1, p_1, sw_2, p_2, next_hops):
-        if not switch == sw_1:
+    def _add_endpoint_to_next_hops(self, switch, mac, fr_sw, fr_port, to_sw, to_port, next_hops):
+        if not switch == fr_sw:
             return
         learned_switch_map = self.learned_macs.get(mac, {}).get(MAC_LEARNING_SWITCH, {})
-        learned_port = learned_switch_map.get(sw_2, {}).get(MAC_LEARNING_PORT)
-        if not learned_port == p_2:
+        learned_port = learned_switch_map.get(to_sw, {}).get(MAC_LEARNING_PORT)
+        if not learned_port == to_port:
             return
-        next_hop = {'switch': sw_2, 'in': p_2, 'out': None}
-        next_hops[p_1] = next_hop
+        next_hop = {'switch': to_sw, 'in': to_port, 'out': None}
+        next_hops[fr_port] = next_hop
 
     def _get_next_hops(self, switch, mac):
         """Given a node and mac, find connected switches and ports where the mac is learned"""
@@ -583,30 +583,8 @@ class FaucetStateCollector:
 
         return next_hops
 
-    @_pre_check('host_path_state')
-    def get_host_path(self, src_mac, dst_mac, to_egress):
-        """Given two MAC addresses in the core network, find the active path between them"""
-        if not src_mac:
-            return self._make_summary(
-                State.broken, 'Empty eth_src. Please use list_hosts to get a list of hosts')
-        if not dst_mac and not to_egress:
-            return self._make_summary(
-                State.broken, 'Empty eth_dst. Use list_hosts, or set to_egress=true')
-
-        if src_mac not in self.learned_macs or dst_mac and dst_mac not in self.learned_macs:
-            error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
-            return self._make_summary(State.broken, error_msg)
-
-        if to_egress:
-            ret_map = self.get_active_egress_path(src_mac)
-            src_ip = self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP)
-            ret_map['src_ip'] = src_ip
-            return ret_map
-
-        res = {'src_ip': self.learned_macs[src_mac].get(MAC_LEARNING_IP),
-               'dst_ip': self.learned_macs[dst_mac].get(MAC_LEARNING_IP),
-               'path': []}
-
+    def _get_host_path(self, src_mac, dst_mac):
+        path = []
         src_switch, src_port = self._get_access_switch(src_mac)
         dst_switch, dst_port = self._get_access_switch(dst_mac)
 
@@ -626,16 +604,40 @@ class FaucetStateCollector:
                 current_hop['out'] = out_port
                 last_hops[next_hop['switch']] = copy.deepcopy(current_hop)
 
-        if not current_hop['switch'] == dst_switch:
-            return dict_proto(res, HostPath)
+        if current_hop['switch'] == dst_switch:
+            while current_hop:
+                path.append(current_hop)
+                current_hop = last_hops.get(current_hop['switch'])
+            path.reverse()
 
-        path = res['path']
+        return path
 
-        while current_hop:
-            path.append(current_hop)
-            current_hop = last_hops.get(current_hop['switch'])
+    @_pre_check(state_name='host_path_state')
+    def get_host_path(self, src_mac, dst_mac, to_egress):
+        """Given two MAC addresses in the core network, find the active path between them"""
+        if not src_mac:
+            return self._make_summary(
+                State.broken, 'Empty eth_src. Please use list_hosts to get a list of hosts')
+        if not dst_mac and not to_egress:
+            return self._make_summary(
+                State.broken, 'Empty eth_dst. Use list_hosts, or set to_egress=true')
 
-        path.reverse()
+        if src_mac not in self.learned_macs or dst_mac and dst_mac not in self.learned_macs:
+            error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
+            return self._make_summary(State.broken, error_msg)
+
+        if to_egress:
+            ret_map = self.get_active_egress_path(src_mac)
+            src_ip = self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP)
+            ret_map['src_ip'] = src_ip
+            return ret_map
+
+        res = {
+            'src_ip': self.learned_macs[src_mac].get(MAC_LEARNING_IP),
+            'dst_ip': self.learned_macs[dst_mac].get(MAC_LEARNING_IP),
+            'path': self._get_host_path(src_mac, dst_mac)
+        }
+
         return dict_proto(res, HostPath)
 
     @_dump_states
