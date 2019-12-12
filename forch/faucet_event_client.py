@@ -68,6 +68,7 @@ class FaucetEventClient():
             self.buffer = None
 
     def register_handler(self, proto, handler):
+        """Register an event handler for the given proto class"""
         message_name = self._convert_to_snake_caps(proto.__name__)
         LOGGER.info('Registering handler for event type %s', message_name)
         self._handlers[message_name] = handler
@@ -200,7 +201,7 @@ class FaucetEventClient():
                 LOGGER.info('Error (%s) parsing\n%s*\nwith\n%s*', str(e), line, remainder)
             if self._filter_faucet_event(event):
                 if not self._dispatch_faucet_event(event):
-                   return event
+                    return event
         return None
 
     def _augment_event_proto(self, event, target_event):

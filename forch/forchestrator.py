@@ -9,10 +9,10 @@ import threading
 import time
 import yaml
 
-from faucet import config_parser
-
 from google.protobuf.message import Message
 from forch.proto.faucet_event_pb2 import StackTopoChange
+
+from faucet import config_parser
 
 import forch.faucet_event_client
 import forch.http_server
