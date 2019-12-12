@@ -361,7 +361,7 @@ curl http://$CONTROLLER_NAME:9019/sys_config > $out_dir/sys_config.json
 jq '.faucet.dps."nz-kiwi-t2sw3"'.faucet_dp_mac $out_dir/sys_config.json | tee -a $TEST_RESULTS
 
 echo %%% initial solid state | tee -a $TEST_RESULTS
-echo TODO: make pcap sane be 1 1 1 as per b/145851457 | tee -a $TEST_RESULTS
+# TODO: make pcap sane be 1 1 1 as per b/145851457
 test_stack -solid
 test_forch -solid
 
