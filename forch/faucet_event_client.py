@@ -73,6 +73,11 @@ class FaucetEventClient():
         LOGGER.info('Registering handler for event type %s', message_name)
         self._handlers[message_name] = handler
 
+    def register_handlers(self, handlers):
+        """Register a list of handler (proto, func) tuples"""
+        for handler in handlers:
+            self.register_handler(handler[0], handler[1])
+
     def _convert_to_snake_caps(self, name):
         return functools.reduce(lambda x, y: x + ('_' if y.isupper() else '') + y, name).upper()
 

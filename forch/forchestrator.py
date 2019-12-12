@@ -87,11 +87,12 @@ class Forchestrator:
         return self._initialized
 
     def _register_handlers(self):
-        self._faucet_events.register_handler(FaucetEvent.StackTopoChange,
-                                             self._faucet_collector.process_stack_topo_change_event)
-        self._faucet_events.register_handler(FaucetEvent.LagChange, lambda e:
-                                             self._faucet_collector.process_lag_state(
-                                                 e.timestamp, e.dp_name, e.port_no, e.state))
+        fcoll = self._faucet_collector
+        self._faucet_events.register_handlers([
+            (FaucetEvent.StackTopoChange, fcoll.process_stack_topo_change_event),
+            (FaucetEvent.LagChange, lambda event: fcoll.process_lag_state(
+                event.timestamp, event.dp_name, event.port_no, event.state)),
+        ])
 
     def _restore_states(self):
         # Make sure the event socket is connected so there's no loss of information.
