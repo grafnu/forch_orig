@@ -85,14 +85,15 @@ class Forchestrator:
     def _restore_states(self):
         # Make sure the event socket is connected so there's no loss of information.
         assert self._faucet_events.event_socket_connected, 'restore states without connection'
-        metrics = self._varz_collector.get_metrics()
-        self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
-        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
-
         current_time = time.time()
         faucet_config = self._get_faucet_config()
         self._faucet_collector.process_dataplane_config_change(
             current_time, faucet_config.get('dps', {}))
+
+        metrics = self._varz_collector.get_metrics()
+        LOGGER.info(' Anurag Setting event horizon to event #%d', self._event_horizon)
+        self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
+        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
 
     def main_loop(self):
         """Main event processing loop"""
@@ -107,7 +108,7 @@ class Forchestrator:
                         self._restore_states()
                         self._faucet_collector.set_state_restored(True)
                     except Exception as e:
-                        LOGGER.error("Cannot restore states or connect to faucet: %s", e)
+                        LOGGER.error("Cannot restore states or connect to faucet", exc_info=True)
                         self._faucet_collector.set_state_restored(False, e)
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
