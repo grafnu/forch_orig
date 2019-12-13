@@ -171,7 +171,7 @@ class FaucetStateCollector:
     def restore_dataplane_state_from_metrics(self, metrics):
         """Restores dataplane state from prometheus metrics. relies on STACK_STATE being restored"""
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
-        topo_map = self._get_topo_map(check_active=False)
+        topo_map = self._get_topo_map(False)
         for key, status in topo_map.items():
             if status.get('link_state') != 'broken':
                 item = self._topo_map_to_link_graph(key)
@@ -786,14 +786,13 @@ class FaucetStateCollector:
                 graph_links.sort()
                 LOGGER.info('stack_state_links #%d links: %s', link_change_count, graph_links)
 
-            stack_root = topo_change.stack_root
-            msg_str = "root %s: %s" % (stack_root, self._list_root_hops(topo_change.dps))
+            msg_str = "root %s: %s" % (stack_root, self._list_root_hops(dps))
             prev_msg = topo_state.get(TOPOLOGY_DPS_HASH)
             if prev_msg != msg_str:
                 topo_change_count = topo_state.get(TOPOLOGY_CHANGE_COUNT, 0) + 1
                 LOGGER.info('stack_topo_change #%d to %s', topo_change_count, msg_str)
-                topo_state[TOPOLOGY_ROOT] = topo_change.stack_root
-                topo_state[TOPOLOGY_DPS] = topo_change.dps
+                topo_state[TOPOLOGY_ROOT] = stack_root
+                topo_state[TOPOLOGY_DPS] = dps
                 topo_state[TOPOLOGY_DPS_HASH] = msg_str
                 topo_state[TOPOLOGY_CHANGE_COUNT] = topo_change_count
                 topo_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
