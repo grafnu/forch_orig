@@ -503,16 +503,16 @@ class FaucetStateCollector:
         dps_objs = self.faucet_config.get(DPS_CFG)
         if not dps_objs:
             return None
-        for local_dp in dps_objs:
-            for local_port, iface_obj in local_dp.interfaces.items():
+        for lcl_dp in dps_objs:
+            for lcl_pt, iface_obj in lcl_dp.interfaces.items():
                 if 'stack' not in iface_obj:
                     continue
-                peer_dp = iface_obj['stack']['dp']
-                peer_port = iface_obj['stack']['port'].number
-                if peer_dp and peer_port:
-                    key = self._make_key(local_dp, local_port, peer_dp, peer_port)
+                pr_dp = iface_obj['stack']['dp']
+                pr_pt = iface_obj['stack']['port'].number
+                if pr_dp and pr_pt:
+                    key = self._make_key(lcl_dp, lcl_pt, pr_dp, pr_pt)
                     if key not in topo_map:
-                        link_state = self._get_link_state(local_dp, local_port, peer_dp, peer_port, chk_actv)
+                        link_state = self._get_link_state(lcl_dp, lcl_pt, pr_dp, pr_pt, chk_actv)
                         topo_map.setdefault(key, {})[LINK_STATE] = link_state
         return topo_map
 
