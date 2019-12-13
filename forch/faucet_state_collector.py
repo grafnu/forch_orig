@@ -159,7 +159,12 @@ class FaucetStateCollector:
                     switch = sample.labels['dp_name']
                     label = int(sample.labels.get(label_name, 0))
                     restore_method(self, current_time, switch, label, sample.value)
+        self.restore_dataplane_state_from_metrics(metrics)
         return int(metrics['faucet_event_id'].samples[0].value)
+
+    def restore_dataplane_state_from_metrics(self, metrics):
+        """Restores dataplane state from prometheus metrics"""
+        pass
 
     @_pre_check(state_name='state')
     def get_dataplane_summary(self):
@@ -716,10 +721,16 @@ class FaucetStateCollector:
     @_dump_states
     def process_stack_topo_change(self, topo_change):
         """Process stack topology change event"""
-        topo_state = self.topo_state
+        link_graph = topo_change.graph.links
+        stack_root = topo_change.stack_root
+        dps = topo_change.dps
         timestamp = topo_change.timestamp
+        self._update_stack_topo_state(link_graph, stack_root, dps, timestamp)
+
+    def _update_stack_topo_state(self, link_graph, stack_root, dps, timestamp):
+        """Update topo_state with stack topology information"""
+        topo_state = self.topo_state
         with self.lock:
-            link_graph = topo_change.graph.links
             links_hash = str(link_graph)
             if topo_state.get(LINKS_HASH) != links_hash:
                 topo_state[LINKS_GRAPH] = link_graph
@@ -729,17 +740,17 @@ class FaucetStateCollector:
                 graph_links.sort()
                 LOGGER.info('stack_topo_links #%d links: %s', link_change_count, graph_links)
 
-            stack_root = topo_change.stack_root
-            dps_hash = str(topo_change.dps)
+            dps_hash = str(dps)
             prev_hash = topo_state.get(TOPOLOGY_DPS_HASH)
             if topo_state.get(TOPOLOGY_ROOT) != stack_root or prev_hash != dps_hash:
                 topo_change_count = topo_state.get(TOPOLOGY_CHANGE_COUNT, 0) + 1
                 LOGGER.info('stack_topo change #%d to root %s', topo_change_count, stack_root)
-                topo_state[TOPOLOGY_ROOT] = topo_change.stack_root
-                topo_state[TOPOLOGY_DPS] = topo_change.dps
+                topo_state[TOPOLOGY_ROOT] = stack_root
+                topo_state[TOPOLOGY_DPS] = dps
                 topo_state[TOPOLOGY_DPS_HASH] = dps_hash
                 topo_state[TOPOLOGY_CHANGE_COUNT] = topo_change_count
                 topo_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
+
 
     def _update_stack_links_stats(self, timestamp):
         link_change_count = self.topo_state.get(LINKS_CHANGE_COUNT, 0) + 1
