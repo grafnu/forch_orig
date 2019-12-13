@@ -150,7 +150,6 @@ class FaucetStateCollector:
 
     def restore_states_from_metrics(self, metrics):
         """Restore internal states from prometheus metrics"""
-        LOGGER.info("Anurag restore_states_from_metrics")
         current_time = time.time()
         for label_name, method_map in _RESTORE_METHODS.items():
             for metric_name, restore_method in method_map.items():
@@ -168,7 +167,6 @@ class FaucetStateCollector:
         """Restores dataplane state from prometheus metrics. relies on STACK_STATE being restored"""
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
         topo_map = self._get_topo_map(check_active=False)
-        LOGGER.info("Anurag topo_map_result: %s", topo_map)
         for key, status in topo_map.items():
             if status.get('link_state') != 'broken':
                 item = self._topo_map_to_link_graph(key)
@@ -177,7 +175,7 @@ class FaucetStateCollector:
 
         for sample in metrics.get('faucet_stack_root_dpid').samples:
             stack_root = sample.value
-        
+       
         for sample in metrics.get('dp_root_hop_port').samples:
             switch = sample.labels.get('dp_name', "")
             stack_dp = stc.StackDp(root_hop_port=int(sample.value))
@@ -195,7 +193,7 @@ class FaucetStateCollector:
         if len(dp_ports) == 2:
             dp_a, port_a = dp_ports[0].split(':')
             dp_b, port_b = dp_ports[1].split(':')
-            key = dp_a+port_a+"-"+dp_b+port_b
+            key = dp_a+":"+port_a+"-"+dp_b+":"+port_b
             port_a = "Port "+port_a
             port_b = "Port "+port_b
             port_map = stc.LinkPortMap(dp_a=dp_a, port_a=port_a, dp_z=dp_b, port_z=port_b)
@@ -766,9 +764,10 @@ class FaucetStateCollector:
 
     def _update_stack_topo_state(self, link_graph, stack_root, dps, timestamp):
         """Update topo_state with stack topology information"""
-        LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
-                \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", \
-                link_graph, stack_root, dps, timestamp)
+        #TOFO: Anurag: Remove once issue resolved
+        #LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
+        #        \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", \
+        #        link_graph, stack_root, dps, timestamp)
         topo_state = self.topo_state
         with self.lock:
             links_hash = str(link_graph)

@@ -91,7 +91,6 @@ class Forchestrator:
             current_time, faucet_config.get('dps', {}))
 
         metrics = self._varz_collector.get_metrics()
-        LOGGER.info(' Anurag Setting event horizon to event #%d', self._event_horizon)
         self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
         LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
 
