@@ -729,7 +729,9 @@ class FaucetStateCollector:
 
     def _update_stack_topo_state(self, link_graph, stack_root, dps, timestamp):
         """Update topo_state with stack topology information"""
-        #LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", link_graph, stack_root, dps, timestamp)
+        #LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
+        #        \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", \
+        #        link_graph, stack_root, dps, timestamp)
         topo_state = self.topo_state
         with self.lock:
             links_hash = str(link_graph)
