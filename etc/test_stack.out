@@ -40,7 +40,7 @@ Running forch-solid tests
 "147058200627"
 ""
 "active"
-""
+null
 3
 @cpn_state-solid
 2
@@ -86,7 +86,7 @@ Running forch-healthy tests
 "147058200627"
 ""
 "active"
-""
+null
 3
 @cpn_state-healthy
 3
@@ -171,7 +171,7 @@ Running forch-twod tests
 "147058200627"
 "Switches in broken state: nz-kiwi-t2sw3"
 "active"
-""
+null
 4
 @cpn_state-twod
 5
@@ -236,7 +236,7 @@ null
 "147058200627"
 ""
 "active"
-""
+null
 7
 @cpn_state-broken
 5
@@ -301,7 +301,7 @@ Running forch-restored tests
 "147058200627"
 ""
 "active"
-""
+null
 9
 @cpn_state-restored
 5
@@ -347,7 +347,7 @@ Running forch-reset tests
 "147058200627"
 ""
 "active"
-""
+null
 11
 @cpn_state-reset
 6
