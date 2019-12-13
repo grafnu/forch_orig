@@ -180,21 +180,20 @@ class FaucetStateCollector:
 
         for sample in metrics.get('faucet_stack_root_dpid').samples:
             stack_root = sample.value
-       
+
         for sample in metrics.get('dp_root_hop_port').samples:
             switch = sample.labels.get('dp_name', "")
             stack_dp = stc.StackDp(root_hop_port=int(sample.value))
             dps[switch] = stack_dp
 
         timestamp = time.time()
-
         self._update_stack_topo_state(link_graph, stack_root, dps, timestamp)
-            
+
     def _topo_map_to_link_graph(self, item):
         """Conver topo map item to a link map item"""
-        #TODO: Use regex to validate key format
+        # TODO: Use regex to validate key format
         dp_ports = item.split('@')
-        lnkobj = None
+        linkobj = None
         if len(dp_ports) == 2:
             dp_a, port_a = dp_ports[0].split(':')
             dp_b, port_b = dp_ports[1].split(':')
@@ -499,7 +498,7 @@ class FaucetStateCollector:
         subkey2 = LINK_SUBKEY_FORMAT % (peer_dp, peer_port)
         return LINK_KEY_FORMAT % ((subkey1, subkey2) if subkey1 < subkey2 else (subkey2, subkey1))
 
-    def _get_topo_map(self, check_active=True):
+    def _get_topo_map(self, chk_actv=True):
         topo_map = {}
         dps_objs = self.faucet_config.get(DPS_CFG)
         if not dps_objs:
@@ -513,7 +512,7 @@ class FaucetStateCollector:
                 if peer_dp and peer_port:
                     key = self._make_key(local_dp, local_port, peer_dp, peer_port)
                     if key not in topo_map:
-                        link_state = self._get_link_state(local_dp, local_port, peer_dp, peer_port, check_active)
+                        link_state = self._get_link_state(local_dp, local_port, peer_dp, peer_port, chk_actv)
                         topo_map.setdefault(key, {})[LINK_STATE] = link_state
         return topo_map
 
@@ -772,8 +771,8 @@ class FaucetStateCollector:
 
     def _update_stack_topo_state(self, link_graph, stack_root, dps, timestamp):
         """Update topo_state with stack topology information"""
-        #TOFO: Anurag: Remove once issue resolved
-        #LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
+        # TODO: Anurag: Remove once issue resolved
+        # LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
         #        \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", \
         #        link_graph, stack_root, dps, timestamp)
         topo_state = self.topo_state
