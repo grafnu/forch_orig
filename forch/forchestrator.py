@@ -113,7 +113,6 @@ class Forchestrator:
 
         metrics = self._varz_collector.get_metrics()
         self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
-        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
 
     def main_loop(self):
         """Main event processing loop"""
