@@ -513,10 +513,10 @@ class FaucetStateCollector:
                     key = self._make_key(local_dp, local_port, peer_dp, peer_port)
                     if key not in topo_map:
                         if chk_actv:
-                            link_state = self._get_link_state(local_dp, local_port, peer_dp, peer_port)
+                            lnk_st = self._get_link_state(local_dp, local_port, peer_dp, peer_port)
                         else:
-                            link_state = self._get_local_link_state(local_dp, local_port)
-                        topo_map.setdefault(key, {})[LINK_STATE] = link_state
+                            lnk_st = self._get_local_link_state(local_dp, local_port)
+                        topo_map.setdefault(key, {})[LINK_STATE] = lnk_st
         return topo_map
 
     def _get_link_state(self, local_dp, local_port, peer_dp, peer_port):
