@@ -22,7 +22,7 @@ def load_devices():
     loaded_macs = list(building_schema.mac_addrs.keys())
     loaded_macs.sort()
     LOGGER.info('Loaded device spec for devices: %s', loaded_macs)
-    sys.stdout.write(loaded_macs + '\n')
+    sys.stdout.write(str(loaded_macs) + '\n')
 
 
 if __name__ == '__main__':
