@@ -272,6 +272,53 @@
         
           
           <li>
+            <a href="#forch%2fproto%2fdevice_spec.proto">forch/proto/device_spec.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#DeviceSpec"><span class="badge">M</span>DeviceSpec</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.Controlee"><span class="badge">M</span>DeviceSpec.Controlee</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.Controlee.MacAddrsEntry"><span class="badge">M</span>DeviceSpec.Controlee.MacAddrsEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.Controller"><span class="badge">M</span>DeviceSpec.Controller</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.Controller.ControleesEntry"><span class="badge">M</span>DeviceSpec.Controller.ControleesEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.DeviceInfo"><span class="badge">M</span>DeviceSpec.DeviceInfo</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.DeviceInfo.ControllersEntry"><span class="badge">M</span>DeviceSpec.DeviceInfo.ControllersEntry</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.DeviceTarget"><span class="badge">M</span>DeviceSpec.DeviceTarget</a>
+                </li>
+              
+                <li>
+                  <a href="#DeviceSpec.MacAddrsEntry"><span class="badge">M</span>DeviceSpec.MacAddrsEntry</a>
+                </li>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
             <a href="#forch%2fproto%2ffaucet_event.proto">forch/proto/faucet_event.proto</a>
             <ul>
               
@@ -1208,6 +1255,261 @@
                   <td><a href="#State.State">State.State</a></td>
                   <td></td>
                   <td><p>Switch status, active or down </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
+        <h2 id="forch/proto/device_spec.proto">forch/proto/device_spec.proto</h2><a href="#title">Top</a>
+      </div>
+      <p></p>
+
+      
+        <h3 id="DeviceSpec">DeviceSpec</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>mac_addrs</td>
+                  <td><a href="#DeviceSpec.MacAddrsEntry">DeviceSpec.MacAddrsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DeviceSpec.Controlee">DeviceSpec.Controlee</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>mac_addrs</td>
+                  <td><a href="#DeviceSpec.Controlee.MacAddrsEntry">DeviceSpec.Controlee.MacAddrsEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DeviceSpec.Controlee.MacAddrsEntry">DeviceSpec.Controlee.MacAddrsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#DeviceSpec.DeviceTarget">DeviceSpec.DeviceTarget</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DeviceSpec.Controller">DeviceSpec.Controller</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>controlees</td>
+                  <td><a href="#DeviceSpec.Controller.ControleesEntry">DeviceSpec.Controller.ControleesEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DeviceSpec.Controller.ControleesEntry">DeviceSpec.Controller.ControleesEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#DeviceSpec.Controlee">DeviceSpec.Controlee</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DeviceSpec.DeviceInfo">DeviceSpec.DeviceInfo</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>group</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>controllers</td>
+                  <td><a href="#DeviceSpec.DeviceInfo.ControllersEntry">DeviceSpec.DeviceInfo.ControllersEntry</a></td>
+                  <td>repeated</td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DeviceSpec.DeviceInfo.ControllersEntry">DeviceSpec.DeviceInfo.ControllersEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#DeviceSpec.Controller">DeviceSpec.Controller</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DeviceSpec.DeviceTarget">DeviceSpec.DeviceTarget</h3>
+        <p></p>
+
+        
+
+        
+      
+        <h3 id="DeviceSpec.MacAddrsEntry">DeviceSpec.MacAddrsEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#DeviceSpec.DeviceInfo">DeviceSpec.DeviceInfo</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
