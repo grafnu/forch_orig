@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 
 from forch.forchestrator import configure_logging
 
@@ -10,6 +11,7 @@ from forch.utils import yaml_proto
 from forch.proto.building_schema_pb2 import BuildingSchema
 
 LOGGER = logging.getLogger('topology')
+
 
 def load_devices():
     """Load a device specification file"""
@@ -20,7 +22,8 @@ def load_devices():
     loaded_macs = list(building_schema.mac_addrs.keys())
     loaded_macs.sort()
     LOGGER.info('Loaded device spec for devices: %s', loaded_macs)
-    print(loaded_macs)
+    sys.stdout.write(loaded_macs + '\n')
+
 
 if __name__ == '__main__':
     configure_logging()

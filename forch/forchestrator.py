@@ -442,12 +442,14 @@ def get_log_path():
         return None
     return os.path.join(forch_log_dir, 'forch.log')
 
+
 def configure_logging():
     """Configure logging with some basic parameters"""
     logging.basicConfig(filename=get_log_path(),
                         format=_LOG_FORMAT,
                         datefmt=_LOG_DATE_FORMAT,
                         level=logging.INFO)
+
 
 if __name__ == '__main__':
     configure_logging()
