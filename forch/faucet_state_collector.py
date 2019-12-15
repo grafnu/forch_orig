@@ -99,7 +99,6 @@ class FaucetStateCollector:
     def __init__(self):
         self.switch_states = {}
         self.topo_state = {}
-        self.topo_state.setdefault(LINKS_GRAPH, [])
         self.learned_macs = {}
         self.faucet_config = {}
         self.lock = RLock()
@@ -107,7 +106,7 @@ class FaucetStateCollector:
         self.process_lag_state(time.time(), None, None, False)
         self._active_state = State.initializing
         self._is_state_restored = False
-        self._state_restore_error = None
+        self._state_restore_error = "Initializing"
 
     def set_active(self, active_state):
         """Set active state"""
@@ -139,7 +138,7 @@ class FaucetStateCollector:
                         detail = f'This controller is {state_name}'
                         return self._make_summary(self._active_state, detail)
                     if not self._is_state_restored:
-                        detail = f'Cannot state not restored: {self._state_restore_error}'
+                        detail = f'State is not restored: {self._state_restore_error}'
                         return self._make_summary(State.broken, detail)
                 return func(self, *args, **kwargs)
             return wrapped
@@ -528,8 +527,10 @@ class FaucetStateCollector:
         with self.lock:
             link_list = self.topo_state.get(LINKS_GRAPH)
             dps = self.topo_state.get(TOPOLOGY_DPS)
-            if not dps or not link_list:
+            if link_list is None or dps is None:
                 raise Exception('missing topology dps or links')
+            if not link_list or not dps:
+                return res
             hop = {'switch': src_switch}
             if src_port:
                 hop['in'] = src_port
@@ -574,7 +575,7 @@ class FaucetStateCollector:
     def _get_next_hops(self, switch, mac):
         """Given a node and mac, find connected switches and ports where the mac is learned"""
         next_hops = {}
-        for link_map in self.topo_state.get(LINKS_GRAPH):
+        for link_map in self.topo_state.get(LINKS_GRAPH, []):
             if not link_map:
                 continue
             sw_1, p_1, sw_2, p_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
