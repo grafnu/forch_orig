@@ -11,7 +11,7 @@ from forch.proto.faucet_event_pb2 import StackTopoChange
 
 # TODO: Clean up to use State enum
 from forch.constants import \
-    STATE_UP, STATE_INITIALIZING, STATE_BROKEN, STATE_DOWN, STATE_ACTIVE, \
+    STATE_UP, STATE_INITIALIZING, STATE_DOWN, STATE_ACTIVE, \
     LINK_STATE_UP, LINK_STATE_BROKEN, LINK_STATE_ACTIVE
 
 from forch.utils import dict_proto
