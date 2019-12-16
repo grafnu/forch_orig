@@ -291,7 +291,7 @@ function test_forch {
     api_result=$fout_dir/host_path2.json
     jq .src_ip $api_result | tee -a $TEST_RESULTS
     jq .path[1].switch $api_result | tee -a $TEST_RESULTS
-    jq .path[1].egress $api_result | tee -a $TEST_RESULTS
+    jq .path[1].out $api_result | tee -a $TEST_RESULTS
     jq '.path | length' $api_result | tee -a $TEST_RESULTS
 }
 
