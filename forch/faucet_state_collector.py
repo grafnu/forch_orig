@@ -7,7 +7,7 @@ import logging
 import time
 import threading
 from threading import RLock
-from forch.proto.faucet_event_pb2 import StackTopoChange as stc
+from forch.proto.faucet_event_pb2 import StackTopoChange
 
 # TODO: Clean up to use State enum
 from forch.constants import \
@@ -173,35 +173,36 @@ class FaucetStateCollector:
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
         topo_map = self._get_topo_map(False)
         for key, status in topo_map.items():
-            if status.get('link_state') != 'broken':
+            if status.get('link_state') in (State.active, State.up):
                 item = self._topo_map_to_link_graph(key)
                 if item:
                     link_graph.append(item)
 
-        for sample in metrics.get('faucet_stack_root_dpid').samples:
-            stack_root = sample.value
+        samples = metrics.get('faucet_stack_root_dpid').samples
+        if samples:
+            stack_root = samples[0].value
 
         for sample in metrics.get('dp_root_hop_port').samples:
-            switch = sample.labels.get('dp_name', "")
-            stack_dp = stc.StackDp(root_hop_port=int(sample.value))
+            switch = sample.labels.get('dp_name')
+            stack_dp = StackTopoChange.StackDp(root_hop_port=int(sample.value))
             dps[switch] = stack_dp
 
         timestamp = time.time()
-        self._update_stack_topo_state(link_graph, stack_root, dps, timestamp)
+        self._update_stack_topo_state(timestamp, link_graph, stack_root, dps)
 
     def _topo_map_to_link_graph(self, item):
         """Conver topo map item to a link map item"""
         # TODO: Use regex to validate key format
         dp_ports = item.split('@')
         linkobj = None
-        if len(dp_ports) == 2:
-            dp_a, port_a = dp_ports[0].split(':')
-            dp_b, port_b = dp_ports[1].split(':')
-            key = dp_a+":"+port_a+"-"+dp_b+":"+port_b
-            port_a = "Port "+port_a
-            port_b = "Port "+port_b
-            port_map = stc.LinkPortMap(dp_a=dp_a, port_a=port_a, dp_z=dp_b, port_z=port_b)
-            linkobj = stc.StackLink(key=key, source=dp_a, target=dp_b, port_map=port_map)
+        assert(len(dp_ports) == 2, "link key does not match expected format.")
+        dp_a, port_a = dp_ports[0].split(':')
+        dp_z, port_z = dp_ports[1].split(':')
+        key = "%s:%s-%s:%s" % (dp_a, port_a, dp_z, port_z) 
+        port_a = "Port "+port_a
+        port_z = "Port "+port_z
+        port_map = StackTopoChange.LinkPortMap(dp_a=dp_a, port_a=port_a, dp_z=dp_z, port_z=port_z)
+        linkobj = StackTopoChange.StackLink(key=key, source=dp_a, target=dp_z, port_map=port_map)
         return linkobj
 
     @_pre_check(state_name='state')
@@ -498,7 +499,7 @@ class FaucetStateCollector:
         subkey2 = LINK_SUBKEY_FORMAT % (peer_dp, peer_port)
         return LINK_KEY_FORMAT % ((subkey1, subkey2) if subkey1 < subkey2 else (subkey2, subkey1))
 
-    def _get_topo_map(self, chk_actv=True):
+    def _get_topo_map(self, check_active=True):
         topo_map = {}
         dps_objs = self.faucet_config.get(DPS_CFG)
         if not dps_objs:
@@ -512,10 +513,10 @@ class FaucetStateCollector:
                 if peer_dp and peer_port:
                     key = self._make_key(local_dp, local_port, peer_dp, peer_port)
                     if key not in topo_map:
-                        if chk_actv:
+                        if check_active:
                             lnk_st = self._get_link_state(local_dp, local_port, peer_dp, peer_port)
                         else:
-                            lnk_st = self._get_local_link_state(local_dp, local_port)
+                            lnk_st = self._get_base_link_state(local_dp, local_port)
                         topo_map.setdefault(key, {})[LINK_STATE] = lnk_st
         return topo_map
 
@@ -528,9 +529,9 @@ class FaucetStateCollector:
         if (dps[local_dp].root_hop_port == local_port or
                 dps[peer_dp].root_hop_port == peer_port):
             return STATE_ACTIVE
-        return self._get_local_link_state(local_dp, local_port)
+        return self._get_base_link_state(local_dp, local_port)
 
-    def _get_local_link_state(self, local_dp, local_port):
+    def _get_base_link_state(self, local_dp, local_port):
         dp_state = self.topo_state.setdefault(LINKS_STATE, {}).setdefault(local_dp, {})
         port_state = dp_state.setdefault(local_port, {}).get('state')
         if port_state == FAUCET_STACK_STATE_UP:
@@ -773,14 +774,14 @@ class FaucetStateCollector:
         stack_root = topo_change.stack_root
         dps = topo_change.dps
         timestamp = topo_change.timestamp
-        self._update_stack_topo_state(link_graph, stack_root, dps, timestamp)
+        self._update_stack_topo_state(timestamp, link_graph, stack_root, dps)
 
-    def _update_stack_topo_state(self, link_graph, stack_root, dps, timestamp):
+    def _update_stack_topo_state(self, timestamp, link_graph, stack_root, dps):
         """Update topo_state with stack topology information"""
         # TODO: Anurag: Remove once issue resolved
-        # LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
-        #        \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", \
-        #        link_graph, stack_root, dps, timestamp)
+        LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
+                \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", \
+                link_graph, stack_root, dps, timestamp)
         topo_state = self.topo_state
         with self.lock:
             links_hash = str(link_graph)

@@ -111,9 +111,6 @@ class Forchestrator:
         assert config_hash == config_info['hashes'], 'config hash info does not match'
         self._faucet_collector.process_dataplane_config_change(timestamp, faucet_dps)
 
-        metrics = self._varz_collector.get_metrics()
-        self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
-
     def main_loop(self):
         """Main event processing loop"""
         LOGGER.info('Entering main event loop...')
