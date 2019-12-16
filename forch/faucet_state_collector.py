@@ -450,8 +450,7 @@ class FaucetStateCollector:
 
     def _fill_path_to_root(self, switch_name, switch_map):
         """populate path to root for switch_state"""
-        egress_path = self.get_switch_egress_path(switch_name)
-        switch_map["root_path"] = egress_path
+        switch_map["root_path"] = self.get_switch_egress_path(switch_name)
 
     @staticmethod
     def _make_key(start_dp, start_port, peer_dp, peer_port):
@@ -517,8 +516,15 @@ class FaucetStateCollector:
         src_switch, src_port = self._get_access_switch(src_mac)
         if not src_switch or not src_port:
             return self._make_summary(
-                State.error, f'Device {src_mac} is not connected to access switch')
-        return self.get_switch_egress_path(src_switch, src_port)
+                State.broken, f'Device {src_mac} is not connected to access switch')
+        egress_path_state = self.get_switch_egress_path(src_switch, src_port)
+        egress_path = egress_path_state.get('path')
+        if egress_path:
+            return {
+                'src_ip': self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP),
+                'path': egress_path
+            }
+        return egress_path_state
 
     def get_switch_egress_path(self, src_switch, src_port=None):
         """"Returns path to egress from given switch. Appends ingress port to first hop if given"""
@@ -527,9 +533,15 @@ class FaucetStateCollector:
             dps = self.topo_state.get(TOPOLOGY_DPS)
 
             if link_list is None or dps is None:
-                return self._make_summary(State.broken, 'Missing topology dps or links')
+                return {
+                    'path_state': State.broken,
+                    'path_state_detail': 'Missing topology dps or links'
+                }
             if not link_list or not dps:
-                return self._make_summary(State.broken, 'No active links available')
+                return {
+                    'path_state': State.broken,
+                    'path_state_detail': 'No active links available'
+                }
 
             hop = {'switch': src_switch}
             path = []
@@ -565,9 +577,12 @@ class FaucetStateCollector:
                 hop = next_hop
 
             if hop:
-                return {'path': path, 'path_state': State.healthy}
+                return {'path_state': State.healthy, 'path': path}
 
-            return self._make_summary(State.broken, 'No path to root found')
+            return {
+                'path_state': State.broken,
+                'path_state_detail': 'No path to root found'
+            }
 
     # pylint: disable=too-many-arguments
     def _add_endpoint_to_next_hops(self, switch, mac, fr_sw, fr_port, to_sw, to_port, next_hops):
@@ -626,21 +641,18 @@ class FaucetStateCollector:
         """Given two MAC addresses in the core network, find the active path between them"""
         if not src_mac:
             return self._make_summary(
-                State.error, 'Empty eth_src. Please use list_hosts to get a list of hosts')
+                State.broken, 'Empty eth_src. Please use list_hosts to get a list of hosts')
 
         if not dst_mac and not to_egress:
             return self._make_summary(
-                State.error, 'Empty eth_dst. Use list_hosts, or set to_egress=true')
+                State.broken, 'Empty eth_dst. Use list_hosts, or set to_egress=true')
 
         if src_mac not in self.learned_macs or dst_mac and dst_mac not in self.learned_macs:
             error_msg = 'MAC address cannot be found. Please use list_hosts to get a list of hosts'
-            return self._make_summary(State.error, error_msg)
+            return self._make_summary(State.broken, error_msg)
 
         if to_egress:
-            ret_map = self.get_active_egress_path(src_mac)
-            src_ip = self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP)
-            ret_map['src_ip'] = src_ip
-            return ret_map
+            return dict_proto(self.get_active_egress_path(src_mac), HostPath)
 
         res = {
             'src_ip': self.learned_macs[src_mac].get(MAC_LEARNING_IP),

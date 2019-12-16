@@ -423,11 +423,34 @@
         
           
           <li>
+            <a href="#forch%2fproto%2fswitch_path.proto">forch/proto/switch_path.proto</a>
+            <ul>
+              
+                <li>
+                  <a href="#PathNode"><span class="badge">M</span>PathNode</a>
+                </li>
+              
+              
+              
+              
+            </ul>
+          </li>
+        
+          
+          <li>
             <a href="#forch%2fproto%2fswitch_state.proto">forch/proto/switch_state.proto</a>
             <ul>
               
                 <li>
                   <a href="#SwitchState"><span class="badge">M</span>SwitchState</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.PathState"><span class="badge">M</span>SwitchState.PathState</a>
+                </li>
+              
+                <li>
+                  <a href="#SwitchState.PathState.NodePath"><span class="badge">M</span>SwitchState.PathState.NodePath</a>
                 </li>
               
                 <li>
@@ -456,10 +479,6 @@
               
                 <li>
                   <a href="#SwitchState.SwitchNode.EgressPortMacsEntry"><span class="badge">M</span>SwitchState.SwitchNode.EgressPortMacsEntry</a>
-                </li>
-              
-                <li>
-                  <a href="#SwitchState.SwitchNode.NodePath"><span class="badge">M</span>SwitchState.SwitchNode.NodePath</a>
                 </li>
               
                 <li>
@@ -2291,6 +2310,65 @@ or to host_path API to list path </p></td>
     
       
       <div class="file-heading">
+        <h2 id="forch/proto/switch_path.proto">forch/proto/switch_path.proto</h2><a href="#title">Top</a>
+      </div>
+      <p>cpn_state API result.</p>
+
+      
+        <h3 id="PathNode">PathNode</h3>
+        <p>Switching path node</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>switch</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>switch name </p></td>
+                </tr>
+              
+                <tr>
+                  <td>in</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>incoming port </p></td>
+                </tr>
+              
+                <tr>
+                  <td>out</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>outgoing port </p></td>
+                </tr>
+              
+                <tr>
+                  <td>egress</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Egress port </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+
+      
+
+      
+
+      
+    
+      
+      <div class="file-heading">
         <h2 id="forch/proto/switch_state.proto">forch/proto/switch_state.proto</h2><a href="#title">Top</a>
       </div>
       <p>switch_state API result</p>
@@ -2353,6 +2431,89 @@ or to host_path API to list path </p></td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Restriction information about this query </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.PathState">SwitchState.PathState</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>path_state</td>
+                  <td><a href="#State.State">State.State</a></td>
+                  <td></td>
+                  <td><p>Path state </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path_state_detail</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Path state detail </p></td>
+                </tr>
+              
+                <tr>
+                  <td>path</td>
+                  <td><a href="#SwitchState.PathState.NodePath">SwitchState.PathState.NodePath</a></td>
+                  <td>repeated</td>
+                  <td><p>Path </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="SwitchState.PathState.NodePath">SwitchState.PathState.NodePath</h3>
+        <p>Information for a path</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>switch</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>Switch name </p></td>
+                </tr>
+              
+                <tr>
+                  <td>in</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>In port </p></td>
+                </tr>
+              
+                <tr>
+                  <td>out</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Out port </p></td>
+                </tr>
+              
+                <tr>
+                  <td>egress</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>Egress port </p></td>
                 </tr>
               
             </tbody>
@@ -2572,8 +2733,8 @@ or to host_path API to list path </p></td>
               
                 <tr>
                   <td>root_path</td>
-                  <td><a href="#SwitchState.SwitchNode.NodePath">SwitchState.SwitchNode.NodePath</a></td>
-                  <td>repeated</td>
+                  <td><a href="#SwitchState.PathState">SwitchState.PathState</a></td>
+                  <td></td>
                   <td><p>Path from this switch to root </p></td>
                 </tr>
               
@@ -2682,51 +2843,6 @@ or to host_path API to list path </p></td>
                   <td><a href="#SwitchState.PortInfo">SwitchState.PortInfo</a></td>
                   <td></td>
                   <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="SwitchState.SwitchNode.NodePath">SwitchState.SwitchNode.NodePath</h3>
-        <p>Information for a path</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>switch</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>Switch name </p></td>
-                </tr>
-              
-                <tr>
-                  <td>in</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>In port </p></td>
-                </tr>
-              
-                <tr>
-                  <td>out</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Out port </p></td>
-                </tr>
-              
-                <tr>
-                  <td>egress</td>
-                  <td><a href="#int32">int32</a></td>
-                  <td></td>
-                  <td><p>Egress port </p></td>
                 </tr>
               
             </tbody>
