@@ -11,7 +11,8 @@ from forch.proto.faucet_event_pb2 import StackTopoChange
 
 # TODO: Clean up to use State enum
 from forch.constants import \
-    STATE_UP, STATE_INITIALIZING, STATE_BROKEN, STATE_DOWN, STATE_ACTIVE
+    STATE_UP, STATE_INITIALIZING, STATE_BROKEN, STATE_DOWN, STATE_ACTIVE, \
+    LINK_STATE_UP, LINK_STATE_BROKEN, LINK_STATE_ACTIVE
 
 from forch.utils import dict_proto
 
@@ -170,20 +171,25 @@ class FaucetStateCollector:
 
     def restore_dataplane_state_from_metrics(self, metrics):
         """Restores dataplane state from prometheus metrics. relies on STACK_STATE being restored"""
+        LOGGER.info("Anurag restore_dataplane_state_from_metrics")
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
         topo_map = self._get_topo_map(False)
         for key, status in topo_map.items():
-            if status.get('link_state') in (State.active, State.up):
+            if status.get('link_state') in (LINK_STATE_ACTIVE, LINK_STATE_UP):
                 item = self._topo_map_to_link_graph(key)
                 if item:
                     link_graph.append(item)
 
         samples = metrics.get('faucet_stack_root_dpid').samples
         if samples:
+            # stack root from varz is dpid, need to convert to dp_name
             stack_root = samples[0].value
 
         for sample in metrics.get('dp_root_hop_port').samples:
             switch = sample.labels.get('dp_name')
+            # convert dp_id to dp_name
+            if stack_root == int(sample.labels.get('dp_id'), 16):
+                stack_root = switch
             stack_dp = StackTopoChange.StackDp(root_hop_port=int(sample.value))
             dps[switch] = stack_dp
 
@@ -195,7 +201,7 @@ class FaucetStateCollector:
         # TODO: Use regex to validate key format
         dp_ports = item.split('@')
         linkobj = None
-        assert(len(dp_ports) == 2, "link key does not match expected format.")
+        assert len(dp_ports) == 2, "link key does not match expected format."
         dp_a, port_a = dp_ports[0].split(':')
         dp_z, port_z = dp_ports[1].split(':')
         key = "%s:%s-%s:%s" % (dp_a, port_a, dp_z, port_z) 
@@ -528,16 +534,18 @@ class FaucetStateCollector:
         dps = self.topo_state.get(TOPOLOGY_DPS, {})
         if (dps[local_dp].root_hop_port == local_port or
                 dps[peer_dp].root_hop_port == peer_port):
-            return STATE_ACTIVE
+            return LINK_STATE_ACTIVE
         return self._get_base_link_state(local_dp, local_port)
 
     def _get_base_link_state(self, local_dp, local_port):
+        local_dp = str(local_dp)
+        local_port = int(local_port)
         dp_state = self.topo_state.setdefault(LINKS_STATE, {}).setdefault(local_dp, {})
         port_state = dp_state.setdefault(local_port, {}).get('state')
         if port_state == FAUCET_STACK_STATE_UP:
-            return STATE_UP
+            return LINK_STATE_UP
         if port_state == FAUCET_STACK_STATE_BAD:
-            return STATE_BROKEN
+            return LINK_STATE_BROKEN
         return STATE_DOWN
 
     def _get_stack_topo(self):

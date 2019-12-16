@@ -98,14 +98,16 @@ class Forchestrator:
         # Make sure the event socket is connected so there's no loss of information.
         assert self._faucet_events.event_socket_connected, 'restore states without connection'
         metrics = self._varz_collector.get_metrics()
-        self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
-        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
 
+        #restore config first before restoring from varz
         varz_hash_info = metrics['faucet_config_hash_info']
         assert len(varz_hash_info.samples) == 1, 'exactly one config hash info not found'
         varz_config_hashes = varz_hash_info.samples[0].labels['hashes']
         self._restore_faucet_config(time.time(), varz_config_hashes)
 
+        self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
+        LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
+        
     def _restore_faucet_config(self, timestamp, config_hash):
         config_info, faucet_dps, _ = self._get_faucet_config()
         assert config_hash == config_info['hashes'], 'config hash info does not match'
