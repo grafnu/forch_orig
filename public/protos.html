@@ -280,6 +280,14 @@
                 </li>
               
                 <li>
+                  <a href="#LagChange"><span class="badge">M</span>LagChange</a>
+                </li>
+              
+                <li>
+                  <a href="#StackState"><span class="badge">M</span>StackState</a>
+                </li>
+              
+                <li>
                   <a href="#StackTopoChange"><span class="badge">M</span>StackTopoChange</a>
                 </li>
               
@@ -928,7 +936,7 @@
               
                 <tr>
                   <td>dataplane_state</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#State.State">State.State</a></td>
                   <td></td>
                   <td><p>Overall status of the dataplane state. </p></td>
                 </tr>
@@ -980,7 +988,7 @@
               
                 <tr>
                   <td>egress_state</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#State.State">State.State</a></td>
                   <td></td>
                   <td><p>Over all egress state </p></td>
                 </tr>
@@ -1108,7 +1116,7 @@
               
                 <tr>
                   <td>link_state</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#State.State">State.State</a></td>
                   <td></td>
                   <td><p>Stack link status, active, up or down </p></td>
                 </tr>
@@ -1201,7 +1209,7 @@
               
                 <tr>
                   <td>switch_state</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#State.State">State.State</a></td>
                   <td></td>
                   <td><p>Switch status, active or down </p></td>
                 </tr>
@@ -1245,6 +1253,13 @@
                 </tr>
               
                 <tr>
+                  <td>time</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
                   <td>dp_name</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
@@ -1253,7 +1268,7 @@
               
                 <tr>
                   <td>dp_id</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -1266,15 +1281,22 @@
                 </tr>
               
                 <tr>
-                  <td>time</td>
-                  <td><a href="#float">float</a></td>
+                  <td>debounced</td>
+                  <td><a href="#bool">bool</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>debounced</td>
-                  <td><a href="#bool">bool</a></td>
+                  <td>LAG_CHANGE</td>
+                  <td><a href="#LagChange">LagChange</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>STACK_STATE</td>
+                  <td><a href="#StackState">StackState</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -1284,6 +1306,96 @@
                   <td><a href="#StackTopoChange">StackTopoChange</a></td>
                   <td></td>
                   <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="LagChange">LagChange</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dp_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>port_no</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>state</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="StackState">StackState</h3>
+        <p>Event representing a stacking link state change.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>event timestamp </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dp_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>dataplane name </p></td>
+                </tr>
+              
+                <tr>
+                  <td>port</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p>switch port number </p></td>
+                </tr>
+              
+                <tr>
+                  <td>state</td>
+                  <td><a href="#State.State">State.State</a></td>
+                  <td></td>
+                  <td><p>stack link state </p></td>
                 </tr>
               
             </tbody>
@@ -1856,35 +1968,35 @@ or to host_path API to list path </p></td>
                 </tr>
               
                 <tr>
-                  <td>processes_state</td>
+                  <td>process_state</td>
                   <td><a href="#State.State">State.State</a></td>
                   <td></td>
                   <td><p>Overall process state: <em>healthy, broken</em> </p></td>
                 </tr>
               
                 <tr>
-                  <td>processes_state_detail</td>
+                  <td>process_state_detail</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Text description of any problems </p></td>
                 </tr>
               
                 <tr>
-                  <td>processes_state_change_count</td>
+                  <td>process_state_change_count</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
                   <td><p>Number of times state has changed </p></td>
                 </tr>
               
                 <tr>
-                  <td>processes_state_last_update</td>
+                  <td>process_state_last_update</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Last time the state was updated </p></td>
                 </tr>
               
                 <tr>
-                  <td>processes_state_last_change</td>
+                  <td>process_state_last_change</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p>Last time the state was changed </p></td>
@@ -2269,7 +2381,7 @@ or to host_path API to list path </p></td>
               
                 <tr>
                   <td>port_state</td>
-                  <td><a href="#string">string</a></td>
+                  <td><a href="#State.State">State.State</a></td>
                   <td></td>
                   <td><p>Port state </p></td>
                 </tr>
@@ -2536,7 +2648,7 @@ or to host_path API to list path </p></td>
               
                 <tr>
                   <td>dp_id</td>
-                  <td><a href="#int32">int32</a></td>
+                  <td><a href="#int64">int64</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
