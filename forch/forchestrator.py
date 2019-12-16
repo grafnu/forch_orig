@@ -107,7 +107,7 @@ class Forchestrator:
 
         self._event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
         LOGGER.info('Setting event horizon to event #%d', self._event_horizon)
-        
+
     def _restore_faucet_config(self, timestamp, config_hash):
         config_info, faucet_dps, _ = self._get_faucet_config()
         assert config_hash == config_info['hashes'], 'config hash info does not match'
