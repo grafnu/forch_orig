@@ -99,7 +99,7 @@ class Forchestrator:
         assert self._faucet_events.event_socket_connected, 'restore states without connection'
         metrics = self._varz_collector.get_metrics()
 
-        #restore config first before restoring from varz
+        # restore config first before restoring from varz
         varz_hash_info = metrics['faucet_config_hash_info']
         assert len(varz_hash_info.samples) == 1, 'exactly one config hash info not found'
         varz_config_hashes = varz_hash_info.samples[0].labels['hashes']

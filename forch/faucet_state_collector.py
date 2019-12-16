@@ -204,7 +204,7 @@ class FaucetStateCollector:
         assert len(dp_ports) == 2, "link key does not match expected format."
         dp_a, port_a = dp_ports[0].split(':')
         dp_z, port_z = dp_ports[1].split(':')
-        key = "%s:%s-%s:%s" % (dp_a, port_a, dp_z, port_z) 
+        key = "%s:%s-%s:%s" % (dp_a, port_a, dp_z, port_z)
         port_a = "Port "+port_a
         port_z = "Port "+port_z
         port_map = StackTopoChange.LinkPortMap(dp_a=dp_a, port_a=port_a, dp_z=dp_z, port_z=port_z)
@@ -786,10 +786,6 @@ class FaucetStateCollector:
 
     def _update_stack_topo_state(self, timestamp, link_graph, stack_root, dps):
         """Update topo_state with stack topology information"""
-        # TODO: Anurag: Remove once issue resolved
-        LOGGER.info("Anurag _update_stack_topo_state \n\n link_graph: %s \
-                \n\n stack_root: %s\n\n dps: %s\n\n timestamp: %s", \
-                link_graph, stack_root, dps, timestamp)
         topo_state = self.topo_state
         with self.lock:
             links_hash = str(link_graph)
