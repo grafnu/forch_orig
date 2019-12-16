@@ -524,7 +524,8 @@ class FaucetStateCollector:
                 'src_ip': self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP),
                 'path': egress_path
             }
-        return egress_path_state
+        return self._make_summary(
+            egress_path_state['path_state'], egress_path_state['path_state_detail'])
 
     def get_switch_egress_path(self, src_switch, src_port=None):
         """"Returns path to egress from given switch. Appends ingress port to first hop if given"""
@@ -571,7 +572,7 @@ class FaucetStateCollector:
                             break
                     path.append(hop)
                 elif hop_switch == self.topo_state.get(TOPOLOGY_ROOT):
-                    hop['egress'] = self._get_egress_port(hop_switch)
+                    hop['out'] = self._get_egress_port(hop_switch)
                     path.append(hop)
                     break
                 hop = next_hop

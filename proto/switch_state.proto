@@ -4,6 +4,7 @@
 syntax = "proto3";
 
 import "forch/proto/shared_constants.proto";
+import "forch/proto/path_node.proto";
 
 /*
  * State of switches
@@ -129,21 +130,6 @@ message SwitchState {
     string path_state_detail = 2;
 
     // Path
-    repeated NodePath path = 3;
-
-    // Information for a path
-    message NodePath {
-      // Switch name
-      string switch = 1;
-
-      // In port
-      int32 in = 2;
-
-      // Out port
-      int32 out = 3;
-
-      // Egress port
-      int32 egress = 4;
-    }
+    repeated PathNode path = 3;
   }
 }
