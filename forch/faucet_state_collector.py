@@ -520,10 +520,10 @@ class FaucetStateCollector:
         egress_path_state = self.get_switch_egress_path(src_switch, src_port)
         egress_path = egress_path_state.get('path')
         if egress_path:
-            return {
+            return dict_proto({
                 'src_ip': self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP),
                 'path': egress_path
-            }
+            }, HostPath)
         return self._make_summary(
             egress_path_state['path_state'], egress_path_state['path_state_detail'])
 
@@ -653,7 +653,7 @@ class FaucetStateCollector:
             return self._make_summary(State.broken, error_msg)
 
         if to_egress:
-            return dict_proto(self.get_active_egress_path(src_mac), HostPath)
+            return self.get_active_egress_path(src_mac)
 
         res = {
             'src_ip': self.learned_macs[src_mac].get(MAC_LEARNING_IP),
