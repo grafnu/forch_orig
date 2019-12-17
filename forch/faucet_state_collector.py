@@ -62,7 +62,7 @@ EGRESS_STATE_UP = 'up'
 EGRESS_STATE_DOWN = 'down'
 
 LACP_STATE = {
-    FAUCET_LACP_STATE_UP: LACP_STATE_ACTIVE, 
+    FAUCET_LACP_STATE_UP: LACP_STATE_ACTIVE,
     FAUCET_LACP_STATE_NOT_ACTIVE: LACP_STATE_UP,
     FAUCET_LACP_STATE_INIT: LACP_STATE_DOWN,
     FAUCET_LACP_STATE_NONE: LACP_STATE_NONE
@@ -392,7 +392,6 @@ class FaucetStateCollector:
             target_obj[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
             target_obj[TOPOLOGY_ROOT] = self.topo_state.get(TOPOLOGY_ROOT)
             target_obj[EGRESS_LINKS] = copy.deepcopy(egress_obj.get(EGRESS_LINKS))
-            LOGGER.info("Anurag _fill_egress_state target_obj: %s", target_obj)
 
     def _get_switch_map(self):
         """returns switch map for topology overview"""
@@ -753,11 +752,10 @@ class FaucetStateCollector:
                 egress_links[LINKS_CHANGE_COUNT] = change_count
                 egress_links[LINKS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
 
-            old_egress_name = egress_state.get(EGRESS_DETAIL)
             new_egress_name = None
-            for name, status in links.items():
+            for key, status in links.items():
                 if status.get(LINK_STATE) == LACP_STATE_ACTIVE:
-                    new_egress_name = name
+                    new_egress_name = key
 
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             old_state = egress_state.get(EGRESS_STATE)
@@ -769,8 +767,6 @@ class FaucetStateCollector:
                 egress_state[EGRESS_DETAIL] = new_egress_name
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
-
-            LOGGER.info("Anurag process_lag_state egress_state: %s", egress_state)
 
     @_dump_states
     # pylint: disable=too-many-arguments
