@@ -7,6 +7,7 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+from google.protobuf import descriptor_pb2
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
@@ -18,9 +19,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='forch/proto/host_path.proto',
   package='',
   syntax='proto3',
-  serialized_options=None,
   serialized_pb=_b('\n\x1b\x66orch/proto/host_path.proto\"\x9b\x01\n\x08HostPath\x12\x0e\n\x06src_ip\x18\x01 \x01(\t\x12\x0e\n\x06\x64st_ip\x18\x02 \x01(\t\x12 \n\x04path\x18\x03 \x03(\x0b\x32\x12.HostPath.PathNode\x12\x18\n\x10system_state_url\x18\x04 \x01(\t\x1a\x33\n\x08PathNode\x12\x0e\n\x06switch\x18\x01 \x01(\t\x12\n\n\x02in\x18\x02 \x01(\x05\x12\x0b\n\x03out\x18\x03 \x01(\x05\x62\x06proto3')
 )
+_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
 
@@ -38,28 +39,28 @@ _HOSTPATH_PATHNODE = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
     _descriptor.FieldDescriptor(
       name='in', full_name='HostPath.PathNode.in', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
     _descriptor.FieldDescriptor(
       name='out', full_name='HostPath.PathNode.out', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
   ],
   extensions=[
   ],
   nested_types=[],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -82,35 +83,35 @@ _HOSTPATH = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
     _descriptor.FieldDescriptor(
       name='dst_ip', full_name='HostPath.dst_ip', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
     _descriptor.FieldDescriptor(
       name='path', full_name='HostPath.path', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
     _descriptor.FieldDescriptor(
       name='system_state_url', full_name='HostPath.system_state_url', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
   ],
   extensions=[
   ],
   nested_types=[_HOSTPATH_PATHNODE, ],
   enum_types=[
   ],
-  serialized_options=None,
+  options=None,
   is_extendable=False,
   syntax='proto3',
   extension_ranges=[],
@@ -123,7 +124,6 @@ _HOSTPATH = _descriptor.Descriptor(
 _HOSTPATH_PATHNODE.containing_type = _HOSTPATH
 _HOSTPATH.fields_by_name['path'].message_type = _HOSTPATH_PATHNODE
 DESCRIPTOR.message_types_by_name['HostPath'] = _HOSTPATH
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 HostPath = _reflection.GeneratedProtocolMessageType('HostPath', (_message.Message,), dict(
 

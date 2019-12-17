@@ -288,15 +288,15 @@
                 </li>
               
                 <li>
-                  <a href="#DataplaneState.Stack"><span class="badge">M</span>DataplaneState.Stack</a>
+                  <a href="#DataplaneState.LinkStatus"><span class="badge">M</span>DataplaneState.LinkStatus</a>
                 </li>
               
                 <li>
-                  <a href="#DataplaneState.Stack.LinksEntry"><span class="badge">M</span>DataplaneState.Stack.LinksEntry</a>
+                  <a href="#DataplaneState.Links"><span class="badge">M</span>DataplaneState.Links</a>
                 </li>
               
                 <li>
-                  <a href="#DataplaneState.StackLinkStatus"><span class="badge">M</span>DataplaneState.StackLinkStatus</a>
+                  <a href="#DataplaneState.Links.LinksEntry"><span class="badge">M</span>DataplaneState.Links.LinksEntry</a>
                 </li>
               
                 <li>
@@ -1224,7 +1224,7 @@
               
                 <tr>
                   <td>stack</td>
-                  <td><a href="#DataplaneState.Stack">DataplaneState.Stack</a></td>
+                  <td><a href="#DataplaneState.Links">DataplaneState.Links</a></td>
                   <td></td>
                   <td><p>Details of all stack links in the dataplane. </p></td>
                 </tr>
@@ -1330,6 +1330,13 @@
                   <td><p>Active root switch of stack </p></td>
                 </tr>
               
+                <tr>
+                  <td>egress_links</td>
+                  <td><a href="#DataplaneState.Links">DataplaneState.Links</a></td>
+                  <td></td>
+                  <td><p>Egress links&#39; status </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -1337,7 +1344,31 @@
 
         
       
-        <h3 id="DataplaneState.Stack">DataplaneState.Stack</h3>
+        <h3 id="DataplaneState.LinkStatus">DataplaneState.LinkStatus</h3>
+        <p>Stack link status</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>link_state</td>
+                  <td><a href="#State.State">State.State</a></td>
+                  <td></td>
+                  <td><p>Stack link status, active, up or down </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DataplaneState.Links">DataplaneState.Links</h3>
         <p>Dataplane stack links details</p>
 
         
@@ -1349,7 +1380,7 @@
               
                 <tr>
                   <td>links</td>
-                  <td><a href="#DataplaneState.Stack.LinksEntry">DataplaneState.Stack.LinksEntry</a></td>
+                  <td><a href="#DataplaneState.Links.LinksEntry">DataplaneState.Links.LinksEntry</a></td>
                   <td>repeated</td>
                   <td><p>Map of switch status </p></td>
                 </tr>
@@ -1375,7 +1406,7 @@
 
         
       
-        <h3 id="DataplaneState.Stack.LinksEntry">DataplaneState.Stack.LinksEntry</h3>
+        <h3 id="DataplaneState.Links.LinksEntry">DataplaneState.Links.LinksEntry</h3>
         <p></p>
 
         
@@ -1394,33 +1425,9 @@
               
                 <tr>
                   <td>value</td>
-                  <td><a href="#DataplaneState.StackLinkStatus">DataplaneState.StackLinkStatus</a></td>
+                  <td><a href="#DataplaneState.LinkStatus">DataplaneState.LinkStatus</a></td>
                   <td></td>
                   <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="DataplaneState.StackLinkStatus">DataplaneState.StackLinkStatus</h3>
-        <p>Stack link status</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>link_state</td>
-                  <td><a href="#State.State">State.State</a></td>
-                  <td></td>
-                  <td><p>Stack link status, active, up or down </p></td>
                 </tr>
               
             </tbody>
