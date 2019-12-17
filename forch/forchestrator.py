@@ -476,7 +476,7 @@ if __name__ == '__main__':
         HTTP.map_request('sys_config', FORCH.get_sys_config)
         HTTP.map_request('', HTTP.static_file(''))
     except Exception as e:
-        LOGGER.error("Cannot initialize forch: %s", e)
+        LOGGER.error("Cannot initialize forch: %s", e, exc_info=True)
         HTTP.map_request('', functools.partial(show_error, e))
     finally:
         HTTP.start_server()

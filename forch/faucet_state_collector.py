@@ -49,6 +49,25 @@ def _dump_states(func):
 _RESTORE_METHODS = {'port': {}, 'dp': {}}
 
 FAUCET_LACP_STATE_UP = 3
+FAUCET_LACP_STATE_NOT_ACTIVE = 5
+FAUCET_LACP_STATE_INIT = 1
+FAUCET_LACP_STATE_NONE = 0
+
+LACP_STATE_ACTIVE = 'active'
+LACP_STATE_UP = 'up'
+LACP_STATE_DOWN = 'down'
+LACP_STATE_NONE = 'N/A'
+
+EGRESS_STATE_UP = 'up'
+EGRESS_STATE_DOWN = 'down'
+
+LACP_STATE = {
+    FAUCET_LACP_STATE_UP: LACP_STATE_ACTIVE, 
+    FAUCET_LACP_STATE_NOT_ACTIVE: LACP_STATE_UP,
+    FAUCET_LACP_STATE_INIT: LACP_STATE_DOWN,
+    FAUCET_LACP_STATE_NONE: LACP_STATE_NONE
+}
+
 FAUCET_STACK_STATE_BAD = 2
 FAUCET_STACK_STATE_UP = 3
 SWITCH_CONNECTED = "CONNECTED"
@@ -82,6 +101,7 @@ LINKS_GRAPH = "links_graph"
 LINKS_HASH = "links_hash"
 LINKS_CHANGE_COUNT = "links_change_count"
 LINKS_LAST_CHANGE = "links_last_change"
+LINKS_LAST_UPDATE = "links_last_change"
 TOPOLOGY_DP_MAP = "switches"
 TOPOLOGY_LINK_MAP = "links"
 TOPOLOGY_ROOT = "active_root"
@@ -171,7 +191,6 @@ class FaucetStateCollector:
 
     def restore_dataplane_state_from_metrics(self, metrics):
         """Restores dataplane state from prometheus metrics. relies on STACK_STATE being restored"""
-        LOGGER.info("Anurag restore_dataplane_state_from_metrics")
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
         topo_map = self._get_topo_map(False)
         for key, status in topo_map.items():
@@ -713,21 +732,42 @@ class FaucetStateCollector:
         """Process a lag state change"""
         with self.lock:
             egress_state = self.topo_state.setdefault('egress', {})
-            old_egress_name = egress_state.get(EGRESS_DETAIL)
-            lacp_up = lacp_state == FAUCET_LACP_STATE_UP
-            if old_egress_name and old_egress_name != name and not lacp_up:
+
+            # Populate egress link information
+            egress_links = egress_state.setdefault('links', {})
+            key = '%s:%s' % (name, port)
+            # Skip update if lacp state is None, unless an entry for the link already exists
+            if lacp_state == FAUCET_LACP_STATE_NONE and key not in egress_links:
                 return
+
+            lacp_state = LACP_STATE.get(lacp_state)
+
+            link = egress_links.setdefault(key, {})
+            if not link or link.get(LINK_STATE) != lacp_state:
+                link[LINK_STATE] = lacp_state
+                change_count = egress_state.get(LINKS_CHANGE_COUNT, 0) + 1
+                egress_state[LINKS_CHANGE_COUNT] = change_count
+                egress_state[LINKS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
+            egress_state[LINKS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
+
+            old_egress_name = egress_state.get(EGRESS_DETAIL)
+            new_egress_name = None
+            for name, status in egress_links.items():
+                if status.get(LINK_STATE) == LACP_STATE_ACTIVE:
+                    new_egress_name = name
 
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             old_state = egress_state.get(EGRESS_STATE)
-            new_state = STATE_UP if lacp_up else STATE_DOWN
+            new_state = EGRESS_STATE_UP if new_egress_name else EGRESS_STATE_DOWN
             if new_state != old_state:
                 change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
                 LOGGER.info('lag_state #%d %s, %s -> %s', change_count, name, old_state, new_state)
                 egress_state[EGRESS_STATE] = new_state
-                egress_state[EGRESS_DETAIL] = name if lacp_up else None
+                egress_state[EGRESS_DETAIL] = new_egress_name
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
+
+            LOGGER.info("Anurag process_lag_state egress_state: %s", egress_state)
 
     @_dump_states
     # pylint: disable=too-many-arguments
