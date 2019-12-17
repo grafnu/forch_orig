@@ -40,6 +40,7 @@ Running forch-solid tests
 "147058200627"
 ""
 "active"
+null
 3
 @cpn_state-solid
 2
@@ -85,6 +86,7 @@ Running forch-healthy tests
 "147058200627"
 ""
 "active"
+null
 3
 @cpn_state-healthy
 3
@@ -169,6 +171,7 @@ Running forch-twod tests
 "147058200627"
 "Switches in broken state: nz-kiwi-t2sw3"
 "active"
+null
 4
 @cpn_state-twod
 5
@@ -233,6 +236,7 @@ null
 "147058200627"
 ""
 "active"
+null
 7
 @cpn_state-broken
 5
@@ -251,8 +255,8 @@ null
 "http://127.0.0.1:9019/?host_path?eth_src=9a:02:57:1e:8f:01&eth_dst=9a:02:57:1e:8f:02"
 @host_path-broken
 "192.168.1.2"
-"nz-kiwi-t1sw2"
-6
+null
+null
 "192.168.1.1"
 null
 null
@@ -297,6 +301,7 @@ Running forch-restored tests
 "147058200627"
 ""
 "active"
+null
 9
 @cpn_state-restored
 5
@@ -342,6 +347,7 @@ Running forch-reset tests
 "147058200627"
 ""
 "active"
+null
 11
 @cpn_state-reset
 6
