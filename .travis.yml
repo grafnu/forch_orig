@@ -21,3 +21,8 @@ script:
   - bin/test_stack
   - bin/check_style
   - bin/build_proto
+env:
+  matrix:
+    - SHARD=1
+    - SHARD=2
+    - SHARD=3
