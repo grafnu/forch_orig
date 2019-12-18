@@ -457,52 +457,58 @@ def configure_logging():
 
 
 def main():
+    """main function to start forch"""
     configure_logging()
 
-    CONFIG = load_config()
-    if not CONFIG:
+    config = load_config()
+    if not config:
         LOGGER.error('Invalid config, exiting.')
         sys.exit(1)
 
-    FORCH = Forchestrator(CONFIG)
-    HTTP = forch.http_server.HttpServer(CONFIG.get('http', {}), FORCH.get_local_port())
+    forch = Forchestrator(config)
+    http_server = forch.http_server.HttpServer(config.get('http', {}), FORCH.get_local_port())
 
     try:
-        FORCH.initialize()
-        HTTP.map_request('system_state', FORCH.get_system_state)
-        HTTP.map_request('dataplane_state', FORCH.get_dataplane_state)
-        HTTP.map_request('switch_state', FORCH.get_switch_state)
-        HTTP.map_request('cpn_state', FORCH.get_cpn_state)
-        HTTP.map_request('process_state', FORCH.get_process_state)
-        HTTP.map_request('host_path', FORCH.get_host_path)
-        HTTP.map_request('list_hosts', FORCH.get_list_hosts)
-        HTTP.map_request('sys_config', FORCH.get_sys_config)
-        HTTP.map_request('', HTTP.static_file(''))
+        forch.initialize()
+        http_server.map_request('system_state', forch.get_system_state)
+        http_server.map_request('dataplane_state', forch.get_dataplane_state)
+        http_server.map_request('switch_state', forch.get_switch_state)
+        http_server.map_request('cpn_state', forch.get_cpn_state)
+        http_server.map_request('process_state', forch.get_process_state)
+        http_server.map_request('host_path', forch.get_host_path)
+        http_server.map_request('list_hosts', forch.get_list_hosts)
+        http_server.map_request('sys_config', forch.get_sys_config)
+        http_server.map_request('', forch.static_file(''))
     except Exception as e:
         LOGGER.error("Cannot initialize forch: %s", e)
-        HTTP.map_request('', functools.partial(show_error, e))
+        http_server.map_request('', functools.partial(show_error, e))
     finally:
-        HTTP.start_server()
+        http_server.start_server()
 
-    if FORCH.initialized():
-        FORCH.main_loop()
+    if forch.initialized():
+        forch.main_loop()
     else:
         try:
-            HTTP.join_thread()
+            http_server.join_thread()
         except KeyboardInterrupt:
             LOGGER.info('Keyboard interrupt. Exiting.')
 
     LOGGER.warning('Exiting program')
-    HTTP.stop_server()
+    http_server.stop_server()
+
+
+def parse_args(raw_args):
+    parser = argparse.ArgumentParser(prog='forch', description='Process some integers.')
+    parser.add_argument('-V', '--version', action='store_true', help='print version and exit')
+    parsed = parser.parse_args(raw_args)
+    return parsed
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='forch', description='Process some integers.')
-    parser.add_argument('-V', '--version', action='store_true', help='print version and exit')
-    args = parser.parse_args(sys.argv[1:])
+    ARGS = parse_args(sys.argv[1:])
 
-    if args.version:
+    if ARGS.version:
         print(f'Forch version {__version__}')
-        exit()
+        sys.exit()
 
     main()
