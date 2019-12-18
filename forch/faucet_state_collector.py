@@ -155,6 +155,7 @@ class FaucetStateCollector:
 
     def restore_states_from_metrics(self, metrics):
         """Restore internal states from prometheus metrics"""
+        LOGGER.info('restoring internal state from metrics')
         current_time = time.time()
         for label_name, method_map in _RESTORE_METHODS.items():
             for metric_name, restore_method in method_map.items():
@@ -165,12 +166,21 @@ class FaucetStateCollector:
                     switch = sample.labels['dp_name']
                     label = int(sample.labels.get(label_name, 0))
                     restore_method(self, current_time, switch, label, sample.value)
+        self.restore_l2_learn_state_from_samples(metrics['l2_learn'].samples)
         self.restore_dataplane_state_from_metrics(metrics)
         return int(metrics['faucet_event_id'].samples[0].value)
 
+    def restore_l2_learn_state_from_samples(self, samples):
+        timestamp = time.time()
+        for sample in samples:
+            dp_name = sample.labels['dp_name']
+            port = int(sample.value)
+            eth_src = sample.labels['eth_src']
+            l3_src_ip = sample.labels['l3_src_ip']
+            self.process_port_learn(timestamp, dp_name, port, eth_src, l3_src_ip)
+
     def restore_dataplane_state_from_metrics(self, metrics):
-        """Restores dataplane state from prometheus metrics. relies on STACK_STATE being restored"""
-        LOGGER.info("Anurag restore_dataplane_state_from_metrics")
+        """Restores dataplane state from prometheus metrics. Relies on STACK_STATE being restored."""
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
         topo_map = self._get_topo_map(False)
         for key, status in topo_map.items():
@@ -665,28 +675,18 @@ class FaucetStateCollector:
         path = []
         src_switch, src_port = self._get_access_switch(src_mac)
         dst_switch, dst_port = self._get_access_switch(dst_mac)
+        dps = self.faucet_config[DPS_CFG]
 
-        current_hop = None
-        next_hops = [{'switch': src_switch, 'in': src_port, 'out': None}]
-        last_hops = {}
-
-        while next_hops:
-            current_hop = next_hops.pop(0)
-
-            if current_hop['switch'] == dst_switch:
-                current_hop['out'] = dst_port
+        current_switch = src_switch
+        while current_switch:
+            out_port = self.learned_macs[dst_mac][MAC_LEARNING_SWITCH][current_switch][MAC_LEARNING_PORT]
+            hop = {'switch': current_switch, 'in': src_port, 'out': out_port}
+            path.append(hop)
+            if current_switch == dst_switch:
                 break
-
-            for out_port, next_hop in self._get_next_hops(current_hop['switch'], src_mac).items():
-                next_hops.append(next_hop)
-                current_hop['out'] = out_port
-                last_hops[next_hop['switch']] = copy.deepcopy(current_hop)
-
-        if current_hop['switch'] == dst_switch:
-            while current_hop:
-                path.append(current_hop)
-                current_hop = last_hops.get(current_hop['switch'])
-            path.reverse()
+            link = self._get_port_attributes(current_switch, out_port)
+            current_switch = str(link['peer_switch'])
+            src_port = link['peer_port'].number
 
         return path
 
