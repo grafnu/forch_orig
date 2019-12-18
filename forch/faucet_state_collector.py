@@ -1,6 +1,5 @@
 """Processing faucet events"""
 
-import copy
 from datetime import datetime
 import json
 import logging
@@ -166,11 +165,11 @@ class FaucetStateCollector:
                     switch = sample.labels['dp_name']
                     label = int(sample.labels.get(label_name, 0))
                     restore_method(self, current_time, switch, label, sample.value)
-        self.restore_l2_learn_state_from_samples(metrics['l2_learn'].samples)
-        self.restore_dataplane_state_from_metrics(metrics)
+        self._restore_l2_learn_state_from_samples(metrics['l2_learn'].samples)
+        self._restore_dataplane_state_from_metrics(metrics)
         return int(metrics['faucet_event_id'].samples[0].value)
 
-    def restore_l2_learn_state_from_samples(self, samples):
+    def _restore_l2_learn_state_from_samples(self, samples):
         timestamp = time.time()
         for sample in samples:
             dp_name = sample.labels['dp_name']
@@ -179,8 +178,7 @@ class FaucetStateCollector:
             l3_src_ip = sample.labels['l3_src_ip']
             self.process_port_learn(timestamp, dp_name, port, eth_src, l3_src_ip)
 
-    def restore_dataplane_state_from_metrics(self, metrics):
-        """Restores dataplane state from metrics. Relies on STACK_STATE being restored."""
+    def _restore_dataplane_state_from_metrics(self, metrics):
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
         topo_map = self._get_topo_map(False)
         for key, status in topo_map.items():
@@ -671,6 +669,9 @@ class FaucetStateCollector:
 
         if not max_hops:
             raise Exception('Forwarding loop detected: %s' % path)
+
+        assert out_port == dst_port, 'last output port does not match destination port'
+
         return path
 
     @_pre_check(state_name='host_path_state')
