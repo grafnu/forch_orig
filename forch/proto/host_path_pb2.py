@@ -20,10 +20,10 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='forch/proto/host_path.proto',
   package='',
   syntax='proto3',
-  serialized_options=None,
   serialized_pb=_b('\n\x1b\x66orch/proto/host_path.proto\x1a\x1b\x66orch/proto/path_node.proto\"]\n\x08HostPath\x12\x0e\n\x06src_ip\x18\x01 \x01(\t\x12\x0e\n\x06\x64st_ip\x18\x02 \x01(\t\x12\x17\n\x04path\x18\x03 \x03(\x0b\x32\t.PathNode\x12\x18\n\x10system_state_url\x18\x04 \x01(\tb\x06proto3')
   ,
   dependencies=[forch_dot_proto_dot_path__node__pb2.DESCRIPTOR,])
+_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
 
