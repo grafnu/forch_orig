@@ -6,6 +6,6 @@ d49a3bbe1594674e048c8ed1ecc9b6e998f1a513  proto/dataplane_state.proto
 af9a160b73eb912bd4aadb6e03c19be08711dc7a  proto/host_path.proto
 ff5a5588400aef3a9952b3ccfd8d24e854d4b153  proto/list_hosts.proto
 2bc29e053318fe4ab4e96c02c0d12b8eda2ea7db  proto/process_state.proto
-73945d76f4bdbb9b27a2479e5dc86bf8522203f9  proto/shared_constants.proto
+78648f71a4ea2f0131359716dde96e0db34004d2  proto/shared_constants.proto
 3098a6cf5876a295a4440234922732812d0f6dfa  proto/switch_state.proto
 689a26b0a95ebb67feaaf408c610570db4cfb455  proto/system_state.proto

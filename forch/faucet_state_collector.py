@@ -16,7 +16,7 @@ from forch.constants import \
 
 from forch.utils import dict_proto
 
-from forch.proto.shared_constants_pb2 import State
+from forch.proto.shared_constants_pb2 import State, LacpState
 from forch.proto.system_state_pb2 import StateSummary
 
 from forch.proto.dataplane_state_pb2 import DataplaneState
@@ -47,26 +47,6 @@ def _dump_states(func):
 
 
 _RESTORE_METHODS = {'port': {}, 'dp': {}}
-
-FAUCET_LACP_STATE_UP = 3
-FAUCET_LACP_STATE_NOT_ACTIVE = 5
-FAUCET_LACP_STATE_INIT = 1
-FAUCET_LACP_STATE_NONE = 0
-
-LACP_STATE_ACTIVE = 'active'
-LACP_STATE_UP = 'up'
-LACP_STATE_DOWN = 'down'
-LACP_STATE_NONE = 'N/A'
-
-EGRESS_STATE_UP = 'up'
-EGRESS_STATE_DOWN = 'down'
-
-LACP_STATE = {
-    FAUCET_LACP_STATE_UP: LACP_STATE_ACTIVE,
-    FAUCET_LACP_STATE_NOT_ACTIVE: LACP_STATE_UP,
-    FAUCET_LACP_STATE_INIT: LACP_STATE_DOWN,
-    FAUCET_LACP_STATE_NONE: LACP_STATE_NONE
-}
 
 FAUCET_STACK_STATE_BAD = 2
 FAUCET_STACK_STATE_UP = 3
@@ -385,7 +365,7 @@ class FaucetStateCollector:
         """Return egress state obj"""
         with self.lock:
             egress_obj = self.topo_state.get('egress', {})
-            target_obj[EGRESS_STATE] = egress_obj.get(EGRESS_STATE)
+            target_obj[EGRESS_STATE] = State.State.Name(egress_obj.get(EGRESS_STATE))
             target_obj[EGRESS_DETAIL] = egress_obj.get(EGRESS_DETAIL)
             target_obj[EGRESS_LAST_UPDATE] = egress_obj.get(EGRESS_LAST_UPDATE)
             target_obj[EGRESS_LAST_CHANGE] = egress_obj.get(EGRESS_LAST_CHANGE)
@@ -740,10 +720,10 @@ class FaucetStateCollector:
             links = egress_links.setdefault(EGRESS_LINK_MAP, {})
             key = '%s:%s' % (name, port)
             # Skip update if lacp state is None, unless an entry for the link already exists
-            if lacp_state == FAUCET_LACP_STATE_NONE and key not in links:
+            if lacp_state == LacpState.none and key not in links:
                 return
 
-            lacp_state = LACP_STATE.get(lacp_state)
+            lacp_state = LacpState.LacpState.Name(int(lacp_state))
 
             link = links.setdefault(key, {})
             if not link or link.get(LINK_STATE) != lacp_state:
@@ -754,12 +734,12 @@ class FaucetStateCollector:
 
             new_egress_name = None
             for key, status in links.items():
-                if status.get(LINK_STATE) == LACP_STATE_ACTIVE:
+                if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.active):
                     new_egress_name = key
 
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             old_state = egress_state.get(EGRESS_STATE)
-            new_state = EGRESS_STATE_UP if new_egress_name else EGRESS_STATE_DOWN
+            new_state = State.up if new_egress_name else State.down
             if new_state != old_state:
                 change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
                 LOGGER.info('lag_state #%d %s, %s -> %s', change_count, name, old_state, new_state)

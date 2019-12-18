@@ -455,9 +455,17 @@
             <ul>
               
                 <li>
+                  <a href="#LacpState"><span class="badge">M</span>LacpState</a>
+                </li>
+              
+                <li>
                   <a href="#State"><span class="badge">M</span>State</a>
                 </li>
               
+              
+                <li>
+                  <a href="#LacpState.LacpState"><span class="badge">E</span>LacpState.LacpState</a>
+                </li>
               
                 <li>
                   <a href="#State.State"><span class="badge">E</span>State.State</a>
@@ -2519,6 +2527,13 @@ or to host_path API to list path </p></td>
       <p>constants</p>
 
       
+        <h3 id="LacpState">LacpState</h3>
+        <p>LACP States</p>
+
+        
+
+        
+      
         <h3 id="State">State</h3>
         <p>States</p>
 
@@ -2527,6 +2542,41 @@ or to host_path API to list path </p></td>
         
       
 
+      
+        <h3 id="LacpState.LacpState">LacpState.LacpState</h3>
+        <p>Enumeration of LACP states</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Name</td><td>Number</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>none</td>
+                <td>0</td>
+                <td><p>broken: unable to function because of error (default)</p></td>
+              </tr>
+            
+              <tr>
+                <td>active</td>
+                <td>3</td>
+                <td><p>active: in function</p></td>
+              </tr>
+            
+              <tr>
+                <td>down</td>
+                <td>1</td>
+                <td><p>down: not in function</p></td>
+              </tr>
+            
+              <tr>
+                <td>up</td>
+                <td>5</td>
+                <td><p>up: up but not in function</p></td>
+              </tr>
+            
+          </tbody>
+        </table>
       
         <h3 id="State.State">State.State</h3>
         <p>Enumeration of states</p>
