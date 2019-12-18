@@ -648,38 +648,19 @@ class FaucetStateCollector:
                 'path_state_detail': 'No path to root found'
             }
 
-    # pylint: disable=too-many-arguments
-    def _add_endpoint_to_next_hops(self, switch, mac, fr_sw, fr_port, to_sw, to_port, next_hops):
-        if not switch == fr_sw:
-            return
-        learned_switch_map = self.learned_macs.get(mac, {}).get(MAC_LEARNING_SWITCH, {})
-        learned_port = learned_switch_map.get(to_sw, {}).get(MAC_LEARNING_PORT)
-        if not learned_port == to_port:
-            return
-        next_hop = {'switch': to_sw, 'in': to_port, 'out': None}
-        next_hops[fr_port] = next_hop
-
-    def _get_next_hops(self, switch, mac):
-        """Given a node and mac, find connected switches and ports where the mac is learned"""
-        next_hops = {}
-        for link_map in self.topo_state.get(LINKS_GRAPH, []):
-            if not link_map:
-                continue
-            sw_1, p_1, sw_2, p_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
-            self._add_endpoint_to_next_hops(switch, mac, sw_1, p_1, sw_2, p_2, next_hops)
-            self._add_endpoint_to_next_hops(switch, mac, sw_2, p_2, sw_1, p_1, next_hops)
-
-        return next_hops
-
     def _get_host_path(self, src_mac, dst_mac):
         path = []
         src_switch, src_port = self._get_access_switch(src_mac)
         dst_switch, dst_port = self._get_access_switch(dst_mac)
         dps = self.faucet_config[DPS_CFG]
+        switch_map = self.learned_macs[dst_mac][MAC_LEARNING_SWITCH]
 
         current_switch = src_switch
-        while current_switch:
-            out_port = self.learned_macs[dst_mac][MAC_LEARNING_SWITCH][current_switch][MAC_LEARNING_PORT]
+        max_hops = 5
+        while max_hops > 0:
+            if current_switch not in switch_map:
+                raise Exception('No route to host at %s' % current_switch)
+            out_port = switch_map[current_switch][MAC_LEARNING_PORT]
             hop = {'switch': current_switch, 'in': src_port, 'out': out_port}
             path.append(hop)
             if current_switch == dst_switch:
@@ -687,7 +668,10 @@ class FaucetStateCollector:
             link = self._get_port_attributes(current_switch, out_port)
             current_switch = str(link['peer_switch'])
             src_port = link['peer_port'].number
+            max_hops -= 1
 
+        if not max_hops:
+            raise Exception('Forwarding loop detected: %s' % path)
         return path
 
     @_pre_check(state_name='host_path_state')
