@@ -51,7 +51,7 @@ message DataplaneState {
    * Dataplane stack links details
    */
   message Links {
-    // Map of switch status
+    // Map of link status
     map<string, LinkStatus> links = 1;
 
     // Number of times the state of all switches as a whole has changed
@@ -83,8 +83,8 @@ message DataplaneState {
     // Active root switch of stack
     string active_root = 6;
     
-    // Egress links' status
-    Links egress_links = 7;
+    // Map of link status
+    map<string, LinkStatus> links = 7;
   }
 
   /*

@@ -93,7 +93,6 @@ EGRESS_LAST_CHANGE = "egress_state_last_change"
 EGRESS_LAST_UPDATE = "egress_state_last_update"
 EGRESS_CHANGE_COUNT = "egress_state_change_count"
 EGRESS_LINK_MAP = "links"
-EGRESS_LINKS = "egress_links"
 
 
 # pylint: disable=too-many-public-methods
@@ -371,7 +370,7 @@ class FaucetStateCollector:
             target_obj[EGRESS_LAST_CHANGE] = egress_obj.get(EGRESS_LAST_CHANGE)
             target_obj[EGRESS_CHANGE_COUNT] = egress_obj.get(EGRESS_CHANGE_COUNT)
             target_obj[TOPOLOGY_ROOT] = self.topo_state.get(TOPOLOGY_ROOT)
-            target_obj[EGRESS_LINKS] = copy.deepcopy(egress_obj.get(EGRESS_LINKS))
+            target_obj[EGRESS_LINK_MAP] = copy.deepcopy(egress_obj.get(EGRESS_LINK_MAP))
 
     def _get_switch_map(self):
         """returns switch map for topology overview"""
@@ -716,8 +715,7 @@ class FaucetStateCollector:
             egress_state = self.topo_state.setdefault('egress', {})
 
             # Populate egress link information
-            egress_links = egress_state.setdefault(EGRESS_LINKS, {})
-            links = egress_links.setdefault(EGRESS_LINK_MAP, {})
+            links = egress_state.setdefault(EGRESS_LINK_MAP, {})
             key = '%s:%s' % (name, port)
             # Skip update if lacp state is None, unless an entry for the link already exists
             if lacp_state == LacpState.none and key not in links:
@@ -728,23 +726,28 @@ class FaucetStateCollector:
             link = links.setdefault(key, {})
             if not link or link.get(LINK_STATE) != lacp_state:
                 link[LINK_STATE] = lacp_state
-                change_count = egress_links.get(LINKS_CHANGE_COUNT, 0) + 1
-                egress_links[LINKS_CHANGE_COUNT] = change_count
-                egress_links[LINKS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
 
-            new_egress_name = None
+            links_status = set()
+            egress_name = None
             for key, status in links.items():
+                links_status.add(LacpState.LacpState.Value(status.get(LINK_STATE)))
                 if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.active):
-                    new_egress_name = key
+                    egress_name = key
 
-            egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
+            if links_status == set([LacpState.active, LacpState.up]):
+                state = State.healthy
+            elif links_status == set([LacpState.active, LacpState.down]):
+                state = State.damaged
+            else:
+                state = State.broken
+            
             old_state = egress_state.get(EGRESS_STATE)
-            new_state = State.up if new_egress_name else State.down
-            if new_state != old_state:
+            egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
+            if state != old_state or egress_name != egress_state.get(EGRESS_DETAIL):
                 change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
-                LOGGER.info('lag_state #%d %s, %s -> %s', change_count, name, old_state, new_state)
-                egress_state[EGRESS_STATE] = new_state
-                egress_state[EGRESS_DETAIL] = new_egress_name
+                LOGGER.info('lag_state #%d %s, %s -> %s', change_count, name, old_state, state)
+                egress_state[EGRESS_STATE] = state
+                egress_state[EGRESS_DETAIL] = egress_name
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
 

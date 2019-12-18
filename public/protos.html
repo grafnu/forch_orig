@@ -288,6 +288,10 @@
                 </li>
               
                 <li>
+                  <a href="#DataplaneState.Egress.LinksEntry"><span class="badge">M</span>DataplaneState.Egress.LinksEntry</a>
+                </li>
+              
+                <li>
                   <a href="#DataplaneState.LinkStatus"><span class="badge">M</span>DataplaneState.LinkStatus</a>
                 </li>
               
@@ -1339,10 +1343,41 @@
                 </tr>
               
                 <tr>
-                  <td>egress_links</td>
-                  <td><a href="#DataplaneState.Links">DataplaneState.Links</a></td>
+                  <td>links</td>
+                  <td><a href="#DataplaneState.Egress.LinksEntry">DataplaneState.Egress.LinksEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Map of link status </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="DataplaneState.Egress.LinksEntry">DataplaneState.Egress.LinksEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Egress links&#39; status </p></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#DataplaneState.LinkStatus">DataplaneState.LinkStatus</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -1390,7 +1425,7 @@
                   <td>links</td>
                   <td><a href="#DataplaneState.Links.LinksEntry">DataplaneState.Links.LinksEntry</a></td>
                   <td>repeated</td>
-                  <td><p>Map of switch status </p></td>
+                  <td><p>Map of link status </p></td>
                 </tr>
               
                 <tr>
