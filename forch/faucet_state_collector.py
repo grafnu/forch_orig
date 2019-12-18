@@ -736,7 +736,7 @@ class FaucetStateCollector:
         """Process a lag state change"""
         with self.lock:
             egress_state = self.topo_state.setdefault('egress', {})
-            # varz return float. Need to convert to int 
+            # varz return float. Need to convert to int
             lacp_state = int(lacp_state)
             # Populate egress link information
             links = egress_state.setdefault(EGRESS_LINK_MAP, {})
