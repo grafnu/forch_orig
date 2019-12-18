@@ -740,7 +740,7 @@ class FaucetStateCollector:
                 state = State.damaged
             else:
                 state = State.broken
-            
+
             old_state = egress_state.get(EGRESS_STATE)
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             if state != old_state or egress_name != egress_state.get(EGRESS_DETAIL):
