@@ -18,6 +18,9 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 version = os.popen('git describe').read().strip()
+with open('forch/__version__.py', 'w+') as version_file:
+    version_file.write(f'__version__ = {version}\n')
+
 
 setuptools.setup(
     name="forch",
