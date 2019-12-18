@@ -1,1 +1,1 @@
-__version__ = 'undefined'
+__version__ = 'UNDEFINED'
