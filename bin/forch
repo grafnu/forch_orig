@@ -6,6 +6,18 @@ nolog=
 
 FSOCK=faucet_event.sock
 
+if [ -z "$VIRTUAL_ENV" -a -f venv/bin/python3 ]; then
+    PYTHON=venv/bin/python3
+else
+    PYTHON=python3
+fi
+
+
+if [[ $1 =~ ^(-V|--version)$ ]]; then
+  $PYTHON -m forch.forchestrator $1
+  exit 0
+fi
+
 if [ "$1" == nolog ]; then
     nolog=nolog
     shift
@@ -29,12 +41,6 @@ fi
 
 if [ -n "$nolog" ]; then
     FORCH_LOG_DIR=
-fi
-
-if [ -z "$VIRTUAL_ENV" -a -f venv/bin/python3 ]; then
-    PYTHON=venv/bin/python3
-else
-    PYTHON=python3
 fi
 
 if [ -z "$CONTROLLER_NAME" ]; then

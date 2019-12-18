@@ -1,6 +1,7 @@
 """Orchestrator component for controlling a Faucet SDN"""
 
 from datetime import datetime
+import argparse
 import functools
 import logging
 import os
@@ -21,6 +22,8 @@ from forch.cpn_state_collector import CPNStateCollector
 from forch.faucet_state_collector import FaucetStateCollector
 from forch.local_state_collector import LocalStateCollector
 from forch.varz_state_collector import VarzStateCollector
+
+from forch.__version__ import __version__
 
 from forch.proto.shared_constants_pb2 import State
 from forch.proto.system_state_pb2 import SystemState
@@ -453,7 +456,7 @@ def configure_logging():
                         level=logging.INFO)
 
 
-if __name__ == '__main__':
+def main():
     configure_logging()
 
     CONFIG = load_config()
@@ -491,3 +494,15 @@ if __name__ == '__main__':
 
     LOGGER.warning('Exiting program')
     HTTP.stop_server()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(prog='forch', description='Process some integers.')
+    parser.add_argument('-V', '--version', action='store_true', help='print version and exit')
+    args = parser.parse_args(sys.argv[1:])
+
+    if args.version:
+        print(f'Forch version {__version__}')
+        exit()
+
+    main()
