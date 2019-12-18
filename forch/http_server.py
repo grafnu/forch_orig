@@ -30,7 +30,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
     # pylint: disable=invalid-name
     def do_GET(self):
         """Handle a basic http request get method"""
-        url_error = self.check_url()
+        url_error = self._check_url()
         if url_error:
             self.send_response(500)
             self.end_headers()
@@ -46,7 +46,8 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         message = str(self._context.get_data(self.headers.get('Host'), parsed.path[1:], opts))
         self.wfile.write(message.encode())
 
-    def check_url(self):
+    def _check_url(self):
+        """Check if url is illegal"""
         if not self.headers.get('Host'):
             return f'Host is empty. Path: {self.path}'
         if not self.path:
