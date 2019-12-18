@@ -466,7 +466,7 @@ def main():
         sys.exit(1)
 
     forch = Forchestrator(config)
-    http_server = forch.http_server.HttpServer(config.get('http', {}), FORCH.get_local_port())
+    http_server = forch.http_server.HttpServer(config.get('http', {}), forch.get_local_port())
 
     try:
         forch.initialize()
