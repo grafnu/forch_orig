@@ -736,7 +736,8 @@ class FaucetStateCollector:
         """Process a lag state change"""
         with self.lock:
             egress_state = self.topo_state.setdefault('egress', {})
-
+            # varz return float. Need to convert to int 
+            lacp_state = int(lacp_state)
             # Populate egress link information
             links = egress_state.setdefault(EGRESS_LINK_MAP, {})
             key = '%s:%s' % (name, port)
@@ -744,8 +745,7 @@ class FaucetStateCollector:
             if lacp_state == LacpState.none and key not in links:
                 return
 
-            lacp_state = LacpState.LacpState.Name(int(lacp_state))
-
+            lacp_state = LacpState.LacpState.Name(lacp_state)
             link = links.setdefault(key, {})
             if not link or link.get(LINK_STATE) != lacp_state:
                 link[LINK_STATE] = lacp_state

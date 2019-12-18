@@ -125,5 +125,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Swap files
+# Vim swap files
 *.swp
