@@ -758,6 +758,8 @@ class FaucetStateCollector:
                 links_status.add(LacpState.LacpState.Value(status.get(LINK_STATE)))
                 if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.active):
                     egress_name = key
+                if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.down):
+                    link_down = key
 
             if links_status == set([LacpState.active, LacpState.up]):
                 state = State.healthy
@@ -772,6 +774,8 @@ class FaucetStateCollector:
                 change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
                 LOGGER.info('lag_state #%d %s, %s -> %s', change_count, name, old_state, state)
                 egress_state[EGRESS_STATE] = state
+                if state == State.damaged:
+                    egress_name += "; %s down" % (link_down)
                 egress_state[EGRESS_DETAIL] = egress_name
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
