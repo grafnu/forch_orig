@@ -127,7 +127,7 @@ class FaucetStateCollector:
         summary.detail = detail
         return summary
 
-    # pylint: disable=no-self-argument, protected-access
+    # pylint: disable=no-self-argument, protected-access, no-method-argument
     def _pre_check():
         def pre_check(func):
             def wrapped(self, *args, **kwargs):
@@ -756,11 +756,10 @@ class FaucetStateCollector:
     def process_port_learn(self, timestamp, name, port, mac, ip_addr):
         """process port learn event"""
         with self.lock:
-            global_macs = self.learned_macs.setdefault(mac, {})
+            mac_entry = self.learned_macs.setdefault(mac, {})
+            mac_entry[MAC_LEARNING_IP] = ip_addr
 
-            global_macs[MAC_LEARNING_IP] = ip_addr
-
-            mac_switches = mac_table.setdefault(MAC_LEARNING_SWITCH, {})
+            mac_switches = mac_entry.setdefault(MAC_LEARNING_SWITCH, {})
             learning_switch = mac_switches.setdefault(name, {})
             learning_switch[MAC_LEARNING_PORT] = port
             learning_switch[MAC_LEARNING_TS] = datetime.fromtimestamp(timestamp).isoformat()
