@@ -176,6 +176,7 @@ class FaucetStateCollector:
         return int(metrics['faucet_event_id'].samples[0].value)
 
     def _restore_l2_learn_state_from_samples(self, samples):
+        LOGGER.info('_restore_l2_learn_state_form_samples with %d samples' % len(samples))
         timestamp = time.time()
         for sample in samples:
             dp_name = sample.labels['dp_name']
