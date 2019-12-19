@@ -589,7 +589,7 @@ class FaucetStateCollector:
                     .get(PORTS, {}).get(port, {}).get('state_up', False)
 
     def get_active_egress_path(self, src_mac):
-        """Given a MAC address return active route to egress."""
+        """Given a MAC address return active path to egress."""
         src_switch, src_port = self._get_access_switch(src_mac)
         if not src_switch or not src_port:
             return self._make_summary(
@@ -672,7 +672,7 @@ class FaucetStateCollector:
         max_hops = 5
         while max_hops > 0:
             if current_switch not in switch_map:
-                raise Exception('No route to host at %s' % current_switch)
+                raise Exception('No path to host %s through %s' % (dst_mac, current_switch))
             out_port = switch_map[current_switch][MAC_LEARNING_PORT]
             hop = {'switch': current_switch, 'in': src_port, 'out': out_port}
             path.append(hop)
