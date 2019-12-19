@@ -767,13 +767,17 @@ class FaucetStateCollector:
                 state = State.broken
 
             old_state = egress_state.get(EGRESS_STATE)
+            old_name = egress_state.get(EGRESS_DETAIL)
+            if old_name:
+                old_name = old_name.split(',')[0]
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
-            if state != old_state or egress_name != egress_state.get(EGRESS_DETAIL):
+            if state != old_state or egress_name != old_name:
                 change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
-                LOGGER.info('lag_state #%d %s, %s -> %s', change_count, name, old_state, state)
+                LOGGER.info('lag_state #%d %s, %s -> %s, %s -> %s', 
+                        change_count, name, old_state, state, old_name, egress_name)
                 egress_state[EGRESS_STATE] = state
                 if state == State.damaged:
-                    egress_name += "; %s down" % (link_down)
+                    egress_postfix = egress_name + ", %s down" % (link_down)
                 egress_state[EGRESS_DETAIL] = egress_name
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
