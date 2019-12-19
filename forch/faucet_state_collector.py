@@ -751,7 +751,7 @@ class FaucetStateCollector:
                 link[LINK_STATE] = lacp_state
 
             links_status = set()
-            egress_name = None
+            egress_name = ""
             for key, status in links.items():
                 links_status.add(LacpState.LacpState.Value(status.get(LINK_STATE)))
                 if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.active):
@@ -765,19 +765,17 @@ class FaucetStateCollector:
                 state = State.damaged
             else:
                 state = State.broken
-
+            egress_postfix = ", %s down" % (link_down) if state == State.damaged else ""
+            egress_detail = egress_name + egress_postfix
             old_state = egress_state.get(EGRESS_STATE)
-            old_name = egress_state.get(EGRESS_DETAIL)
-            if old_name:
-                old_name = old_name.split(',')[0]
+            old_detail = egress_state.get(EGRESS_DETAIL)
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
-            if state != old_state or egress_name != old_name:
+            if state != old_state or egress_detail != old_detail:
                 change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
                 LOGGER.info('lag_state #%d %s, %s -> %s, %s -> %s',
-                            change_count, name, old_state, state, old_name, egress_name)
+                            change_count, name, old_state, state, old_detail, egress_detail)
                 egress_state[EGRESS_STATE] = state
-                egress_postfix = ", %s down" % (link_down) if state == State.damaged else ""
-                egress_state[EGRESS_DETAIL] = egress_name + egress_postfix
+                egress_state[EGRESS_DETAIL] = egress_detail
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
 
