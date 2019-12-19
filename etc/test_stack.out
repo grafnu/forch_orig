@@ -154,13 +154,13 @@ Done with stack-twod test.
 Running forch-twod tests
 @system_state-twod
 "nz-kiwi"
-121
+120
 "http://localhost.n:9020"
 "broken"
 @dataplane_state-twod
 "broken"
 "egress: nz-kiwi-t1sw1:28; broken switches: ['nz-kiwi-t2sw3']; broken links: ['nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50', 'nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw2:10@nz-kiwi-t2sw2:52', 'nz-kiwi-t1sw2:11@nz-kiwi-t2sw3:52']"
-80
+79
 "down"
 "active"
 @switch_state-twod
@@ -284,13 +284,13 @@ Done with stack-restored test.
 Running forch-restored tests
 @system_state-restored
 "nz-kiwi"
-196
+195
 "http://localhost.n:9020"
 "broken"
 @dataplane_state-restored
 "broken"
 "egress: nz-kiwi-t1sw1:28; broken links: ['nz-kiwi-t1sw1:10@nz-kiwi-t2sw2:50', 'nz-kiwi-t1sw1:11@nz-kiwi-t2sw3:50', 'nz-kiwi-t1sw1:9@nz-kiwi-t2sw1:50', 'nz-kiwi-t1sw2:11@nz-kiwi-t2sw3:52']"
-133
+132
 "active"
 "active"
 @switch_state-restored
