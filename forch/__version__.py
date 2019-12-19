@@ -1,6 +1,4 @@
-"""
-Forch module version file
-"""
+"""Forch version file"""
 
 __version__ = 'UNDEFINED'
 
