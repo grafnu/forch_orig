@@ -781,8 +781,7 @@ class FaucetStateCollector:
                 LOGGER.info('lag_state #%d %s, %s -> %s, %s -> %s',
                             change_count, name, old_state, state, old_name, egress_name)
                 egress_state[EGRESS_STATE] = state
-                if state == State.damaged:
-                    egress_postfix = ", %s down" % (link_down)
+                egress_postfix = ", %s down" % (link_down) if state == State.damaged else ""
                 egress_state[EGRESS_DETAIL] = egress_name + egress_postfix
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
