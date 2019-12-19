@@ -1,16 +1,17 @@
 """Processing faucet events"""
 
-import copy
 from datetime import datetime
 import json
 import logging
 import time
 import threading
 from threading import RLock
+from forch.proto.faucet_event_pb2 import StackTopoChange
 
 # TODO: Clean up to use State enum
 from forch.constants import \
-    STATE_UP, STATE_INITIALIZING, STATE_BROKEN, STATE_DOWN, STATE_ACTIVE
+    STATE_UP, STATE_INITIALIZING, STATE_DOWN, STATE_ACTIVE, \
+    LINK_STATE_UP, LINK_STATE_BROKEN, LINK_STATE_ACTIVE
 
 from forch.utils import dict_proto
 
@@ -23,8 +24,6 @@ from forch.proto.list_hosts_pb2 import HostList
 from forch.proto.switch_state_pb2 import SwitchState
 
 LOGGER = logging.getLogger('fstate')
-LINK_SUBKEY_FORMAT = '%s:%s'
-LINK_KEY_FORMAT = '%s@%s'
 
 
 def _dump_states(func):
@@ -45,6 +44,9 @@ def _dump_states(func):
 
 
 _RESTORE_METHODS = {'port': {}, 'dp': {}}
+
+LINK_SUBKEY_FORMAT = '%s:%s'
+LINK_KEY_FORMAT = '%s@%s'
 
 FAUCET_LACP_STATE_UP = 3
 FAUCET_STACK_STATE_BAD = 2
@@ -99,7 +101,6 @@ class FaucetStateCollector:
     def __init__(self):
         self.switch_states = {}
         self.topo_state = {}
-        self.topo_state.setdefault(LINKS_GRAPH, [])
         self.learned_macs = {}
         self.faucet_config = {}
         self.lock = RLock()
@@ -107,7 +108,7 @@ class FaucetStateCollector:
         self.process_lag_state(time.time(), None, None, False)
         self._active_state = State.initializing
         self._is_state_restored = False
-        self._state_restore_error = None
+        self._state_restore_error = "Initializing"
 
     def set_active(self, active_state):
         """Set active state"""
@@ -126,8 +127,8 @@ class FaucetStateCollector:
         summary.detail = detail
         return summary
 
-    # pylint: disable=no-self-argument, protected-access
-    def _pre_check(state_name):
+    # pylint: disable=no-self-argument, protected-access, no-method-argument
+    def _pre_check():
         def pre_check(func):
             def wrapped(self, *args, **kwargs):
                 with self._lock:
@@ -139,9 +140,13 @@ class FaucetStateCollector:
                         detail = f'This controller is {state_name}'
                         return self._make_summary(self._active_state, detail)
                     if not self._is_state_restored:
-                        detail = f'Cannot state not restored: {self._state_restore_error}'
+                        detail = f'State is not restored: {self._state_restore_error}'
                         return self._make_summary(State.broken, detail)
-                return func(self, *args, **kwargs)
+                    try:
+                        return func(self, *args, **kwargs)
+                    except Exception as e:
+                        LOGGER.exception(e)
+                        return self._make_summary(State.broken, str(e))
             return wrapped
         return pre_check
 
@@ -154,6 +159,7 @@ class FaucetStateCollector:
 
     def restore_states_from_metrics(self, metrics):
         """Restore internal states from prometheus metrics"""
+        LOGGER.info('restoring internal state from metrics')
         current_time = time.time()
         for label_name, method_map in _RESTORE_METHODS.items():
             for metric_name, restore_method in method_map.items():
@@ -163,10 +169,63 @@ class FaucetStateCollector:
                 for sample in metrics[metric_name].samples:
                     switch = sample.labels['dp_name']
                     label = int(sample.labels.get(label_name, 0))
-                    restore_method(self, current_time, switch, label, sample.value)
+                    restore_method(self, current_time, switch, label, int(sample.value))
+        self._restore_dataplane_state_from_metrics(metrics)
+        self._restore_l2_learn_state_from_samples(metrics['l2_learn'].samples)
         return int(metrics['faucet_event_id'].samples[0].value)
 
-    @_pre_check(state_name='state')
+    def _restore_l2_learn_state_from_samples(self, samples):
+        timestamp = time.time()
+        for sample in samples:
+            dp_name = sample.labels['dp_name']
+            port = int(sample.value)
+            eth_src = sample.labels['eth_src']
+            l3_src_ip = sample.labels['l3_src_ip']
+            self.process_port_learn(timestamp, dp_name, port, eth_src, l3_src_ip)
+
+    def _restore_dataplane_state_from_metrics(self, metrics):
+        link_graph, stack_root, dps, timestamp = [], "", {}, ""
+        topo_map = self._get_topo_map(False)
+        for key, status in topo_map.items():
+            if status.get('link_state') in (LINK_STATE_ACTIVE, LINK_STATE_UP):
+                item = self._topo_map_to_link_graph(key)
+                if item:
+                    link_graph.append(item)
+
+        samples = metrics.get('faucet_stack_root_dpid').samples
+        assert samples, 'no faucet_stack_root_dpid samples fount'
+
+        # stack root from varz is dpid, need to convert to dp_name
+        stack_root_id = samples[0].value
+        stack_root = None
+
+        for sample in metrics.get('dp_root_hop_port').samples:
+            switch = sample.labels.get('dp_name')
+            # convert dp_id to dp_name
+            if stack_root_id == int(sample.labels.get('dp_id'), 16):
+                stack_root = switch
+            stack_dp = StackTopoChange.StackDp(root_hop_port=int(sample.value))
+            dps[switch] = stack_dp
+
+        timestamp = time.time()
+        self._update_stack_topo_state(timestamp, link_graph, stack_root, dps)
+
+    def _topo_map_to_link_graph(self, item):
+        """Conver topo map item to a link map item"""
+        # TODO: Use regex to validate key format
+        dp_ports = item.split('@')
+        linkobj = None
+        assert len(dp_ports) == 2, "link key does not match expected format."
+        dp_a, port_a = dp_ports[0].split(':')
+        dp_z, port_z = dp_ports[1].split(':')
+        key = "%s:%s-%s:%s" % (dp_a, port_a, dp_z, port_z)
+        port_a = "Port "+port_a
+        port_z = "Port "+port_z
+        port_map = StackTopoChange.LinkPortMap(dp_a=dp_a, port_a=port_a, dp_z=dp_z, port_z=port_z)
+        linkobj = StackTopoChange.StackLink(key=key, source=dp_a, target=dp_z, port_map=port_map)
+        return linkobj
+
+    @_pre_check()
     def get_dataplane_summary(self):
         """Get summary of dataplane"""
         dplane_state = self._get_dataplane_state()
@@ -200,7 +259,7 @@ class FaucetStateCollector:
         dplane_state['dataplane_state'] = state
         dplane_state['dataplane_state_detail'] = "; ".join(detail)
 
-    @_pre_check(state_name='dataplane_state')
+    @_pre_check()
     def get_dataplane_state(self):
         """get the topology state"""
         return self._get_dataplane_state()
@@ -249,7 +308,7 @@ class FaucetStateCollector:
         broken_links.sort()
         return broken_links
 
-    @_pre_check(state_name='state')
+    @_pre_check()
     def get_switch_summary(self):
         """Get summary of switch state"""
         switch_state = self._get_switch_state(None, None)
@@ -265,7 +324,7 @@ class FaucetStateCollector:
             for mac, mac_data in switch_data.get('access_port_macs', {}).items():
                 mac_data['url'] = f"{url_base}/?list_hosts?eth_src={mac}"
 
-    @_pre_check(state_name='switch_state')
+    @_pre_check()
     def get_switch_state(self, switch, port, url_base=None):
         """get a set of all switches"""
         return self._get_switch_state(switch, port, url_base)
@@ -357,13 +416,21 @@ class FaucetStateCollector:
         with self.lock:
             return self._get_switch_raw(switch_name, port)
 
+    def _get_switch_config(self, switch_name):
+        dps_configs = {str(x): x for x in self.faucet_config[DPS_CFG]}
+        if switch_name not in dps_configs:
+            raise Exception(f'Missing switch configuration for {switch_name}')
+        return dps_configs[switch_name]
+
     def _get_switch_raw(self, switch_name, port):
         """get switches state"""
         switch_map = {}
+
         # filling switch attributes
-        switch_states = self.switch_states.get(str(switch_name), {})
+        switch_states = self.switch_states.get(switch_name)
         attributes_map = switch_map.setdefault("attributes", {})
-        attributes_map["dp_id"] = switch_states.get(DP_ID)
+        switch_config = self._get_switch_config(switch_name)
+        attributes_map["dp_id"] = switch_config.dp_id
 
         # filling switch dynamics
         switch_map["restart_type_event_count"] = switch_states.get(CONFIG_CHANGE_COUNT)
@@ -451,8 +518,7 @@ class FaucetStateCollector:
 
     def _fill_path_to_root(self, switch_name, switch_map):
         """populate path to root for switch_state"""
-        egress_path = self.get_switch_egress_path(switch_name)
-        switch_map["root_path"] = egress_path['path']
+        switch_map["root_path"] = self.get_switch_egress_path(switch_name)
 
     @staticmethod
     def _make_key(start_dp, start_port, peer_dp, peer_port):
@@ -460,7 +526,7 @@ class FaucetStateCollector:
         subkey2 = LINK_SUBKEY_FORMAT % (peer_dp, peer_port)
         return LINK_KEY_FORMAT % ((subkey1, subkey2) if subkey1 < subkey2 else (subkey2, subkey1))
 
-    def _get_topo_map(self):
+    def _get_topo_map(self, check_active=True):
         topo_map = {}
         dps_objs = self.faucet_config.get(DPS_CFG)
         if not dps_objs:
@@ -474,8 +540,11 @@ class FaucetStateCollector:
                 if peer_dp and peer_port:
                     key = self._make_key(local_dp, local_port, peer_dp, peer_port)
                     if key not in topo_map:
-                        link_state = self._get_link_state(local_dp, local_port, peer_dp, peer_port)
-                        topo_map.setdefault(key, {})[LINK_STATE] = link_state
+                        if check_active:
+                            state = self._get_link_state(local_dp, local_port, peer_dp, peer_port)
+                        else:
+                            state = self._get_base_link_state(local_dp, local_port)
+                        topo_map.setdefault(key, {})[LINK_STATE] = state
         return topo_map
 
     def _get_link_state(self, local_dp, local_port, peer_dp, peer_port):
@@ -486,13 +555,18 @@ class FaucetStateCollector:
         dps = self.topo_state.get(TOPOLOGY_DPS, {})
         if (dps[local_dp].root_hop_port == local_port or
                 dps[peer_dp].root_hop_port == peer_port):
-            return STATE_ACTIVE
+            return LINK_STATE_ACTIVE
+        return self._get_base_link_state(local_dp, local_port)
+
+    def _get_base_link_state(self, local_dp, local_port):
+        local_dp = str(local_dp)
+        local_port = int(local_port)
         dp_state = self.topo_state.setdefault(LINKS_STATE, {}).setdefault(local_dp, {})
         port_state = dp_state.setdefault(local_port, {}).get('state')
         if port_state == FAUCET_STACK_STATE_UP:
-            return STATE_UP
+            return LINK_STATE_UP
         if port_state == FAUCET_STACK_STATE_BAD:
-            return STATE_BROKEN
+            return LINK_STATE_BROKEN
         return STATE_DOWN
 
     def _get_stack_topo(self):
@@ -515,28 +589,48 @@ class FaucetStateCollector:
 
     def get_active_egress_path(self, src_mac):
         """Given a MAC address return active route to egress."""
-        if src_mac not in self.learned_macs:
-            return None
         src_switch, src_port = self._get_access_switch(src_mac)
         if not src_switch or not src_port:
-            return None
-        return self.get_switch_egress_path(src_switch, src_port)
+            return self._make_summary(
+                State.broken, f'Device {src_mac} is not connected to access switch')
+        egress_path_state = self.get_switch_egress_path(src_switch, src_port)
+        egress_path = egress_path_state.get('path')
+        if egress_path:
+            return dict_proto({
+                'src_ip': self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP),
+                'path': egress_path
+            }, HostPath)
+        return self._make_summary(
+            egress_path_state['path_state'], egress_path_state['path_state_detail'])
 
     def get_switch_egress_path(self, src_switch, src_port=None):
         """"Returns path to egress from given switch. Appends ingress port to first hop if given"""
-        res = {'path': []}
         with self.lock:
             link_list = self.topo_state.get(LINKS_GRAPH)
             dps = self.topo_state.get(TOPOLOGY_DPS)
-            if not dps or not link_list:
-                raise Exception('missing topology dps or links')
+
+            if link_list is None or dps is None:
+                return {
+                    'path_state': State.broken,
+                    'path_state_detail': 'Missing topology dps or links'
+                }
+            if not link_list or not dps:
+                return {
+                    'path_state': State.broken,
+                    'path_state_detail': 'No active links available'
+                }
+
             hop = {'switch': src_switch}
+            path = []
+
             if src_port:
                 hop['in'] = src_port
+
             while hop:
                 next_hop = {}
                 hop_switch = hop['switch']
                 egress_port = dps[hop_switch].root_hop_port
+
                 if egress_port:
                     hop['out'] = egress_port
                     for link_map in link_list:
@@ -552,72 +646,56 @@ class FaucetStateCollector:
                             next_hop['switch'] = sw_1
                             next_hop['in'] = port_1
                             break
-                    res['path'].append(hop)
+                    path.append(hop)
                 elif hop_switch == self.topo_state.get(TOPOLOGY_ROOT):
-                    hop['egress'] = self._get_egress_port(hop_switch)
-                    res['path'].append(hop)
+                    hop['out'] = self._get_egress_port(hop_switch)
+                    path.append(hop)
                     break
                 hop = next_hop
-        return res
 
-    # pylint: disable=too-many-arguments
-    def _add_endpoint_to_next_hops(self, switch, mac, fr_sw, fr_port, to_sw, to_port, next_hops):
-        if not switch == fr_sw:
-            return
-        learned_switch_map = self.learned_macs.get(mac, {}).get(MAC_LEARNING_SWITCH, {})
-        learned_port = learned_switch_map.get(to_sw, {}).get(MAC_LEARNING_PORT)
-        if not learned_port == to_port:
-            return
-        next_hop = {'switch': to_sw, 'in': to_port, 'out': None}
-        next_hops[fr_port] = next_hop
+            if hop:
+                return {'path_state': State.healthy, 'path': path}
 
-    def _get_next_hops(self, switch, mac):
-        """Given a node and mac, find connected switches and ports where the mac is learned"""
-        next_hops = {}
-        for link_map in self.topo_state.get(LINKS_GRAPH):
-            if not link_map:
-                continue
-            sw_1, p_1, sw_2, p_2 = FaucetStateCollector.get_endpoints_from_link(link_map)
-            self._add_endpoint_to_next_hops(switch, mac, sw_1, p_1, sw_2, p_2, next_hops)
-            self._add_endpoint_to_next_hops(switch, mac, sw_2, p_2, sw_1, p_1, next_hops)
-
-        return next_hops
+            return {
+                'path_state': State.broken,
+                'path_state_detail': 'No path to root found'
+            }
 
     def _get_host_path(self, src_mac, dst_mac):
-        path = []
         src_switch, src_port = self._get_access_switch(src_mac)
         dst_switch, dst_port = self._get_access_switch(dst_mac)
+        switch_map = self.learned_macs[dst_mac][MAC_LEARNING_SWITCH]
 
-        current_hop = None
-        next_hops = [{'switch': src_switch, 'in': src_port, 'out': None}]
-        last_hops = {}
-
-        while next_hops:
-            current_hop = next_hops.pop(0)
-
-            if current_hop['switch'] == dst_switch:
-                current_hop['out'] = dst_port
+        path = []
+        current_switch = src_switch
+        max_hops = 5
+        while max_hops > 0:
+            if current_switch not in switch_map:
+                raise Exception('No route to host at %s' % current_switch)
+            out_port = switch_map[current_switch][MAC_LEARNING_PORT]
+            hop = {'switch': current_switch, 'in': src_port, 'out': out_port}
+            path.append(hop)
+            if current_switch == dst_switch:
                 break
+            link = self._get_port_attributes(current_switch, out_port)
+            current_switch = str(link['peer_switch'])
+            src_port = link['peer_port'].number
+            max_hops -= 1
 
-            for out_port, next_hop in self._get_next_hops(current_hop['switch'], src_mac).items():
-                next_hops.append(next_hop)
-                current_hop['out'] = out_port
-                last_hops[next_hop['switch']] = copy.deepcopy(current_hop)
+        if not max_hops:
+            raise Exception('Forwarding loop detected: %s' % path)
 
-        if current_hop['switch'] == dst_switch:
-            while current_hop:
-                path.append(current_hop)
-                current_hop = last_hops.get(current_hop['switch'])
-            path.reverse()
+        assert out_port == dst_port, 'last output port does not match destination port'
 
         return path
 
-    @_pre_check(state_name='host_path_state')
+    @_pre_check()
     def get_host_path(self, src_mac, dst_mac, to_egress):
         """Given two MAC addresses in the core network, find the active path between them"""
         if not src_mac:
             return self._make_summary(
                 State.broken, 'Empty eth_src. Please use list_hosts to get a list of hosts')
+
         if not dst_mac and not to_egress:
             return self._make_summary(
                 State.broken, 'Empty eth_dst. Use list_hosts, or set to_egress=true')
@@ -627,10 +705,7 @@ class FaucetStateCollector:
             return self._make_summary(State.broken, error_msg)
 
         if to_egress:
-            ret_map = self.get_active_egress_path(src_mac)
-            src_ip = self.learned_macs.get(src_mac, {}).get(MAC_LEARNING_IP)
-            ret_map['src_ip'] = src_ip
-            return ret_map
+            return self.get_active_egress_path(src_mac)
 
         res = {
             'src_ip': self.learned_macs[src_mac].get(MAC_LEARNING_IP),
@@ -678,16 +753,14 @@ class FaucetStateCollector:
 
     @_dump_states
     # pylint: disable=too-many-arguments
-    def process_port_learn(self, timestamp, name, port, mac, src_ip):
+    def process_port_learn(self, timestamp, name, port, mac, ip_addr):
         """process port learn event"""
         with self.lock:
-            # update global mac table
-            global_mac_table = self.learned_macs.setdefault(mac, {})
+            mac_entry = self.learned_macs.setdefault(mac, {})
+            mac_entry[MAC_LEARNING_IP] = ip_addr
 
-            global_mac_table[MAC_LEARNING_IP] = src_ip
-
-            global_mac_switch_table = global_mac_table.setdefault(MAC_LEARNING_SWITCH, {})
-            learning_switch = global_mac_switch_table.setdefault(name, {})
+            mac_switches = mac_entry.setdefault(MAC_LEARNING_SWITCH, {})
+            learning_switch = mac_switches.setdefault(name, {})
             learning_switch[MAC_LEARNING_PORT] = port
             learning_switch[MAC_LEARNING_TS] = datetime.fromtimestamp(timestamp).isoformat()
 
@@ -696,6 +769,8 @@ class FaucetStateCollector:
                 .setdefault(name, {})\
                 .setdefault(LEARNED_MACS, set())\
                 .add(mac)
+
+            LOGGER.info('Learned %s at %s:%s as %s', mac, name, port, ip_addr)
 
     @_dump_states
     def process_dp_config_change(self, timestamp, dp_name, restart_type, dp_id):
@@ -737,7 +812,7 @@ class FaucetStateCollector:
         with self.lock:
             cfg_state = self.faucet_config
             change_count = cfg_state.get(DPS_CFG_CHANGE_COUNT, 0) + 1
-            LOGGER.info('dataplane_config #%d change', change_count)
+            LOGGER.info('dataplane_config #%d change: %r', change_count, dps_config)
             cfg_state[DPS_CFG] = dps_config
             cfg_state[DPS_CFG_CHANGE_TS] = datetime.fromtimestamp(timestamp).isoformat()
             cfg_state[DPS_CFG_CHANGE_COUNT] = change_count
@@ -758,10 +833,16 @@ class FaucetStateCollector:
     @_dump_states
     def process_stack_topo_change_event(self, topo_change):
         """Process stack topology change event"""
-        topo_state = self.topo_state
+        link_graph = topo_change.graph.links
+        stack_root = topo_change.stack_root
+        dps = topo_change.dps
         timestamp = topo_change.timestamp
+        self._update_stack_topo_state(timestamp, link_graph, stack_root, dps)
+
+    def _update_stack_topo_state(self, timestamp, link_graph, stack_root, dps):
+        """Update topo_state with stack topology information"""
+        topo_state = self.topo_state
         with self.lock:
-            link_graph = topo_change.graph.links
             links_hash = str(link_graph)
             if topo_state.get(LINKS_HASH) != links_hash:
                 topo_state[LINKS_GRAPH] = link_graph
@@ -771,14 +852,13 @@ class FaucetStateCollector:
                 graph_links.sort()
                 LOGGER.info('stack_state_links #%d links: %s', link_change_count, graph_links)
 
-            stack_root = topo_change.stack_root
-            msg_str = "root %s: %s" % (stack_root, self._list_root_hops(topo_change.dps))
+            msg_str = "root %s: %s" % (stack_root, self._list_root_hops(dps))
             prev_msg = topo_state.get(TOPOLOGY_DPS_HASH)
             if prev_msg != msg_str:
                 topo_change_count = topo_state.get(TOPOLOGY_CHANGE_COUNT, 0) + 1
                 LOGGER.info('stack_topo_change #%d to %s', topo_change_count, msg_str)
-                topo_state[TOPOLOGY_ROOT] = topo_change.stack_root
-                topo_state[TOPOLOGY_DPS] = topo_change.dps
+                topo_state[TOPOLOGY_ROOT] = stack_root
+                topo_state[TOPOLOGY_DPS] = dps
                 topo_state[TOPOLOGY_DPS_HASH] = msg_str
                 topo_state[TOPOLOGY_CHANGE_COUNT] = topo_change_count
                 topo_state[TOPOLOGY_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
@@ -815,14 +895,14 @@ class FaucetStateCollector:
                 return switch, port
         return None, None
 
-    @_pre_check(state_name='state')
+    @_pre_check()
     def get_host_summary(self):
         """Get a summary of the learned hosts"""
         with self.lock:
             num_hosts = len(self.learned_macs)
         return self._make_summary(State.healthy, f'{num_hosts} learned host MACs')
 
-    @_pre_check(state_name='hosts_list_state')
+    @_pre_check()
     def get_list_hosts(self, url_base, src_mac):
         """Get access devices"""
         host_macs = {}
@@ -847,15 +927,15 @@ class FaucetStateCollector:
             mac_deets['url'] = url
 
         key = 'eth_dsts' if src_mac else 'eth_srcs'
-        return dict_proto({key: host_macs}, HostList)
+        egress_url = f"{url_base}?host_path?eth_src={src_mac}&to_egress=true" if src_mac else None
+        return dict_proto({
+            key: host_macs,
+            'egress_url': egress_url,
+        }, HostList)
 
     def _get_port_attributes(self, switch, port):
         """Get the attributes of a port: description, type, peer_switch, peer_port"""
-        dps_configs = {str(x): x for x in self.faucet_config[DPS_CFG]}
-        cfg_switch = dps_configs[switch]
-        if not cfg_switch:
-            raise Exception(f'Missing switch configuration for {switch}')
-
+        cfg_switch = self._get_switch_config(switch)
         ret_attr = {}
         port = int(port)
         if port in cfg_switch.interfaces:
