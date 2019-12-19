@@ -11,13 +11,15 @@ addons:
 install:
   - set -e
   - bin/setup_base
-  - bin/build_proto check
 script:
   - set -e
-  - bin/package_forch testing
   - bin/build_docker
-  - bin/test_topology
   - bin/setup_stack local
   - bin/test_stack
-  - bin/check_style
-  - bin/build_proto
+env:
+  matrix:
+    - SHARD=1
+    - SHARD=2
+    - SHARD=3
+    - SHARD=4
+    - SHARD=4
