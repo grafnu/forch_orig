@@ -22,4 +22,4 @@ env:
     - SHARD=2
     - SHARD=3
     - SHARD=4
-    - SHARD=4
+    - SHARD=5
