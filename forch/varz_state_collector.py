@@ -10,9 +10,12 @@ _TARGET_METRICS = (
     'port_status',
     'port_lacp_state',
     'dp_status',
+    'l2_learn',
     'port_stack_state',
     'faucet_config_hash_info',
-    'faucet_event_id'
+    'faucet_event_id',
+    'dp_root_hop_port',
+    'faucet_stack_root_dpid',
 )
 
 
