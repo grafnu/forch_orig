@@ -1,11 +1,11 @@
 """Processing faucet events"""
 
+import copy
 from datetime import datetime
 import json
 import logging
 import time
 import threading
-import copy
 from threading import RLock
 from forch.proto.faucet_event_pb2 import StackTopoChange
 
@@ -740,10 +740,8 @@ class FaucetStateCollector:
             egress_state = self.topo_state.setdefault('egress', {})
             # varz return float. Need to convert to int
             lacp_state = int(lacp_state)
-            # Populate egress link information
             links = egress_state.setdefault(EGRESS_LINK_MAP, {})
             key = '%s:%s' % (name, port)
-            # Skip update if lacp state is None, unless an entry for the link already exists
             if lacp_state == LacpState.none and key not in links:
                 return
 
