@@ -228,7 +228,7 @@ class FaucetStateCollector:
         egress_detail = egress.get(EGRESS_DETAIL)
 
         detail.append("egress: " + str(egress_detail))
-        state = State.healthy if egress_state == STATE_UP else State.broken
+        state = egress_state
 
         broken_sw = self._get_broken_switches(dplane_state)
         if broken_sw:
