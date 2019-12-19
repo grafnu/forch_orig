@@ -29,7 +29,6 @@ with open('forch/__version__.py', 'w+') as version_file:
 
 setuptools.setup(
     name="forch",
-    version=version,
     description="Faucet orchestrator",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -43,12 +42,16 @@ setuptools.setup(
     python_requires='>=3.6',
     install_requires=[
         'wheel',
+        'pbr>=1.9',
         'prometheus_client',
         'protobuf',
         'psutil',
         'pyyaml',
-        'requests'
+        'requests',
+        'setuptools>=17.1'
     ],
+    setup_requires=['pbr>=1.9', 'setuptools>=17.1'],
     data_files=data_files,
-    scripts=['bin/forch']
+    scripts=['bin/forch'],
+    pbr=True
 )

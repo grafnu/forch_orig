@@ -32,6 +32,7 @@ class FaucetEventClient():
         self._port_debounce_sec = int(config.get('port_debounce_sec', self._PORT_DEBOUNCE_SEC))
         self._port_timers = {}
         self.event_socket_connected = False
+        self._last_event_id = None
 
     def connect(self):
         """Make connection to sock to receive events"""
@@ -105,7 +106,15 @@ class FaucetEventClient():
                 return False
 
     def _filter_faucet_event(self, event):
-        (name, dpid, port, active) = self.as_port_state(event)
+        event_id = int(event.get('event_id'))
+        if event_id <= self._last_event_id:
+            LOGGER.debug('Outdated faucet event #%d', event_id)
+            return False
+        self._last_event_id += 1
+        if event_id != self._last_event_id:
+            raise Exception('Out-of-sequence event id #%d' % event_id)
+
+        (_, dpid, port, active) = self.as_port_state(event)
         if dpid and port:
             if not event.get('debounced'):
                 self._debounce_port_event(event, port, active)
@@ -113,16 +122,12 @@ class FaucetEventClient():
                 return True
             return False
 
-        (name, dpid, status) = self.as_ports_status(event)
+        (_, dpid, status) = self.as_ports_status(event)
         if dpid:
             for port in status:
                 # Prepend events so they functionally replace the current one in the queue.
-                self._prepend_event(event, self._make_port_state(port, status[port]))
+                self._prepend_event(event, self._make_port_change(port, status[port]))
             return False
-        (name, macs) = self._as_learned_macs(event)
-        if name:
-            for mac in macs:
-                self._prepend_event(event, self._make_l2_learn(mac))
         return True
 
     def _process_state_update(self, dpid, port, active):
@@ -152,7 +157,7 @@ class FaucetEventClient():
 
     def _handle_debounce(self, event, port, active):
         LOGGER.debug('Port handle %s-%s as %s', event['dp_id'], port, active)
-        self._append_event(event, self._make_port_state(port, active), debounced=True)
+        self._append_event(event, self._make_port_change(port, active), debounced=True)
 
     def _merge_event(self, base, event, timestamp=None, debounced=None):
         merged_event = copy.deepcopy(event)
@@ -183,6 +188,11 @@ class FaucetEventClient():
                 self.buffer = '%s\n%s%s' % (self.buffer[:index], event_str, self.buffer[index:])
             LOGGER.debug('appended %s\n%s*', event_str, self.buffer)
 
+    def set_event_horizon(self, event_horizon):
+        """Set the event horizon to throw away unnecessary events"""
+        self._last_event_id = event_horizon
+        LOGGER.info('Setting event horizon to event #%d', event_horizon)
+
     def _dispatch_faucet_event(self, event):
         for target in self._handlers:
             if target in event:
@@ -204,6 +214,7 @@ class FaucetEventClient():
                 event = json.loads(line)
             except Exception as e:
                 LOGGER.info('Error (%s) parsing\n%s*\nwith\n%s*', str(e), line, remainder)
+                continue
             if self._filter_faucet_event(event):
                 if not self._dispatch_faucet_event(event):
                     return event
@@ -215,8 +226,7 @@ class FaucetEventClient():
             target_event.dp_name = event.dp_name
         return target_event
 
-    # pylint: disable=too-many-arguments
-    def _make_port_state(self, port, status):
+    def _make_port_change(self, port, status):
         return {
             'PORT_CHANGE': {
                 'port_no': port,
@@ -243,12 +253,6 @@ class FaucetEventClient():
         if not event or 'PORTS_STATUS' not in event:
             return (None, None, None)
         return (event['dp_name'], event['dp_id'], event['PORTS_STATUS'])
-
-    def _as_learned_macs(self, event):
-        """Convert the event to learned macs info, if applicable"""
-        if not event or 'L2_LEARNED_MACS' not in event:
-            return (None, None)
-        return (event.get('dp_name'), event.get('L2_LEARNED_MACS'))
 
     def as_port_state(self, event):
         """Convert event to a port state info, if applicable"""
