@@ -465,28 +465,29 @@ def main():
         LOGGER.error('Invalid config, exiting.')
         sys.exit(1)
 
-    forch = Forchestrator(config)
-    http_server = forch.http_server.HttpServer(config.get('http', {}), forch.get_local_port())
+    forchestrator = Forchestrator(config)
+    http_server = forch.http_server.HttpServer(
+        config.get('http', {}), forchestrator.get_local_port())
 
     try:
-        forch.initialize()
-        http_server.map_request('system_state', forch.get_system_state)
-        http_server.map_request('dataplane_state', forch.get_dataplane_state)
-        http_server.map_request('switch_state', forch.get_switch_state)
-        http_server.map_request('cpn_state', forch.get_cpn_state)
-        http_server.map_request('process_state', forch.get_process_state)
-        http_server.map_request('host_path', forch.get_host_path)
-        http_server.map_request('list_hosts', forch.get_list_hosts)
-        http_server.map_request('sys_config', forch.get_sys_config)
-        http_server.map_request('', forch.static_file(''))
+        forchestrator.initialize()
+        http_server.map_request('system_state', forchestrator.get_system_state)
+        http_server.map_request('dataplane_state', forchestrator.get_dataplane_state)
+        http_server.map_request('switch_state', forchestrator.get_switch_state)
+        http_server.map_request('cpn_state', forchestrator.get_cpn_state)
+        http_server.map_request('process_state', forchestrator.get_process_state)
+        http_server.map_request('host_path', forchestrator.get_host_path)
+        http_server.map_request('list_hosts', forchestrator.get_list_hosts)
+        http_server.map_request('sys_config', forchestrator.get_sys_config)
+        http_server.map_request('', http_server.static_file(''))
     except Exception as e:
         LOGGER.error("Cannot initialize forch: %s", e)
         http_server.map_request('', functools.partial(show_error, e))
     finally:
         http_server.start_server()
 
-    if forch.initialized():
-        forch.main_loop()
+    if forchestrator.initialized():
+        forchestrator.main_loop()
     else:
         try:
             http_server.join_thread()
@@ -498,6 +499,7 @@ def main():
 
 
 def parse_args(raw_args):
+    """Parse command line arguments"""
     parser = argparse.ArgumentParser(prog='forch', description='Process some integers.')
     parser.add_argument('-V', '--version', action='store_true', help='print version and exit')
     parsed = parser.parse_args(raw_args)
