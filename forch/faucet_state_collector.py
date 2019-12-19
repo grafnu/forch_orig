@@ -171,7 +171,8 @@ class FaucetStateCollector:
                     label = int(sample.labels.get(label_name, 0))
                     restore_method(self, current_time, switch, label, int(sample.value))
         self._restore_dataplane_state_from_metrics(metrics)
-        self._restore_l2_learn_state_from_samples(metrics['l2_learn'].samples)
+        if 'l2_learn' in metrics:
+            self._restore_l2_learn_state_from_samples(metrics['l2_learn'].samples)
         return int(metrics['faucet_event_id'].samples[0].value)
 
     def _restore_l2_learn_state_from_samples(self, samples):

@@ -107,7 +107,7 @@ class FaucetEventClient():
 
     def _filter_faucet_event(self, event):
         event_id = int(event.get('event_id'))
-        if event_id <= self._last_event_id:
+        if self._last_event_id and event_id <= self._last_event_id:
             LOGGER.debug('Outdated faucet event #%d', event_id)
             return False
         self._last_event_id += 1
