@@ -5,6 +5,7 @@ import json
 import logging
 import time
 import threading
+import copy
 from threading import RLock
 from forch.proto.faucet_event_pb2 import StackTopoChange
 
