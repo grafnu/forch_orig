@@ -750,23 +750,8 @@ class FaucetStateCollector:
             if not link or link.get(LINK_STATE) != lacp_state:
                 link[LINK_STATE] = lacp_state
 
-            links_status = set()
-            egress_name = ""
-            for key, status in links.items():
-                links_status.add(LacpState.LacpState.Value(status.get(LINK_STATE)))
-                if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.active):
-                    egress_name = key
-                if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.down):
-                    link_down = key
+            state, egress_detail = self._get_egress_state_detail(links)
 
-            if links_status == set([LacpState.active, LacpState.up]):
-                state = State.healthy
-            elif links_status == set([LacpState.active, LacpState.down]):
-                state = State.damaged
-            else:
-                state = State.broken
-            egress_postfix = ", %s down" % (link_down) if state == State.damaged else ""
-            egress_detail = egress_name + egress_postfix
             old_state = egress_state.get(EGRESS_STATE)
             old_detail = egress_state.get(EGRESS_DETAIL)
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
@@ -778,6 +763,28 @@ class FaucetStateCollector:
                 egress_state[EGRESS_DETAIL] = egress_detail
                 egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
                 egress_state[EGRESS_CHANGE_COUNT] = change_count
+
+    def _get_egress_state_detail(self, links):
+        links_status = set()
+        egress_name = ""
+        for key, status in links.items():
+            links_status.add(LacpState.LacpState.Value(status.get(LINK_STATE)))
+            if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.active):
+                egress_name = key
+            if status.get(LINK_STATE) == LacpState.LacpState.Name(LacpState.down):
+                link_down = key
+        if links_status == set([LacpState.active, LacpState.up]):
+            state = State.healthy
+        elif links_status == set([LacpState.active, LacpState.down]):
+            state = State.damaged
+        else:
+            state = State.broken
+        egress_postfix = ", %s down" % (link_down) if state == State.damaged else ""
+        if state == State.broken:
+            egress_detail = "All links down"
+        else:
+            egress_detail = egress_name + egress_postfix
+        return state, egress_detail
 
     @_dump_states
     # pylint: disable=too-many-arguments
