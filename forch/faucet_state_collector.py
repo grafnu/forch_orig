@@ -179,7 +179,7 @@ class FaucetStateCollector:
             self.process_port_learn(timestamp, dp_name, port, eth_src, l3_src_ip)
 
     def _restore_dataplane_state_from_metrics(self, metrics):
-      """Restores dataplane state from prometheus metrics. relies on STACK_STATE being restored"""
+        """Restores dataplane state from prometheus metrics. relies on STACK_STATE being restored"""
         link_graph, stack_root, dps, timestamp = [], "", {}, ""
         topo_map = self._get_topo_map(False)
         for key, status in topo_map.items():
