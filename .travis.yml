@@ -14,10 +14,10 @@ install:
   - bin/build_proto check
 script:
   - set -e
-  - bin/check_style
   - bin/package_forch testing
   - bin/build_docker
   - bin/test_topology
   - bin/setup_stack local
   - bin/test_stack
+  - bin/check_style
   - bin/build_proto
