@@ -4,13 +4,13 @@
       {
         "src_mac": "9a:02:57:1e:8f:01",
         "dst_mac": "9a:02:57:1e:8f:02",
-        "match_rules": ["block_all", "dns"],
+        "match_rules": ["dns"],
         "action": "ALLOW"
       },
       {
         "src_mac": "9a:02:57:1e:8f:03",
         "dst_mac": "9a:02:57:1e:8f:04",
-        "match_rules": ["block_all", "http", "https"],
+        "match_rules": ["http", "https"],
         "action": "DENY"
      }
     ]
