@@ -742,6 +742,8 @@ class FaucetStateCollector:
     def process_lag_state(self, timestamp, name, port, lacp_state):
         """Process a lag state change"""
         with self.lock:
+            # TODO: Anurag remove log after testing
+            LOGGER.info("process_lag_state: name:%s port%s lacp_state:%s", name, port, lacp_state)
             egress_state = self.topo_state.setdefault('egress', {})
             # varz return float. Need to convert to int
             lacp_state = int(lacp_state)
