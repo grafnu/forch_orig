@@ -1,4 +1,5 @@
 """Processing faucet events"""
+# pylint: disable=too-many-lines
 
 import copy
 from datetime import datetime
@@ -769,6 +770,7 @@ class FaucetStateCollector:
                 egress_state[EGRESS_STATE] = state
                 egress_state[EGRESS_DETAIL] = egress_detail
 
+    # pylint: disable=no-method-argument
     def _get_egress_state_detail(self, links):
         links_status = set()
         egress_name = ""
