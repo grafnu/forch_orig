@@ -1,4 +1,5 @@
 """Processing faucet events"""
+# pylint: disable=too-many-lines
 
 import copy
 from datetime import datetime
