@@ -14,10 +14,12 @@ LOGGER = logging.getLogger('topology')
 
 
 class Faucetizer:
+    """Collect Faucet information and generate ACLs"""
     def __init__(self):
         self._rules = []
 
     def process_rules(self, rules):
+        """Process ACL rules inputs and generate concrete ACLs"""
         rules_dict = proto_dict(rules, True)
         self._rules = rules_dict.get('rules')
         for rule in self._rules:
@@ -36,7 +38,7 @@ def load_rules():
 
 if __name__ == '__main__':
     configure_logging()
-    faucetizer = Faucetizer()
+    FAUCETIZER = Faucetizer()
 
-    rule_samples = load_rules()
-    faucetizer.process_rules(rule_samples)
+    RULE_SAMPLES = load_rules()
+    FAUCETIZER.process_rules(RULE_SAMPLES)

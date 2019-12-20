@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1b\x66orch/proto/acl_rules.proto\"#\n\x08\x41\x63lRules\x12\x17\n\x05rules\x18\x01 \x03(\x0b\x32\x08.AclRule\"W\n\x07\x41\x63lRule\x12\x0f\n\x07src_mac\x18\x01 \x01(\t\x12\x0f\n\x07\x64st_mac\x18\x02 \x01(\t\x12\x11\n\tfilter_id\x18\x03 \x01(\x05\x12\x17\n\x06\x61\x63tion\x18\x04 \x01(\x0e\x32\x07.Action\"\xac\x01\n\rTrafficFilter\x12\x11\n\tfilter_id\x18\x01 \x01(\x05\x12\x10\n\x08\x65th_type\x18\x02 \x01(\x0c\x12\x0f\n\x07\x65th_src\x18\x03 \x01(\t\x12\x0f\n\x07\x65th_dst\x18\x04 \x01(\t\x12\x10\n\x08ip_proto\x18\x05 \x01(\x0c\x12\x0e\n\x06ip_src\x18\x06 \x01(\t\x12\x0e\n\x06ip_dst\x18\x07 \x01(\t\x12\x10\n\x08src_port\x18\x08 \x01(\x05\x12\x10\n\x08\x64st_port\x18\t \x01(\x05*\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x64\x65ny\x10\x00\x12\t\n\x05\x61llow\x10\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x1b\x66orch/proto/acl_rules.proto\"#\n\x08\x41\x63lRules\x12\x17\n\x05rules\x18\x01 \x03(\x0b\x32\x08.AclRule\"D\n\x07\x41\x63lRule\x12\x0f\n\x07src_mac\x18\x01 \x01(\t\x12\x0f\n\x07\x64st_mac\x18\x02 \x01(\t\x12\x17\n\x06\x61\x63tion\x18\x04 \x01(\x0e\x32\x07.Action\"\x95\x01\n\tMatchRule\x12\x10\n\x08\x65th_type\x18\x01 \x01(\x0c\x12\x0f\n\x07\x65th_src\x18\x02 \x01(\t\x12\x0f\n\x07\x65th_dst\x18\x03 \x01(\t\x12\x10\n\x08ip_proto\x18\x04 \x01(\x0c\x12\x0e\n\x06ip_src\x18\x05 \x01(\t\x12\x0e\n\x06ip_dst\x18\x06 \x01(\t\x12\x10\n\x08src_port\x18\x07 \x01(\x05\x12\x10\n\x08\x64st_port\x18\x08 \x01(\x05*\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x44\x45NY\x10\x00\x12\t\n\x05\x41LLOW\x10\x01\x62\x06proto3')
 )
 
 _ACTION = _descriptor.EnumDescriptor(
@@ -30,24 +30,24 @@ _ACTION = _descriptor.EnumDescriptor(
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='deny', index=0, number=0,
+      name='DENY', index=0, number=0,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='allow', index=1, number=1,
+      name='ALLOW', index=1, number=1,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=332,
-  serialized_end=361,
+  serialized_start=290,
+  serialized_end=319,
 )
 _sym_db.RegisterEnumDescriptor(_ACTION)
 
 Action = enum_type_wrapper.EnumTypeWrapper(_ACTION)
-deny = 0
-allow = 1
+DENY = 0
+ALLOW = 1
 
 
 
@@ -104,14 +104,7 @@ _ACLRULE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='filter_id', full_name='AclRule.filter_id', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='action', full_name='AclRule.action', index=3,
+      name='action', full_name='AclRule.action', index=2,
       number=4, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -130,76 +123,69 @@ _ACLRULE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=68,
-  serialized_end=155,
+  serialized_end=136,
 )
 
 
-_TRAFFICFILTER = _descriptor.Descriptor(
-  name='TrafficFilter',
-  full_name='TrafficFilter',
+_MATCHRULE = _descriptor.Descriptor(
+  name='MatchRule',
+  full_name='MatchRule',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='filter_id', full_name='TrafficFilter.filter_id', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='eth_type', full_name='TrafficFilter.eth_type', index=1,
-      number=2, type=12, cpp_type=9, label=1,
+      name='eth_type', full_name='MatchRule.eth_type', index=0,
+      number=1, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='eth_src', full_name='TrafficFilter.eth_src', index=2,
+      name='eth_src', full_name='MatchRule.eth_src', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='eth_dst', full_name='MatchRule.eth_dst', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='eth_dst', full_name='TrafficFilter.eth_dst', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='ip_proto', full_name='TrafficFilter.ip_proto', index=4,
-      number=5, type=12, cpp_type=9, label=1,
+      name='ip_proto', full_name='MatchRule.ip_proto', index=3,
+      number=4, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ip_src', full_name='TrafficFilter.ip_src', index=5,
+      name='ip_src', full_name='MatchRule.ip_src', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ip_dst', full_name='MatchRule.ip_dst', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ip_dst', full_name='TrafficFilter.ip_dst', index=6,
-      number=7, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='src_port', full_name='TrafficFilter.src_port', index=7,
-      number=8, type=5, cpp_type=1, label=1,
+      name='src_port', full_name='MatchRule.src_port', index=6,
+      number=7, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='dst_port', full_name='TrafficFilter.dst_port', index=8,
-      number=9, type=5, cpp_type=1, label=1,
+      name='dst_port', full_name='MatchRule.dst_port', index=7,
+      number=8, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -216,15 +202,15 @@ _TRAFFICFILTER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=158,
-  serialized_end=330,
+  serialized_start=139,
+  serialized_end=288,
 )
 
 _ACLRULES.fields_by_name['rules'].message_type = _ACLRULE
 _ACLRULE.fields_by_name['action'].enum_type = _ACTION
 DESCRIPTOR.message_types_by_name['AclRules'] = _ACLRULES
 DESCRIPTOR.message_types_by_name['AclRule'] = _ACLRULE
-DESCRIPTOR.message_types_by_name['TrafficFilter'] = _TRAFFICFILTER
+DESCRIPTOR.message_types_by_name['MatchRule'] = _MATCHRULE
 DESCRIPTOR.enum_types_by_name['Action'] = _ACTION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -242,12 +228,12 @@ AclRule = _reflection.GeneratedProtocolMessageType('AclRule', (_message.Message,
   ))
 _sym_db.RegisterMessage(AclRule)
 
-TrafficFilter = _reflection.GeneratedProtocolMessageType('TrafficFilter', (_message.Message,), dict(
-  DESCRIPTOR = _TRAFFICFILTER,
+MatchRule = _reflection.GeneratedProtocolMessageType('MatchRule', (_message.Message,), dict(
+  DESCRIPTOR = _MATCHRULE,
   __module__ = 'forch.proto.acl_rules_pb2'
-  # @@protoc_insertion_point(class_scope:TrafficFilter)
+  # @@protoc_insertion_point(class_scope:MatchRule)
   ))
-_sym_db.RegisterMessage(TrafficFilter)
+_sym_db.RegisterMessage(MatchRule)
 
 
 # @@protoc_insertion_point(module_scope)
