@@ -17,6 +17,7 @@ script:
   - bin/package_forch testing
   - bin/build_docker
   - bin/test_topology
+  - bin/test_faucetizer
   - bin/setup_stack local
   - bin/test_stack
   - bin/check_style
