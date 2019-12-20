@@ -1,19 +1,7 @@
 syntax = "proto3";
 
 message AuthResult {
-  Identifier id = 1;
-  Role role = 2;
-  Segment segment = 3;
-
-  message Identifier {
-    string id = 1;
-  }
-
-  message Role {
-    string role = 1;
-  }
-
-  message Segment {
-    string segment = 1;
-  }
+  string auth_id = 1;
+  string role = 2;
+  int32 segment = 3;
 }
