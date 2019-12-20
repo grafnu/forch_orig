@@ -19,7 +19,6 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='forch/proto/list_hosts.proto',
   package='',
   syntax='proto3',
-  serialized_options=None,
   serialized_pb=_b('\n\x1c\x66orch/proto/list_hosts.proto\"\xdc\x02\n\x08HostList\x12(\n\x08\x65th_srcs\x18\x01 \x03(\x0b\x32\x16.HostList.EthSrcsEntry\x12(\n\x08\x65th_dsts\x18\x02 \x03(\x0b\x32\x16.HostList.EthDstsEntry\x12\x12\n\negress_url\x18\x03 \x01(\t\x12\x18\n\x10system_state_url\x18\x04 \x01(\t\x1a\x42\n\x0c\x45thSrcsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.HostList.HostData:\x02\x38\x01\x1a\x42\n\x0c\x45thDstsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12!\n\x05value\x18\x02 \x01(\x0b\x32\x12.HostList.HostData:\x02\x38\x01\x1a\x46\n\x08HostData\x12\x0e\n\x06switch\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x05\x12\x0f\n\x07host_ip\x18\x03 \x01(\t\x12\x0b\n\x03url\x18\x04 \x01(\tb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -179,14 +178,14 @@ _HOSTLIST = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
     _descriptor.FieldDescriptor(
       name='system_state_url', full_name='HostList.system_state_url', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
+      options=None),
   ],
   extensions=[
   ],

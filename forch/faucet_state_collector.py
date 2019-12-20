@@ -1,4 +1,5 @@
 """Processing faucet events"""
+# pylint: disable=too-many-lines
 
 import copy
 from datetime import datetime
@@ -754,6 +755,9 @@ class FaucetStateCollector:
             link = links.setdefault(key, {})
             if not link or link.get(LINK_STATE) != lacp_state:
                 link[LINK_STATE] = lacp_state
+                change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
+                egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
+                egress_state[EGRESS_CHANGE_COUNT] = change_count
 
             state, egress_detail = self._get_egress_state_detail(links)
 
@@ -761,14 +765,12 @@ class FaucetStateCollector:
             old_detail = egress_state.get(EGRESS_DETAIL)
             egress_state[EGRESS_LAST_UPDATE] = datetime.fromtimestamp(timestamp).isoformat()
             if state != old_state or egress_detail != old_detail:
-                change_count = egress_state.get(EGRESS_CHANGE_COUNT, 0) + 1
                 LOGGER.info('lag_state #%d %s, %s -> %s, %s -> %s',
                             change_count, name, old_state, state, old_detail, egress_detail)
                 egress_state[EGRESS_STATE] = state
                 egress_state[EGRESS_DETAIL] = egress_detail
-                egress_state[EGRESS_LAST_CHANGE] = datetime.fromtimestamp(timestamp).isoformat()
-                egress_state[EGRESS_CHANGE_COUNT] = change_count
 
+    # pylint: disable=no-method-argument
     def _get_egress_state_detail(self, links):
         links_status = set()
         egress_name = ""
