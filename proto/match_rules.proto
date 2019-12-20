@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+message MatchRules {
+    map<string, MatchRule> rules = 1;
+}
+
+message MatchRule {
+    repeated Match matches = 1;
+}
+
+message Match {
+    EthType.EthType eth_type = 1;
+    string eth_src = 2;
+    string eth_dst = 3;
+    IpProto.IpProto ip_proto = 4;
+    string ip_src = 5;
+    string ip_dst = 6;
+    int32 src_port = 7;
+    int32 dst_port = 8;
+    bool bidir = 9;
+}
+
+message EthType {
+    enum EthType {
+        UNDEFINED = 0;
+        LLDP = 1;
+        ARP = 2;
+        IPv4 = 3;
+        IPv6 = 4;
+    }
+}
+
+message IpProto {
+    enum IpProto {
+        UNDEFINED = 0;
+        TCP = 1;
+        UDP = 2;
+    }
+}

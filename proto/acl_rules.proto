@@ -7,18 +7,8 @@ message AclRules {
 message AclRule {
     string src_mac = 1;
     string dst_mac = 2;
+    repeated string match_rules = 3;
     Action action = 4;
-}
-
-message MatchRule {
-    bytes eth_type = 1;
-    string eth_src = 2;
-    string eth_dst = 3;
-    bytes ip_proto = 4;
-    string ip_src = 5;
-    string ip_dst = 6;
-    int32 src_port = 7;
-    int32 dst_port = 8;
 }
 
 enum Action {
