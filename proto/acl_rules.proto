@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message AclRules {
+    repeated
+}
+
+message AclRule {
+    string src_mac = 1;
+    string dst_mac = 2;
+}
