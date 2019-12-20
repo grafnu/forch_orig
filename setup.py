@@ -21,7 +21,6 @@ version = os.popen('git describe').read().strip()
 version_content = f'''"""Forch version file"""
 
 __version__ = '{version}'
-
 '''
 with open('forch/__version__.py', 'w+') as version_file:
     version_file.write(version_content)
