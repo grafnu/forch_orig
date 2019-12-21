@@ -3,7 +3,6 @@
 
 import sys
 _b=sys.version_info[0]<3 and (lambda x:x) or (lambda x:x.encode('latin1'))
-from google.protobuf.internal import enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
@@ -20,12 +19,14 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1b\x66orch/proto/acl_rules.proto\"#\n\x08\x41\x63lRules\x12\x17\n\x05rules\x18\x01 \x03(\x0b\x32\x08.AclRule\"Y\n\x07\x41\x63lRule\x12\x0f\n\x07src_mac\x18\x01 \x01(\t\x12\x0f\n\x07\x64st_mac\x18\x02 \x01(\t\x12\x13\n\x0bmatch_rules\x18\x03 \x03(\t\x12\x17\n\x06\x61\x63tion\x18\x04 \x01(\x0e\x32\x07.Action*\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x44\x45NY\x10\x00\x12\t\n\x05\x41LLOW\x10\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x1b\x66orch/proto/acl_rules.proto\"#\n\x08\x41\x63lRules\x12\x17\n\x05rules\x18\x01 \x03(\x0b\x32\x08.AclRule\"N\n\x07\x41\x63lRule\x12\x0f\n\x07src_mac\x18\x01 \x01(\t\x12\x0f\n\x07\x64st_mac\x18\x02 \x01(\t\x12!\n\x0c\x61\x63tion_rules\x18\x03 \x03(\x0b\x32\x0b.ActionRule\"c\n\nActionRule\x12\x12\n\nmatch_rule\x18\x01 \x01(\t\x12\"\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x12.ActionRule.Action\"\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x44\x45NY\x10\x00\x12\t\n\x05\x41LLOW\x10\x01\x62\x06proto3')
 )
 
-_ACTION = _descriptor.EnumDescriptor(
+
+
+_ACTIONRULE_ACTION = _descriptor.EnumDescriptor(
   name='Action',
-  full_name='Action',
+  full_name='ActionRule.Action',
   filename=None,
   file=DESCRIPTOR,
   values=[
@@ -40,15 +41,10 @@ _ACTION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=159,
-  serialized_end=188,
+  serialized_start=218,
+  serialized_end=247,
 )
-_sym_db.RegisterEnumDescriptor(_ACTION)
-
-Action = enum_type_wrapper.EnumTypeWrapper(_ACTION)
-DENY = 0
-ALLOW = 1
-
+_sym_db.RegisterEnumDescriptor(_ACTIONRULE_ACTION)
 
 
 _ACLRULES = _descriptor.Descriptor(
@@ -104,16 +100,9 @@ _ACLRULE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='match_rules', full_name='AclRule.match_rules', index=2,
-      number=3, type=9, cpp_type=9, label=3,
+      name='action_rules', full_name='AclRule.action_rules', index=2,
+      number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='action', full_name='AclRule.action', index=3,
-      number=4, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -130,14 +119,55 @@ _ACLRULE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=68,
-  serialized_end=157,
+  serialized_end=146,
+)
+
+
+_ACTIONRULE = _descriptor.Descriptor(
+  name='ActionRule',
+  full_name='ActionRule',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='match_rule', full_name='ActionRule.match_rule', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='action', full_name='ActionRule.action', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _ACTIONRULE_ACTION,
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=148,
+  serialized_end=247,
 )
 
 _ACLRULES.fields_by_name['rules'].message_type = _ACLRULE
-_ACLRULE.fields_by_name['action'].enum_type = _ACTION
+_ACLRULE.fields_by_name['action_rules'].message_type = _ACTIONRULE
+_ACTIONRULE.fields_by_name['action'].enum_type = _ACTIONRULE_ACTION
+_ACTIONRULE_ACTION.containing_type = _ACTIONRULE
 DESCRIPTOR.message_types_by_name['AclRules'] = _ACLRULES
 DESCRIPTOR.message_types_by_name['AclRule'] = _ACLRULE
-DESCRIPTOR.enum_types_by_name['Action'] = _ACTION
+DESCRIPTOR.message_types_by_name['ActionRule'] = _ACTIONRULE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 AclRules = _reflection.GeneratedProtocolMessageType('AclRules', (_message.Message,), dict(
@@ -153,6 +183,13 @@ AclRule = _reflection.GeneratedProtocolMessageType('AclRule', (_message.Message,
   # @@protoc_insertion_point(class_scope:AclRule)
   ))
 _sym_db.RegisterMessage(AclRule)
+
+ActionRule = _reflection.GeneratedProtocolMessageType('ActionRule', (_message.Message,), dict(
+  DESCRIPTOR = _ACTIONRULE,
+  __module__ = 'forch.proto.acl_rules_pb2'
+  # @@protoc_insertion_point(class_scope:ActionRule)
+  ))
+_sym_db.RegisterMessage(ActionRule)
 
 
 # @@protoc_insertion_point(module_scope)

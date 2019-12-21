@@ -2,28 +2,38 @@
   rules:
     [
       {
-          "src_mac": "9a:02:57:1e:8f:01",
-          "dst_mac": "9a:02:57:1e:8f:02",
-          "match_rules": ["all"],
-          "action": "DENY"
-      },
-      {
         "src_mac": "9a:02:57:1e:8f:01",
         "dst_mac": "9a:02:57:1e:8f:02",
-        "match_rules": ["dns"],
-        "action": "ALLOW"
+        "action_rules":
+          [
+            {
+              "match_rule": "all",
+              "action": "DENY"
+            },
+            {
+              "match_rule": "dns",
+              "action": "ALLOW"
+            }
+          ]
       },
       {
         "src_mac": "9a:02:57:1e:8f:03",
         "dst_mac": "9a:02:57:1e:8f:04",
-        "match_rules": ["all"],
-        "action": "DENY"
-      },
-      {
-        "src_mac": "9a:02:57:1e:8f:03",
-        "dst_mac": "9a:02:57:1e:8f:04",
-        "match_rules": ["http", "https"],
-        "action": "ALLOW"
-     }
+        "action_rules":
+          [
+            {
+              "match_rule": "all",
+              "action": "DENY"
+            },
+            {
+              "match_rule": "http",
+              "action": "ALLOW"
+            },
+            {
+              "match_rule": "https",
+              "action": "ALLOW"
+            }
+          ]
+      }
     ]
 }

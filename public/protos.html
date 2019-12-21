@@ -186,9 +186,13 @@
                   <a href="#AclRules"><span class="badge">M</span>AclRules</a>
                 </li>
               
+                <li>
+                  <a href="#ActionRule"><span class="badge">M</span>ActionRule</a>
+                </li>
+              
               
                 <li>
-                  <a href="#Action"><span class="badge">E</span>Action</a>
+                  <a href="#ActionRule.Action"><span class="badge">E</span>ActionRule.Action</a>
                 </li>
               
               
@@ -664,16 +668,9 @@
                 </tr>
               
                 <tr>
-                  <td>match_rules</td>
-                  <td><a href="#string">string</a></td>
+                  <td>action_rules</td>
+                  <td><a href="#ActionRule">ActionRule</a></td>
                   <td>repeated</td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>action</td>
-                  <td><a href="#Action">Action</a></td>
-                  <td></td>
                   <td><p> </p></td>
                 </tr>
               
@@ -708,9 +705,40 @@
 
         
       
+        <h3 id="ActionRule">ActionRule</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>match_rule</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>action</td>
+                  <td><a href="#ActionRule.Action">ActionRule.Action</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
 
       
-        <h3 id="Action">Action</h3>
+        <h3 id="ActionRule.Action">ActionRule.Action</h3>
         <p></p>
         <table class="enum-table">
           <thead>
