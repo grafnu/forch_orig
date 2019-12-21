@@ -30,14 +30,14 @@ class Authenticator:
                 LOGGER.error("Error loading yaml file: %s", exc, exc_info=True)
         return auth_map
 
-    def authenticate(self, auth_id):
-        """Returns role and segment for given auth_id"""
+    def authenticate(self, device_id):
+        """Returns role and segment for given device_id"""
         auth_result = {}
-        if auth_id in self.auth_map:
-            auth_result = self.auth_map.get(auth_id)
+        if device_id in self.auth_map:
+            auth_result = self.auth_map.get(device_id)
         else:
             auth_result = self.auth_map.get('default')
-        auth_result['auth_id'] = auth_id
+        auth_result['device_id'] = device_id
         return dict_proto(auth_result, AuthResult)
 
     def process_auth_result(self):

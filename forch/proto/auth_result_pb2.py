@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='forch/proto/auth_result.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x1d\x66orch/proto/auth_result.proto\"<\n\nAuthResult\x12\x0f\n\x07\x61uth_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\x0f\n\x07segment\x18\x03 \x01(\x05\x62\x06proto3')
+  serialized_pb=_b('\n\x1d\x66orch/proto/auth_result.proto\">\n\nAuthResult\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\x0f\n\x07segment\x18\x03 \x01(\x05\x62\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -34,7 +34,7 @@ _AUTHRESULT = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='auth_id', full_name='AuthResult.auth_id', index=0,
+      name='device_id', full_name='AuthResult.device_id', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -67,7 +67,7 @@ _AUTHRESULT = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=33,
-  serialized_end=93,
+  serialized_end=95,
 )
 
 DESCRIPTOR.message_types_by_name['AuthResult'] = _AUTHRESULT

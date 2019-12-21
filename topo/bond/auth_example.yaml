@@ -1,10 +1,10 @@
 auth_list:
-    - auth_id: "9a:02:57:1e:8f:01"
+    - device_id: "9a:02:57:1e:8f:01"
       role: "Allow"
       segment: 1 
-    - auth_id: "9a:02:57:1e:8f:02"
+    - device_id: "9a:02:57:1e:8f:02"
       role: "Allow"
       segment: 2
-    - auth_id: "unknown"
+    - device_id: "unknown"
       role: "Deny"
       segment: 404
