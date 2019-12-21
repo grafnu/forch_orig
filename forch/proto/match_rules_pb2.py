@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1d\x66orch/proto/match_rules.proto\"m\n\nMatchRules\x12%\n\x05rules\x18\x01 \x03(\x0b\x32\x16.MatchRules.RulesEntry\x1a\x38\n\nRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.MatchRule:\x02\x38\x01\"$\n\tMatchRule\x12\x17\n\x07matches\x18\x01 \x03(\x0b\x32\x06.Match\"\xc4\x01\n\x05Match\x12\"\n\x08\x65th_type\x18\x01 \x01(\x0e\x32\x10.EthType.EthType\x12\x0f\n\x07\x65th_src\x18\x02 \x01(\t\x12\x0f\n\x07\x65th_dst\x18\x03 \x01(\t\x12\"\n\x08ip_proto\x18\x04 \x01(\x0e\x32\x10.IpProto.IpProto\x12\x0e\n\x06ip_src\x18\x05 \x01(\t\x12\x0e\n\x06ip_dst\x18\x06 \x01(\t\x12\x10\n\x08src_port\x18\x07 \x01(\x05\x12\x10\n\x08\x64st_port\x18\x08 \x01(\x05\x12\r\n\x05\x62idir\x18\t \x01(\x08\"J\n\x07\x45thType\"?\n\x07\x45thType\x12\r\n\tUNDEFINED\x10\x00\x12\x08\n\x04LLDP\x10\x01\x12\x07\n\x03\x41RP\x10\x02\x12\x08\n\x04IPv4\x10\x03\x12\x08\n\x04IPv6\x10\x04\"5\n\x07IpProto\"*\n\x07IpProto\x12\r\n\tUNDEFINED\x10\x00\x12\x07\n\x03TCP\x10\x01\x12\x07\n\x03UDP\x10\x02\x62\x06proto3')
+  serialized_pb=_b('\n\x1d\x66orch/proto/match_rules.proto\"m\n\nMatchRules\x12%\n\x05rules\x18\x01 \x03(\x0b\x32\x16.MatchRules.RulesEntry\x1a\x38\n\nRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.MatchRule:\x02\x38\x01\"\xc8\x01\n\tMatchRule\x12\"\n\x08\x65th_type\x18\x01 \x01(\x0e\x32\x10.EthType.EthType\x12\x0f\n\x07\x65th_src\x18\x02 \x01(\t\x12\x0f\n\x07\x65th_dst\x18\x03 \x01(\t\x12\"\n\x08ip_proto\x18\x04 \x01(\x0e\x32\x10.IpProto.IpProto\x12\x0e\n\x06ip_src\x18\x05 \x01(\t\x12\x0e\n\x06ip_dst\x18\x06 \x01(\t\x12\x10\n\x08src_port\x18\x07 \x01(\x05\x12\x10\n\x08\x64st_port\x18\x08 \x01(\x05\x12\r\n\x05\x62idir\x18\t \x01(\x08\"J\n\x07\x45thType\"?\n\x07\x45thType\x12\r\n\tUNDEFINED\x10\x00\x12\x08\n\x04LLDP\x10\x01\x12\x07\n\x03\x41RP\x10\x02\x12\x08\n\x04IPv4\x10\x03\x12\x08\n\x04IPv6\x10\x04\"5\n\x07IpProto\"*\n\x07IpProto\x12\r\n\tUNDEFINED\x10\x00\x12\x07\n\x03TCP\x10\x01\x12\x07\n\x03UDP\x10\x02\x62\x06proto3')
 )
 
 
@@ -53,8 +53,8 @@ _ETHTYPE_ETHTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=392,
-  serialized_end=455,
+  serialized_start=358,
+  serialized_end=421,
 )
 _sym_db.RegisterEnumDescriptor(_ETHTYPE_ETHTYPE)
 
@@ -79,8 +79,8 @@ _IPPROTO_IPPROTO = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=468,
-  serialized_end=510,
+  serialized_start=434,
+  serialized_end=476,
 )
 _sym_db.RegisterEnumDescriptor(_IPPROTO_IPPROTO)
 
@@ -161,94 +161,63 @@ _MATCHRULE = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='matches', full_name='MatchRule.matches', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=144,
-  serialized_end=180,
-)
-
-
-_MATCH = _descriptor.Descriptor(
-  name='Match',
-  full_name='Match',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='eth_type', full_name='Match.eth_type', index=0,
+      name='eth_type', full_name='MatchRule.eth_type', index=0,
       number=1, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='eth_src', full_name='Match.eth_src', index=1,
+      name='eth_src', full_name='MatchRule.eth_src', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='eth_dst', full_name='Match.eth_dst', index=2,
+      name='eth_dst', full_name='MatchRule.eth_dst', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ip_proto', full_name='Match.ip_proto', index=3,
+      name='ip_proto', full_name='MatchRule.ip_proto', index=3,
       number=4, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ip_src', full_name='Match.ip_src', index=4,
+      name='ip_src', full_name='MatchRule.ip_src', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ip_dst', full_name='Match.ip_dst', index=5,
+      name='ip_dst', full_name='MatchRule.ip_dst', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='src_port', full_name='Match.src_port', index=6,
+      name='src_port', full_name='MatchRule.src_port', index=6,
       number=7, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='dst_port', full_name='Match.dst_port', index=7,
+      name='dst_port', full_name='MatchRule.dst_port', index=7,
       number=8, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='bidir', full_name='Match.bidir', index=8,
+      name='bidir', full_name='MatchRule.bidir', index=8,
       number=9, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
@@ -266,8 +235,8 @@ _MATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=183,
-  serialized_end=379,
+  serialized_start=145,
+  serialized_end=345,
 )
 
 
@@ -291,8 +260,8 @@ _ETHTYPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=381,
-  serialized_end=455,
+  serialized_start=347,
+  serialized_end=421,
 )
 
 
@@ -316,21 +285,19 @@ _IPPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=457,
-  serialized_end=510,
+  serialized_start=423,
+  serialized_end=476,
 )
 
 _MATCHRULES_RULESENTRY.fields_by_name['value'].message_type = _MATCHRULE
 _MATCHRULES_RULESENTRY.containing_type = _MATCHRULES
 _MATCHRULES.fields_by_name['rules'].message_type = _MATCHRULES_RULESENTRY
-_MATCHRULE.fields_by_name['matches'].message_type = _MATCH
-_MATCH.fields_by_name['eth_type'].enum_type = _ETHTYPE_ETHTYPE
-_MATCH.fields_by_name['ip_proto'].enum_type = _IPPROTO_IPPROTO
+_MATCHRULE.fields_by_name['eth_type'].enum_type = _ETHTYPE_ETHTYPE
+_MATCHRULE.fields_by_name['ip_proto'].enum_type = _IPPROTO_IPPROTO
 _ETHTYPE_ETHTYPE.containing_type = _ETHTYPE
 _IPPROTO_IPPROTO.containing_type = _IPPROTO
 DESCRIPTOR.message_types_by_name['MatchRules'] = _MATCHRULES
 DESCRIPTOR.message_types_by_name['MatchRule'] = _MATCHRULE
-DESCRIPTOR.message_types_by_name['Match'] = _MATCH
 DESCRIPTOR.message_types_by_name['EthType'] = _ETHTYPE
 DESCRIPTOR.message_types_by_name['IpProto'] = _IPPROTO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -356,13 +323,6 @@ MatchRule = _reflection.GeneratedProtocolMessageType('MatchRule', (_message.Mess
   # @@protoc_insertion_point(class_scope:MatchRule)
   ))
 _sym_db.RegisterMessage(MatchRule)
-
-Match = _reflection.GeneratedProtocolMessageType('Match', (_message.Message,), dict(
-  DESCRIPTOR = _MATCH,
-  __module__ = 'forch.proto.match_rules_pb2'
-  # @@protoc_insertion_point(class_scope:Match)
-  ))
-_sym_db.RegisterMessage(Match)
 
 EthType = _reflection.GeneratedProtocolMessageType('EthType', (_message.Message,), dict(
   DESCRIPTOR = _ETHTYPE,

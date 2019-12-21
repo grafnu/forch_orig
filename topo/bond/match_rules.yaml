@@ -3,64 +3,27 @@
     {
       "dns":
         {
-          "matches":
-            [
-              {
-                "eth_type": "IPv4",
-                "ip_proto": "UDP",
-                "dst_port": 53,
-                "bidir": True
-              },
-              {
-                "eth_type": "IPv6",
-                "ip_proto": "UDP",
-                "dst_port": 53,
-                "bidir": True
-              }
-            ]
+          "eth_type": "IPv4",
+          "ip_proto": "UDP",
+          "dst_port": 53,
+          "bidir": True
         },
       "http":
         {
-          "matches":
-            [
-              {
-                "eth_type": "IPv4",
-                "ip_proto": "TCP",
-                "dst_port": 80,
-                "bidir": True
-              },
-              {
-                "eth_type": "IPv6",
-                "ip_proto": "TCP",
-                "dst_port": 80,
-                "bidir": True
-              }
-            ]
+          "eth_type": "IPv4",
+          "ip_proto": "TCP",
+          "dst_port": 80,
+          "bidir": True
         },
       "https":
         {
-          "matches":
-            [
-              {
-                "eth_type": "IPv4",
-                "ip_proto": "TCP",
-                "dst_port": 443,
-                "bidir": True
-              },
-              {
-                "eth_type": "IPv6",
-                "ip_proto": "TCP",
-                "dst_port": 443,
-                "bidir": True
-              }
-            ]
+          "eth_type": "IPv4",
+          "ip_proto": "TCP",
+          "dst_port": 443,
+          "bidir": True
         },
       "all":
         {
-          "matches":
-            [
-              {}
-            ]
         }
     }
 }

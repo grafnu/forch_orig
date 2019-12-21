@@ -5,8 +5,8 @@ message AclRules {
 }
 
 message AclRule {
-  string src_mac = 1;
-  string dst_mac = 2;
+  string eth_src = 1;
+  string eth_dst = 2;
   repeated ActionRule action_rules = 3;
 }
 

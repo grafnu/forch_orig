@@ -2,8 +2,8 @@
   rules:
     [
       {
-        "src_mac": "9a:02:57:1e:8f:01",
-        "dst_mac": "9a:02:57:1e:8f:02",
+        "eth_src": "9a:02:57:1e:8f:01",
+        "eth_dst": "9a:02:57:1e:8f:02",
         "action_rules":
           [
             {
@@ -17,8 +17,8 @@
           ]
       },
       {
-        "src_mac": "9a:02:57:1e:8f:03",
-        "dst_mac": "9a:02:57:1e:8f:04",
+        "eth_src": "9a:02:57:1e:8f:03",
+        "eth_dst": "9a:02:57:1e:8f:04",
         "action_rules":
           [
             {

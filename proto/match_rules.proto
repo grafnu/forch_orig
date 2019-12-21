@@ -5,10 +5,6 @@ message MatchRules {
 }
 
 message MatchRule {
-    repeated Match matches = 1;
-}
-
-message Match {
     EthType.EthType eth_type = 1;
     string eth_src = 2;
     string eth_dst = 3;

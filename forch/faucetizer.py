@@ -25,15 +25,15 @@ class Faucetizer:
         rules_dict = proto_dict(rules, True)
         self._acl_rules = rules_dict.get('rules')
         for rule in self._acl_rules:
-            sys.stdout.write(f'{rule}\n')
+            sys.stdout.write(f'{rule.get("eth_src")}, {rule.get("eth_dst")}\n')
+            sys.stdout.write(f'{rule.get("action_rules")}\n')
 
     def process_match_rules(self, rules):
         """Process match rules inputs"""
         rules_dict = proto_dict(rules, True)
         self._match_rules = rules_dict.get('rules')
         for rule_name, rule in sorted(self._match_rules.items()):
-            eth_types = [m.get('eth_type') for m in rule.get('matches', [])]
-            sys.stdout.write(f'{rule_name}: {eth_types}\n')
+            sys.stdout.write(f'{rule_name}: {rule.get("eth_type")}\n')
 
 
 def load_acl_rules(base_dir_name):

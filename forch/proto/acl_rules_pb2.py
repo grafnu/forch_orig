@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1b\x66orch/proto/acl_rules.proto\"#\n\x08\x41\x63lRules\x12\x17\n\x05rules\x18\x01 \x03(\x0b\x32\x08.AclRule\"N\n\x07\x41\x63lRule\x12\x0f\n\x07src_mac\x18\x01 \x01(\t\x12\x0f\n\x07\x64st_mac\x18\x02 \x01(\t\x12!\n\x0c\x61\x63tion_rules\x18\x03 \x03(\x0b\x32\x0b.ActionRule\"c\n\nActionRule\x12\x12\n\nmatch_rule\x18\x01 \x01(\t\x12\"\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x12.ActionRule.Action\"\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x44\x45NY\x10\x00\x12\t\n\x05\x41LLOW\x10\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x1b\x66orch/proto/acl_rules.proto\"#\n\x08\x41\x63lRules\x12\x17\n\x05rules\x18\x01 \x03(\x0b\x32\x08.AclRule\"N\n\x07\x41\x63lRule\x12\x0f\n\x07\x65th_src\x18\x01 \x01(\t\x12\x0f\n\x07\x65th_dst\x18\x02 \x01(\t\x12!\n\x0c\x61\x63tion_rules\x18\x03 \x03(\x0b\x32\x0b.ActionRule\"c\n\nActionRule\x12\x12\n\nmatch_rule\x18\x01 \x01(\t\x12\"\n\x06\x61\x63tion\x18\x02 \x01(\x0e\x32\x12.ActionRule.Action\"\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x44\x45NY\x10\x00\x12\t\n\x05\x41LLOW\x10\x01\x62\x06proto3')
 )
 
 
@@ -86,14 +86,14 @@ _ACLRULE = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='src_mac', full_name='AclRule.src_mac', index=0,
+      name='eth_src', full_name='AclRule.eth_src', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='dst_mac', full_name='AclRule.dst_mac', index=1,
+      name='eth_dst', full_name='AclRule.eth_dst', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
