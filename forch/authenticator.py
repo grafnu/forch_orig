@@ -13,6 +13,7 @@ from forch.proto.auth_result_pb2 import AuthResult
 LOGGER = logging.getLogger('authenticator')
 AUTH_FILE_NAME = 'auth.yaml'
 
+
 class Authenticator:
     """Authenticate devices using MAB/dot1x"""
     def __init__(self):
@@ -39,15 +40,22 @@ class Authenticator:
         auth_result['auth_id'] = auth_id
         return dict_proto(auth_result, AuthResult)
 
-    def print_auth_result(self, auth_result):
-        """Prints AuthResult object to out"""
-        sys.stdout.write(str(proto_dict(auth_result)) + '\n')
+    def process_auth_result(self):
+        """Prints Authi example object to out"""
+        base_dir = os.getenv('FORCH_CONFIG_DIR')
+        auth_ex_file = os.path.join(base_dir, 'auth_example.yaml')
+        auth_list = None
+        with open(auth_ex_file, 'r') as stream:
+            try:
+                auth_list = yaml.safe_load(stream).get('auth_list')
+            except yaml.YAMLError as exc:
+                LOGGER.error("Error loading yaml file: %s", exc, exc_info=True)
+        for auth_obj in auth_list:
+            auth_example = dict_proto(auth_obj, AuthResult)
+            sys.stdout.write(str(proto_dict(auth_example)) + '\n')
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     configure_logging()
     AUTHENTICATOR = Authenticator()
-    mac_list = ["9a:02:57:1e:8f:01", "9a:02:57:1e:8f:02", "9a:02:57:1e:8f:03"]
-    for mac in mac_list:
-        result = AUTHENTICATOR.authenticate(mac)
-        AUTHENTICATOR.print_auth_result(result)
+    AUTHENTICATOR.process_auth_result()
