@@ -43,7 +43,7 @@ class Authenticator:
     def process_auth_result(self):
         """Prints Authi example object to out"""
         base_dir = os.getenv('FORCH_CONFIG_DIR')
-        auth_ex_file = os.path.join(base_dir, 'auth_example.yaml')
+        auth_ex_file = os.path.join(base_dir, 'auth_result.yaml')
         auth_list = None
         with open(auth_ex_file, 'r') as stream:
             try:

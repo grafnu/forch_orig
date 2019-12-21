@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='forch/proto/auth_result.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x1d\x66orch/proto/auth_result.proto\">\n\nAuthResult\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\x0f\n\x07segment\x18\x03 \x01(\x05\x62\x06proto3')
+  serialized_pb=_b('\n\x1d\x66orch/proto/auth_result.proto\">\n\nAuthResult\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x0c\n\x04role\x18\x02 \x01(\t\x12\x0f\n\x07segment\x18\x03 \x01(\tb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -49,8 +49,8 @@ _AUTHRESULT = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='segment', full_name='AuthResult.segment', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),

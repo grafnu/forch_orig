@@ -3,5 +3,5 @@ syntax = "proto3";
 message AuthResult {
   string device_id = 1;
   string role = 2;
-  int32 segment = 3;
+  string segment = 3;
 }
