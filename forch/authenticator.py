@@ -8,7 +8,7 @@ import yaml
 from forch.forchestrator import configure_logging
 from forch.utils import proto_dict, dict_proto
 
-from forch.proto.auth_result_pb2 import AuthResult
+from forch.proto.authentication_pb2 import AuthResult
 
 LOGGER = logging.getLogger('authenticator')
 AUTH_FILE_NAME = 'auth.yaml'
