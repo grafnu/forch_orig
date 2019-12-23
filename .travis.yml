@@ -15,7 +15,7 @@ script:
   - set -e
   - bin/build_docker
   - bin/setup_stack local
-  - bin/test_stack
+  - bin/test_reconfig
 env:
   matrix:
     - SHARD=1
