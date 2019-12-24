@@ -88,7 +88,6 @@ function dump_flows {
     mkdir -p $out_dir/$foobar/
 
     for switch in t1sw1 t1sw2 t2sw1 t2sw2 t2sw3; do
-        echo
         echo switch dump nz-kiwi-$switch
         sudo ovs-ofctl dump-flows --no-names $switch > $out_dir/$foobar/$switch.flows
     done
@@ -217,7 +216,7 @@ function restart_forch {
     kill `ps ax | fgrep $forch_log | fgrep -v fgrep | awk '{print $1}'`
 
     rm -f $forch_log
-    tail --retry -f $forch_log &
+    #tail --retry -f $forch_log &
 
     bin/forch --base inst/forch-faucet-1 2>&1 &
 
@@ -333,6 +332,8 @@ function test_forch {
 
 #################################################################################
 
+rm -f $faucet_log inst/forch-faucet-1/ofchannel.log
+
 if [ -n "$local" ]; then
     echo Restarting Faucet | tee -a $TEST_RESULTS
     rm -f $faucet_log
@@ -340,19 +341,20 @@ if [ -n "$local" ]; then
     docker exec forch-faux-1 ping -c 3 192.168.1.2
 fi
 
-cat $faucet_log | tee -a $out_dir/faucet_init.log
-rm -f $faucet_log
-tail --retry -f $faucet_log &
+#cat $faucet_log | tee -a $out_dir/faucet_init.log
+#tail --retry -f $faucet_log &
 
 reset_stack
 
 # Force t1sw1 to be the active link
+echo t1sw2-eth28 down
 sudo ip link set t1sw2-eth28 down
 
 restart_ovs init
 restart_forch
 
 sleep 10
+echo t1sw2-eth28 up
 sudo ip link set t1sw2-eth28 up
 sleep 10
 
@@ -360,6 +362,7 @@ echo %%% initial solid state | tee -a $TEST_RESULTS
 test_stack -solid
 
 sleep 10
+echo t1sw1-eth28 down
 sudo ip link set t1sw1-eth28 down
 sleep 10
 
