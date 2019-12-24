@@ -2,13 +2,6 @@
 
 source bin/stack_functions
 
-export CONTROLLER_NAME=127.0.0.1
-
-TEST_RESULTS=${TEST_RESULTS:-$out_dir/test_reconfig.out}
-GOLDEN_RESULTS=etc/test_reconfig.out
-TCPSUDO="sudo tcpdump"
-controllers=`sudo ovs-vsctl get-controller t1sw1`
-
 local=
 if [ "$1" == local ]; then
     local=y
@@ -27,7 +20,7 @@ forch_log=inst/forch-faucet-1/forch.log
 
 rm -f $faucet_log inst/forch-faucet-1/ofchannel.log
 
-rest_system
+reset_system
 
 reset_stack
 
@@ -54,5 +47,3 @@ sleep 10
 
 echo %%% t1sw1 egress down | tee -a $TEST_RESULTS
 test_stack -broken
-
-finalize_test

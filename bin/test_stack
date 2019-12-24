@@ -4,8 +4,6 @@ source bin/stack_functions
 
 export CONTROLLER_NAME=127.0.0.1
 
-TEST_RESULTS=${TEST_RESULTS:-$OUT_DIR/test_stack.out}
-GOLDEN_RESULTS=etc/test_stack.out
 TCPSUDO="sudo tcpdump"
 controllers=`sudo ovs-vsctl get-controller t1sw1`
 
@@ -121,5 +119,3 @@ sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 echo Killing tails...
 kill `ps ax | $faucet_log | fgrep -v fgrep | awk '{print $1}'`
 kill `ps ax | $forch_log | fgrep -v fgrep | awk '{print $1}'`
-
-finalize_test

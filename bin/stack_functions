@@ -1,10 +1,13 @@
 #!/bin/bash # Not needed but helps emacs figure this file out.
 # Utility functions for working with the stacked setup.
 
+TEST_SCRIPT=${0##*/}
+
 OUT_DIR=${OUT_DIR:-test_out/}
-rm -rf $OUT_DIR
-mkdir -p $OUT_DIR
-echo Writing output to $OUT_DIR
+TEST_RESULTS=$OUT_DIR/$TEST_SCRIPT.out
+
+echo $0 > $TEST_RESULTS
+date >> $TEST_RESULTS
 
 function add_br {
     bname=$1
@@ -144,7 +147,7 @@ function restart_ovs {
     sudo /etc/init.d/openvswitch-switch restart
 
     echo $desc Waiting for network stability...
-    sleep 30
+    sleep 15
 }
 
 function test_stack {
@@ -358,18 +361,4 @@ function reset_system {
         docker restart forch-faucet-1
         docker exec forch-faux-1 ping -c 3 192.168.1.2 || exit 1
     fi
-}
-
-function finalize_test {
-    echo
-    echo '########## Begin complete test results ##########'
-    cat $TEST_RESULTS
-    echo '########## End complete test_results ##########'
-    echo
-    echo Comparing $GOLDEN_RESULTS with $TEST_RESULTS
-    diff -b $GOLDEN_RESULTS $TEST_RESULTS
-    result=$?
-
-    echo Result diff returned $result
-    exit $result
 }
