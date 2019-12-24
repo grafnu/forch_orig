@@ -18,8 +18,8 @@ TEST_RESULTS=$OUT_DIR/test_$TEST_SET.out
 bin/test_${TEST_SET}
 
 echo
-echo '########## Begin complete test results ##########'
 ls -l $TEST_RESULTS
+echo '########## Begin complete test results ##########'
 cat $TEST_RESULTS
 echo '########## End complete test_results ##########'
 echo
