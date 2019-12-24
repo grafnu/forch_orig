@@ -11,17 +11,20 @@ forch_log=inst/forch-faucet-1/forch.log
 
 function simple_ping {
     label=$1
-    rm -f $OUT_DIR/t1sw1-eth28.pcap $OUT_DIR/t1sw2-eth28.pcap
-    sudo timeout 3s tcpdump -lw $OUT_DIR/t1sw1-eth28.pcap -i t1sw1-eth28 &
+    rm -f $OUT_DIR/t2sw1-eth1.pcap $OUT_DIR/t1sw2-eth28.pcap
+    sudo timeout 3s tcpdump -lw $OUT_DIR/t2sw1-eth1.pcap -i t2sw1-eth1 &
     sudo timeout 3s tcpdump -lw $OUT_DIR/t1sw2-eth28.pcap -i t1sw2-eth28 &
     sleep 0.5
     ping=`docker exec forch-faux-1 ping -q -c 2 192.168.1.0 | fgrep packets`
     sleep 2.5
-    sw1=`tcpdump -r $OUT_DIR/t1sw1-eth28.pcap | wc -l`
+    sw1=`tcpdump -r $OUT_DIR/t2sw1-eth1.pcap | wc -l`
     sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
     pingc=`echo $ping | sed -e 's/, time.*//'`
-    echo ping $label $((sw1 > 5)) $((sw1 < 11)) $((sw2 > 5)) $((sw2 < 11)) $pingc | tee -a $TEST_RESULTS
-    tcpdump -r $OUT_DIR/t1sw2-eth28.pcap
+    echo ping $label $((sw1 > 6)) $((sw1 < 11)) $((sw2 > 6)) $((sw2 < 11)) $pingc | tee -a $TEST_RESULTS
+    echo t2sw1
+    tcpdump -r $OUT_DIR/t2sw1-eth1.pcap | head
+    echo t1sw2
+    tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | head
 }
 
 rm -f $faucet_log inst/forch-faucet-1/ofchannel.log
