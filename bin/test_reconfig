@@ -18,6 +18,18 @@ forch_log=inst/forch-faucet-1/forch.log
 
 #################################################################################
 
+function simple_ping {
+    label=$1
+    rm -f $OUT_DIR/t1sw1-eth28.pcap $OUT_DIR/t1sw2-eth28.pcap
+    sudo timeout 3s tcpdump -w $OUT_DIR/t1sw1-eth28.pcap -i t1sw1-eth28 &
+    sudo timeout 3s tcpdump -w $OUT_DIR/t1sw2-eth28.pcap -i t1sw2-eth28 &
+    ping=`docker exec forch-faux-1 ping -q -c 2 192.168.1.0 | fgrep packets`
+    sleep 1
+    t1sw1=`tcpdump -r $OUT_DIR/t1sw1-eth28.pcap | wc -l`
+    t1sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
+    echo ping $label $t1sw1 $t1sw2 $ping  | tee -a $TEST_RESULTS
+}
+
 rm -f $faucet_log inst/forch-faucet-1/ofchannel.log
 
 reset_system
@@ -25,25 +37,22 @@ reset_system
 reset_stack
 
 # Force t1sw1 to be the active link
-echo t1sw2-eth28 down
 sudo ip link set t1sw2-eth28 down
 
 restart_ovs init
 
-restart_forch
-
 sleep 10
-echo t1sw2-eth28 up
+
+simple_ping sw2down
+
 sudo ip link set t1sw2-eth28 up
+sleep 30
+
+simple_ping sw2up
+
 sleep 10
-
-
-test_stack -solid
-
-sleep 10
-echo t1sw1-eth28 down
 sudo ip link set t1sw1-eth28 down
-sleep 10
 
-echo %%% t1sw1 egress down | tee -a $TEST_RESULTS
-test_stack -broken
+for trial in 1 2 3 4 5 6 7 8 9; do
+    simple_ping trial$trial
+done

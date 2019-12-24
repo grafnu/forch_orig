@@ -20,3 +20,5 @@ env:
   matrix:
     - TEST_SET=stack
     - TEST_SET=reconfig
+    - TEST_SET=reconfig
+    - TEST_SET=reconfig
