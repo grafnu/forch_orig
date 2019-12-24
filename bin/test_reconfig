@@ -41,10 +41,10 @@ reset_stack
 restart_ovs init
 
 sudo ip link set t1sw2-eth28 down
-multi_ping sw2down
+simple_ping t1sw2 down
 
 sudo ip link set t1sw2-eth28 up
-multi_ping sw2up
+simple_ping t1sw2 up
 
 sudo ip link set t1sw1-eth28 down
 multi_ping sw1down
