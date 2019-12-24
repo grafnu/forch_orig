@@ -2,11 +2,7 @@
 
 source bin/stack_functions
 
-local=
-if [ "$1" == local ]; then
-    local=y
-    shift
-fi
+preamble_setup
 
 faucet_log=inst/forch-faucet-1/faucet.log
 forch_log=inst/forch-faucet-1/forch.log
