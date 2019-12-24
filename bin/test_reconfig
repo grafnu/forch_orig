@@ -11,25 +11,25 @@ forch_log=inst/forch-faucet-1/forch.log
 
 function simple_ping {
     label=$1
-    rm -f $OUT_DIR/t2sw1-eth1.pcap $OUT_DIR/t1sw2-eth28.pcap
-    sudo timeout 3s tcpdump -lw $OUT_DIR/t2sw1-eth1.pcap -i t2sw1-eth1 &
+    rm -f $OUT_DIR/faux1.pcap $OUT_DIR/t1sw2-eth28.pcap
+    sudo timeout 3s tcpdump -lw $OUT_DIR/faux1.pcap -i faux1 &
     sudo timeout 3s tcpdump -lw $OUT_DIR/t1sw2-eth28.pcap -i t1sw2-eth28 &
     sleep 0.5
     ping=`docker exec forch-faux-1 ping -q -c 2 192.168.1.0 | fgrep packets`
     sleep 2.5
-    sw1=`tcpdump -r $OUT_DIR/t2sw1-eth1.pcap | wc -l`
+    sw1=`tcpdump -r $OUT_DIR/faux1.pcap | wc -l`
     sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
     pingc=`echo $ping | sed -e 's/, time.*//'`
     echo ping $label $((sw1 > 6)) $((sw1 < 11)) $((sw2 > 6)) $((sw2 < 11)) $pingc | tee -a $TEST_RESULTS
-    echo t2sw1
-    tcpdump -r $OUT_DIR/t2sw1-eth1.pcap | head
-    echo t1sw2
+    echo faux1 pcap
+    tcpdump -r $OUT_DIR/faux1.pcap | head
+    echo t1sw2 pcap
     tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | head
 }
 
 function multi_ping {
     prefix=$1
-    for trial in 01 02 03 04 05 06 07 08 09 10 11 12; do
+    for trial in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
         simple_ping $prefix$trial
     done
 }
@@ -41,10 +41,10 @@ reset_stack
 restart_ovs init
 
 sudo ip link set t1sw2-eth28 down
-simple_ping t1sw2 down
+simple_ping t1sw2do1
 
 sudo ip link set t1sw2-eth28 up
-simple_ping t1sw2 up
+simple_ping t1sw2up1
 
 sudo ip link set t1sw1-eth28 down
 multi_ping sw1down
