@@ -119,5 +119,7 @@ echo Killing forch...
 sudo kill `ps ax | fgrep forch | awk '{print $1}'`
 
 echo Killing tails...
-kill `ps ax | $faucet_log | fgrep -v fgrep | awk '{print $1}'`
-kill `ps ax | $forch_log | fgrep -v fgrep | awk '{print $1}'`
+kill `ps ax | fgrep $faucet_log | fgrep -v fgrep | awk '{print $1}'`
+kill `ps ax | fgrep $forch_log | fgrep -v fgrep | awk '{print $1}'`
+
+echo Done with test_stack.
