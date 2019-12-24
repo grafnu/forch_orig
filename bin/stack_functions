@@ -1,13 +1,15 @@
 #!/bin/bash # Not needed but helps emacs figure this file out.
 # Utility functions for working with the stacked setup.
 
-TEST_SCRIPT=${0##*/}
+function preamble_setup {
+    TEST_SCRIPT=${0##*/}
 
-OUT_DIR=${OUT_DIR:-test_out/}
-TEST_RESULTS=$OUT_DIR/$TEST_SCRIPT.out
+    OUT_DIR=${OUT_DIR:-test_out/}
+    TEST_RESULTS=$OUT_DIR/$TEST_SCRIPT.out
 
-echo $0 > $TEST_RESULTS
-date >> $TEST_RESULTS
+    echo $0 > $TEST_RESULTS
+    date >> $TEST_RESULTS
+}
 
 function add_br {
     bname=$1

@@ -8,11 +8,6 @@ if [ "$1" == local ]; then
     shift
 fi
 
-cap_base=10
-ping_count=10
-num_pairs=12
-cap_length=$((cap_base + ping_count + num_pairs * 2))
-
 faucet_log=inst/forch-faucet-1/faucet.log
 forch_log=inst/forch-faucet-1/forch.log
 
@@ -21,10 +16,10 @@ forch_log=inst/forch-faucet-1/forch.log
 function simple_ping {
     label=$1
     rm -f $OUT_DIR/t1sw1-eth28.pcap $OUT_DIR/t1sw2-eth28.pcap
-    sudo timeout 3s tcpdump -w $OUT_DIR/t1sw1-eth28.pcap -i t1sw1-eth28 &
-    sudo timeout 3s tcpdump -w $OUT_DIR/t1sw2-eth28.pcap -i t1sw2-eth28 &
+    sudo timeout 3s tcpdump -lw $OUT_DIR/t1sw1-eth28.pcap -i t1sw1-eth28 &
+    sudo timeout 3s tcpdump -lw $OUT_DIR/t1sw2-eth28.pcap -i t1sw2-eth28 &
     ping=`docker exec forch-faux-1 ping -q -c 2 192.168.1.0 | fgrep packets`
-    sleep 1
+    sleep 2
     t1sw1=`tcpdump -r $OUT_DIR/t1sw1-eth28.pcap | wc -l`
     t1sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
     echo ping $label $t1sw1 $t1sw2 $ping  | tee -a $TEST_RESULTS
