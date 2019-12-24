@@ -16,9 +16,11 @@ function simple_ping {
     sudo timeout 3s tcpdump -lw $OUT_DIR/t1sw2-eth28.pcap -i t1sw2-eth28 &
     ping=`docker exec forch-faux-1 ping -q -c 2 192.168.1.0 | fgrep packets`
     sleep 2
-    t1sw1=`tcpdump -r $OUT_DIR/t1sw1-eth28.pcap | wc -l`
-    t1sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
-    echo ping $label $t1sw1 $t1sw2 $ping  | tee -a $TEST_RESULTS
+    sw1=`tcpdump -r $OUT_DIR/t1sw1-eth28.pcap | wc -l`
+    sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
+    pingc=`echo $ping | sed -e 's/, time.*//'`
+    echo ping $label $((sw1 > 5)) $((sw1 < 11)) $((sw2 > 5)) $((sw2 < 11)) $pingc | tee -a $TEST_RESULTS
+    tcpdump -r $OUT_DIR/t1sw2-eth28.pcap
 }
 
 rm -f $faucet_log inst/forch-faucet-1/ofchannel.log
@@ -48,4 +50,4 @@ for trial in 1 2 3 4 5 6 7 8 9; do
     simple_ping trial$trial
 done
 
-echo Done with test_reconfig.
+echo Done with test_reconfig. | tee -a $TEST_RESULTS

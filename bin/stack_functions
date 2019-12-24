@@ -8,7 +8,6 @@ function preamble_setup {
     TEST_RESULTS=$OUT_DIR/$TEST_SCRIPT.out
 
     echo $0 > $TEST_RESULTS
-    date >> $TEST_RESULTS
 }
 
 function add_br {
