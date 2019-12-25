@@ -50,4 +50,7 @@ simple_ping sw2isup01
 sudo ip link set t1sw1-eth28 down
 multi_ping sw1down
 
+echo Dump faucet.log
+cat inst/forch-faucet-1/faucet.log
+
 echo Done with test_reconfig. | tee -a $TEST_RESULTS
