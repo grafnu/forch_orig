@@ -31,6 +31,7 @@ function multi_ping {
     prefix=$1
     for trial in {01..99}; do
         simple_ping $prefix$trial
+        sleep 3
     done
 }
 
