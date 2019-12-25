@@ -22,3 +22,5 @@ env:
     - TEST_SET=reconfig
     - TEST_SET=reconfig
     - TEST_SET=reconfig
+    - TEST_SET=reconfig
+    - TEST_SET=reconfig

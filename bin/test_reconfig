@@ -29,7 +29,7 @@ function simple_ping {
 
 function multi_ping {
     prefix=$1
-    for trial in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
+    for trial in {01..30}; do
         simple_ping $prefix$trial
     done
 }
@@ -41,7 +41,7 @@ reset_stack
 restart_ovs init
 
 sudo ip link set t1sw2-eth28 down
-simple_ping t1sw2do1
+multi_ping sw2down
 
 sudo ip link set t1sw2-eth28 up
 simple_ping t1sw2up1
