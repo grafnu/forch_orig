@@ -20,7 +20,7 @@ function simple_ping {
     sw1=`tcpdump -r $OUT_DIR/faux1.pcap | wc -l`
     sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
     pingc=`echo $ping | sed -e 's/, time.*//'`
-    echo ping $label $((sw1 > 6)) $((sw1 < 11)) $((sw2 > 6)) $((sw2 < 11)) $pingc | tee -a $TEST_RESULTS
+    echo ping $label $((sw1 > 6)) $((sw1 < 15)) $((sw2 > 6)) $((sw2 < 15)) $pingc | tee -a $TEST_RESULTS
     echo faux1 pcap
     tcpdump -r $OUT_DIR/faux1.pcap | head
     echo t1sw2 pcap
@@ -29,7 +29,7 @@ function simple_ping {
 
 function multi_ping {
     prefix=$1
-    for trial in {01..30}; do
+    for trial in {01..40}; do
         simple_ping $prefix$trial
     done
 }
@@ -41,10 +41,10 @@ reset_stack
 restart_ovs init
 
 sudo ip link set t1sw2-eth28 down
-multi_ping sw2down
+single_ping sw2down01
 
 sudo ip link set t1sw2-eth28 up
-simple_ping t1sw2up1
+simple_ping sw2isup01
 
 sudo ip link set t1sw1-eth28 down
 multi_ping sw1down
