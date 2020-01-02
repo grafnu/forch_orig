@@ -4,6 +4,7 @@ dps:
     faucet_dp_mac: 0e:00:00:00:01:01
     hardware: Generic
     ofchannel_log: /var/log/faucet/ofchannel.log
+    max_lldp_lost: 100
     lacp_timeout: 5
     stack:
       priority: 1
@@ -30,6 +31,7 @@ dps:
     dp_id: 178
     faucet_dp_mac: 0e:00:00:00:01:02
     hardware: Generic
+    max_lldp_lost: 100
     lacp_timeout: 5
     stack:
       priority: 1
@@ -57,6 +59,7 @@ dps:
     faucet_dp_mac: 0e:00:00:00:02:01
     hardware: Generic
     lacp_timeout: 5
+    max_lldp_lost: 100
     interface_ranges:
       1-46: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
     interfaces:
@@ -72,6 +75,7 @@ dps:
     faucet_dp_mac: 0e:00:00:00:02:02
     hardware: Allied-Telesis
     lacp_timeout: 5
+    max_lldp_lost: 100
     interface_ranges:
       1-45: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
     interfaces:
@@ -90,6 +94,7 @@ dps:
     faucet_dp_mac: 0e:00:00:00:02:03
     hardware: Allied-Telesis
     lacp_timeout: 5
+    max_lldp_lost: 100
     interface_ranges:
       1-46: {acl_in: uniform_acl, description: IoT Device, native_vlan: 171}
     interfaces:
