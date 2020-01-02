@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+message Rules{
+  map<string, MatchRule> match_rules = 1; // key: name of a MatchRule
+  map<string, DeviceRule> device_rules = 2; // key: learned mac address
+}
+
+message DeviceRule {
+  int32 vlan = 1;
+  repeated string match_rules = 2;
+}
+
+message MatchRule {
+  EthType.EthType eth_type = 1;
+  string eth_src = 2;
+  string eth_dst = 3;
+  IpProto.IpProto ip_proto = 4;
+  string ip_src = 5;
+  string ip_dst = 6;
+  int32 src_port = 7;
+  int32 dst_port = 8;
+  Action.Action action = 9;
+}
+
+message EthType {
+  enum EthType {
+    UNDEFINED = 0;
+    LLDP = 1;
+    ARP = 2;
+    IPv4 = 3;
+    IPv6 = 4;
+  }
+}
+
+message IpProto {
+  enum IpProto {
+    UNDEFINED = 0;
+    TCP = 1;
+    UDP = 2;
+  }
+}
+
+message Action {
+  enum Action {
+    DENY = 0;
+    ALLOW = 1;
+  }
+}

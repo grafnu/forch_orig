@@ -175,15 +175,11 @@
         
           
           <li>
-            <a href="#forch%2fproto%2facl_rules.proto">forch/proto/acl_rules.proto</a>
+            <a href="#forch%2fproto%2facl_rule.proto">forch/proto/acl_rule.proto</a>
             <ul>
               
                 <li>
                   <a href="#AclRule"><span class="badge">M</span>AclRule</a>
-                </li>
-              
-                <li>
-                  <a href="#AclRules"><span class="badge">M</span>AclRules</a>
                 </li>
               
                 <li>
@@ -462,7 +458,7 @@
         
           
           <li>
-            <a href="#forch%2fproto%2fmatch_rules.proto">forch/proto/match_rules.proto</a>
+            <a href="#forch%2fproto%2fmatch_rule.proto">forch/proto/match_rule.proto</a>
             <ul>
               
                 <li>
@@ -475,14 +471,6 @@
               
                 <li>
                   <a href="#MatchRule"><span class="badge">M</span>MatchRule</a>
-                </li>
-              
-                <li>
-                  <a href="#MatchRules"><span class="badge">M</span>MatchRules</a>
-                </li>
-              
-                <li>
-                  <a href="#MatchRules.RulesEntry"><span class="badge">M</span>MatchRules.RulesEntry</a>
                 </li>
               
               
@@ -661,7 +649,7 @@
     
       
       <div class="file-heading">
-        <h2 id="forch/proto/acl_rules.proto">forch/proto/acl_rules.proto</h2><a href="#title">Top</a>
+        <h2 id="forch/proto/acl_rule.proto">forch/proto/acl_rule.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
@@ -693,30 +681,6 @@
                 <tr>
                   <td>action_rules</td>
                   <td><a href="#ActionRule">ActionRule</a></td>
-                  <td>repeated</td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="AclRules">AclRules</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>rules</td>
-                  <td><a href="#AclRule">AclRule</a></td>
                   <td>repeated</td>
                   <td><p> </p></td>
                 </tr>
@@ -2539,7 +2503,7 @@ or to host_path API to list path </p></td>
     
       
       <div class="file-heading">
-        <h2 id="forch/proto/match_rules.proto">forch/proto/match_rules.proto</h2><a href="#title">Top</a>
+        <h2 id="forch/proto/match_rule.proto">forch/proto/match_rule.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
@@ -2627,61 +2591,6 @@ or to host_path API to list path </p></td>
                 <tr>
                   <td>bidir</td>
                   <td><a href="#bool">bool</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="MatchRules">MatchRules</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>rules</td>
-                  <td><a href="#MatchRules.RulesEntry">MatchRules.RulesEntry</a></td>
-                  <td>repeated</td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="MatchRules.RulesEntry">MatchRules.RulesEntry</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>key</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>value</td>
-                  <td><a href="#MatchRule">MatchRule</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
