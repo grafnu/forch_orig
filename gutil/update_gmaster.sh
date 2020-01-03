@@ -57,7 +57,7 @@ echo gupdater $LOCAL >> $VTEMP
 REMOTE=`git rev-parse $REPO/gupdater`
 if [ "$LOCAL" != "$REMOTE" ]; then
     echo gupdater out of sync with upstream $REPO/gupdater
-    #false
+    false
 fi
 
 echo Switching to gmaster branch...
@@ -68,16 +68,17 @@ git reset --hard origin/$BASELINE
 echo $BASELINE `git rev-parse HEAD`>> $VTEMP
 
 echo Merging feature targets...
-cat $FFILE | while read hash branch; do
-    bhash=`git rev-parse $branch`
+cat $FFILE | while read hash target; do
+    bhash=`git rev-parse $target`
     if [ "$bhash" != "$hash" ]; then
-        echo Update hash mismatch for $branch
+        echo Update hash mismatch for $target
+        echo Expected $hash != found $bhash
         echo Either use a tagged target or update hash.
         false
     fi
-    echo Merging $branch hash $hash...
-    git merge --no-edit $branch
-    echo $hash $branch >> $VTEMP
+    echo Merging $target hash $hash...
+    git merge --no-edit $target
+    echo $hash $target >> $VTEMP
 done
 
 echo gmaster `git rev-parse HEAD` >> $VTEMP
