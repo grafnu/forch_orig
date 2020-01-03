@@ -56,7 +56,7 @@ echo $LOCAL gupdater >> $VTEMP
 REMOTE=`git rev-parse $REPO/gupdater`
 if [ "$LOCAL" != "$REMOTE" ]; then
     echo gupdater out of sync with upstream $REPO/gupdater
-    false
+    #false
 fi
 
 echo Switching to gmaster branch...
