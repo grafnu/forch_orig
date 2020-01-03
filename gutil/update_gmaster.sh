@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 TMP_SH=/tmp/update_gmaster.sh
 BASE=`git rev-parse --show-toplevel`
