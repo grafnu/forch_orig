@@ -81,7 +81,7 @@ while read < $FFILE; do
     echo $hash $branch >> $VTEMP
 done
 
-echo END `git rev-parse HEAD` gmaster >> $VTEMP
+echo gmaster `git rev-parse HEAD` >> $VTEMP
 cp $VTEMP $VFILE
 git add $VFILE
 git commit -m "Version assembled $(date)"
