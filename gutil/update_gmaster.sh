@@ -67,7 +67,7 @@ git reset --hard origin/$BASELINE
 echo `git rev-parse HEAD` origin/$BASELINE >> $VTEMP
 
 echo Merging feature branches...
-while read $FFILE; do
+while read < $FFILE; do
     hash=$1
     branch=$2
     echo Merging $REPO/$branch...
