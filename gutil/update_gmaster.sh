@@ -52,7 +52,7 @@ echo Fetching remote repos...
 git fetch $REPO
 
 LOCAL=`git rev-parse gupdater`
-echo $LOCAL gupdater >> $VTEMP
+echo gupdater $LOCAL >> $VTEMP
 REMOTE=`git rev-parse $REPO/gupdater`
 if [ "$LOCAL" != "$REMOTE" ]; then
     echo gupdater out of sync with upstream $REPO/gupdater
@@ -64,18 +64,23 @@ git checkout gmaster
 
 echo Creating clean base from origin/$BASELINE...
 git reset --hard origin/$BASELINE
-echo `git rev-parse HEAD` origin/$BASELINE >> $VTEMP
+echo $BASELINE `git rev-parse HEAD`>> $VTEMP
 
 echo Merging feature branches...
 while read < $FFILE; do
     hash=$1
     branch=$2
+    bhash=`git rev-parse $REPO/$branch`
+    if [ "$bhash" != "$hash" ]; then
+        echo Branch hash mismatch for $branch
+        false
+    fi
     echo Merging $REPO/$branch...
-    #git merge --no-edit $REPO/$branch
-    #echo `git rev-parse $REPO/$branch` $branch >> $VTEMP
+    git merge --no-edit $REPO/$branch
+    echo $hash $branch >> $VTEMP
 done
 
-echo `git rev-parse HEAD` gmaster >> $VTEMP
+echo END `git rev-parse HEAD` gmaster >> $VTEMP
 cp $VTEMP $VFILE
 git add $VFILE
 git commit -m "Version assembled $(date)"
