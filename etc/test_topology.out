@@ -1,12 +1,10 @@
 ['9a:02:57:1e:8f:01', '9a:02:57:1e:8f:02', '9a:02:57:1e:8f:03', '9a:02:57:1e:8f:04', '9a:02:57:1e:8f:05', '9a:02:57:1e:8f:06']
-9a:02:57:1e:8f:01, 9a:02:57:1e:8f:02
-[{'match_rule': 'all', 'action': 'DENY'}, {'match_rule': 'dns', 'action': 'ALLOW'}]
-9a:02:57:1e:8f:03, 9a:02:57:1e:8f:04
-[{'match_rule': 'all', 'action': 'DENY'}, {'match_rule': 'http', 'action': 'ALLOW'}, {'match_rule': 'https', 'action': 'ALLOW'}]
-all: UNDEFINED
-dns: IPv4
-http: IPv4
-https: IPv4
+9a:02:57:1e:8f:01: 100
+['all', 'https_to_3', 'dns']
+9a:02:57:1e:8f:02: 200
+['all', 'https_to_3', 'dns']
+9a:02:57:1e:8f:03: 300
+['all', 'https_to_1', 'https_to_2', 'dns']
 {'device_id': '9a:02:57:1e:8f:01', 'role': 'Allow', 'segment': '1'}
 {'device_id': '9a:02:57:1e:8f:02', 'role': 'Allow', 'segment': '2'}
 {'device_id': 'unknown', 'role': 'Deny', 'segment': '404'}

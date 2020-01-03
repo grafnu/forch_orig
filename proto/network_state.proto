@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message NetworkState{
+  map<string, MatchRule> match_rules = 1; // key: name of a MatchRule
+  map<string, DeviceBehavior> device_behaviors = 2; // key: learned mac address
+}
+
+message DeviceBehavior {
+  int32 vid = 1;
+  repeated string matches = 2;
+}
+
+message MatchRule {
+  int32 eth_type = 1;
+  string eth_dst = 3;
+  int32 ip_proto = 4;
+  string ip_dst = 6;
+  int32 src_port = 7;
+  int32 dst_port = 8;
+  Action action = 9;
+
+  enum Action {
+    DENY = 0;
+    ALLOW = 1;
+  }
+}
