@@ -68,15 +68,13 @@ git reset --hard origin/$BASELINE
 echo $BASELINE `git rev-parse HEAD`>> $VTEMP
 
 echo Merging feature branches...
-while read < $FFILE; do
-    hash=$1
-    branch=$2
+cat $FFILE | while read hash branch; do
     bhash=`git rev-parse $REPO/$branch`
     if [ "$bhash" != "$hash" ]; then
         echo Branch hash mismatch for $branch
         false
     fi
-    echo Merging $REPO/$branch...
+    echo Merging $REPO/$branch hash $hash...
     git merge --no-edit $REPO/$branch
     echo $hash $branch >> $VTEMP
 done
