@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 TMP_SH=/tmp/update_gmaster.sh
 BASE=`git rev-parse --show-toplevel`
@@ -67,11 +67,12 @@ echo Creating clean base from origin/$BASELINE...
 git reset --hard origin/$BASELINE
 echo $BASELINE `git rev-parse HEAD`>> $VTEMP
 
-echo Merging feature branches...
+echo Merging feature targets...
 cat $FFILE | while read hash branch; do
     bhash=`git rev-parse $REPO/$branch`
     if [ "$bhash" != "$hash" ]; then
-        echo Branch hash mismatch for $branch
+        echo Update hash mismatch for $branch
+        echo Either use a tagged target or update hash.
         false
     fi
     echo Merging $REPO/$branch hash $hash...
