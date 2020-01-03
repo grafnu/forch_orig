@@ -69,15 +69,15 @@ echo $BASELINE `git rev-parse HEAD`>> $VTEMP
 
 echo Merging feature targets...
 cat $FFILE | while read hash target; do
-    bhash=`git rev-parse $target`
+    bhash=`git rev-list -n 1 $target`
     if [ "$bhash" != "$hash" ]; then
         echo Update hash mismatch for $target
         echo Expected $hash != found $bhash
         echo Either use a tagged target or update hash.
         false
     fi
-    echo Merging $target hash $hash...
-    git merge --no-edit $target
+    echo Merging $hash from $target
+    git merge --no-edit $hash
     echo $hash $target >> $VTEMP
 done
 
