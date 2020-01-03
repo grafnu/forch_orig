@@ -8,7 +8,8 @@ date > $VTEMP
 UPSTREAM=`git rev-parse --abbrev-ref gupdater@{upstream}`
 REPO=${UPSTREAM%/*}
 BASELINE=gmaster
-FFILE=$BASE/gutil/FEATURES
+FFILE=/tmp/FEATURES
+cp $BASE/gutil/FEATURES $FFILE
 
 name_line=`fgrep name= $BASE/setup.py`
 name_line=${name_line#*\"}
