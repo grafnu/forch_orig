@@ -240,6 +240,7 @@ class FaucetEventClient():
             'L2_LEARN': entry
         }
 
+    # TODO
     # def as_config_change(self, event):
     #     """Convert the event to dp change info, if applicable"""
     #     if not event or 'CONFIG_CHANGE' not in event:
