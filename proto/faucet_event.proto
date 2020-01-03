@@ -109,9 +109,15 @@ message ConfigChange {
   // config hash
   ConfigHashInfo config_hash_info = 6;
 
+  // Config hash info
   message ConfigHashInfo {
+    // config files
     string config_files = 1;
+
+    // config hash
     string hashes = 2;
+
+    // error
     string error = 3;
   }
 }
