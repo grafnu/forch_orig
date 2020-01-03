@@ -42,12 +42,15 @@ reset_stack
 restart_ovs init
 
 sudo ip link set t1sw2-eth28 down
+echo ping sw2down01 `date`
 single_ping sw2down01
 
 sudo ip link set t1sw2-eth28 up
+echo ping sw2isup01 `date`
 simple_ping sw2isup01
 
 sudo ip link set t1sw1-eth28 down
+echo ping sw1down `date`
 multi_ping sw1down
 
 echo Dump nz-kiwi-t1sw2 faucet.log
