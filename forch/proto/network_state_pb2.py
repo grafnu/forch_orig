@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1f\x66orch/proto/network_state.proto\"\xa2\x02\n\x0cNetworkState\x12=\n\x11named_match_rules\x18\x01 \x03(\x0b\x32\".NetworkState.NamedMatchRulesEntry\x12\x43\n\x14\x64\x65vice_mac_behaviors\x18\x02 \x03(\x0b\x32%.NetworkState.DeviceMacBehaviorsEntry\x1a\x42\n\x14NamedMatchRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.MatchRule:\x02\x38\x01\x1aJ\n\x17\x44\x65viceMacBehaviorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1e\n\x05value\x18\x02 \x01(\x0b\x32\x0f.DeviceBehavior:\x02\x38\x01\"1\n\x0e\x44\x65viceBehavior\x12\x0b\n\x03vid\x18\x01 \x01(\x05\x12\x12\n\nrule_names\x18\x02 \x03(\t\"\xb6\x01\n\tMatchRule\x12\x10\n\x08\x65th_type\x18\x01 \x01(\x05\x12\x0f\n\x07\x65th_dst\x18\x03 \x01(\t\x12\x10\n\x08ip_proto\x18\x04 \x01(\x05\x12\x0e\n\x06ip_dst\x18\x06 \x01(\t\x12\x10\n\x08src_port\x18\x07 \x01(\x05\x12\x10\n\x08\x64st_port\x18\x08 \x01(\x05\x12!\n\x06\x61\x63tion\x18\t \x01(\x0e\x32\x11.MatchRule.Action\"\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x44\x45NY\x10\x00\x12\t\n\x05\x41LLOW\x10\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x1f\x66orch/proto/network_state.proto\"\xa2\x02\n\x0cNetworkState\x12=\n\x11named_match_rules\x18\x01 \x03(\x0b\x32\".NetworkState.NamedMatchRulesEntry\x12\x43\n\x14\x64\x65vice_mac_behaviors\x18\x02 \x03(\x0b\x32%.NetworkState.DeviceMacBehaviorsEntry\x1a\x42\n\x14NamedMatchRulesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x19\n\x05value\x18\x02 \x01(\x0b\x32\n.MatchRule:\x02\x38\x01\x1aJ\n\x17\x44\x65viceMacBehaviorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x1e\n\x05value\x18\x02 \x01(\x0b\x32\x0f.DeviceBehavior:\x02\x38\x01\"1\n\x0e\x44\x65viceBehavior\x12\x0b\n\x03vid\x18\x01 \x01(\x05\x12\x12\n\nrule_names\x18\x02 \x03(\t\"\xb6\x01\n\tMatchRule\x12\x10\n\x08\x65th_type\x18\x01 \x01(\x05\x12\x0f\n\x07\x65th_dst\x18\x02 \x01(\t\x12\x10\n\x08ip_proto\x18\x03 \x01(\x05\x12\x0e\n\x06ip_dst\x18\x04 \x01(\t\x12\x10\n\x08src_port\x18\x05 \x01(\x05\x12\x10\n\x08\x64st_port\x18\x06 \x01(\x05\x12!\n\x06\x61\x63tion\x18\x07 \x01(\x0e\x32\x11.MatchRule.Action\"\x1d\n\x06\x41\x63tion\x12\x08\n\x04\x44\x45NY\x10\x00\x12\t\n\x05\x41LLOW\x10\x01\x62\x06proto3')
 )
 
 
@@ -213,42 +213,42 @@ _MATCHRULE = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='eth_dst', full_name='MatchRule.eth_dst', index=1,
-      number=3, type=9, cpp_type=9, label=1,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_proto', full_name='MatchRule.ip_proto', index=2,
-      number=4, type=5, cpp_type=1, label=1,
+      number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='ip_dst', full_name='MatchRule.ip_dst', index=3,
-      number=6, type=9, cpp_type=9, label=1,
+      number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='src_port', full_name='MatchRule.src_port', index=4,
-      number=7, type=5, cpp_type=1, label=1,
+      number=5, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='dst_port', full_name='MatchRule.dst_port', index=5,
-      number=8, type=5, cpp_type=1, label=1,
+      number=6, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='action', full_name='MatchRule.action', index=6,
-      number=9, type=14, cpp_type=8, label=1,
+      number=7, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,

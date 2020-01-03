@@ -12,12 +12,12 @@ message DeviceBehavior {
 
 message MatchRule {
   int32 eth_type = 1;
-  string eth_dst = 3;
-  int32 ip_proto = 4;
-  string ip_dst = 6;
-  int32 src_port = 7;
-  int32 dst_port = 8;
-  Action action = 9;
+  string eth_dst = 2;
+  int32 ip_proto = 3;
+  string ip_dst = 4;
+  int32 src_port = 5;
+  int32 dst_port = 6;
+  Action action = 7;
 
   enum Action {
     DENY = 0;
