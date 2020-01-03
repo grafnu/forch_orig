@@ -2,3 +2,5 @@ inst/
 dist/
 build/
 .git/
+faucet/.git/
+protoc-gen-doc/.git/
