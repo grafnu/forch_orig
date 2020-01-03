@@ -816,7 +816,6 @@ class FaucetStateCollector:
     @_dump_states
     def process_dp_config_change(self, timestamp, dp_name, restart_type, dp_id):
         """process config change event"""
-        print(f'{timestamp}, {restart_type}') # TODO
         with self.lock:
             # No dp_id (or 0) indicates that this is system-wide, not for a given switch.
             if not dp_id:

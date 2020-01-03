@@ -117,11 +117,11 @@ class Forchestrator:
         self._restore_faucet_config(time.time(), varz_config_hashes)
 
         event_horizon = self._faucet_collector.restore_states_from_metrics(metrics)
-        print('** event id: event_horizon')
         self._faucet_events.set_event_horizon(event_horizon)
 
     def _restore_faucet_config(self, timestamp, config_hash):
-        print(f'{timestamp}, {config_hash}') # TODO
+        if not config_hash:
+            return
         config_info, faucet_dps, _ = self._get_faucet_config()
         assert config_hash == config_info['hashes'], 'config hash info does not match'
         self._faucet_collector.process_dataplane_config_change(timestamp, faucet_dps)
@@ -174,15 +174,6 @@ class Forchestrator:
         if dpid and port:
             LOGGER.debug('Port learn %s %s %s', name, port, target_mac)
             self._faucet_collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
-
-        # TODO
-        # (name, dpid, restart_type, config_info) = self._faucet_events.as_config_change(event)
-        # if dpid is not None:
-        #     LOGGER.debug('DP restart %s %s', name, restart_type)
-        #     self._faucet_collector.process_dp_config_change(timestamp, name, restart_type, dpid)
-        # if config_info:
-        #     LOGGER.debug('Config change. New config: %s', config_info['hashes'])
-        #     self._restore_faucet_config(timestamp, config_info['hashes'])
 
         (name, connected) = self._faucet_events.as_dp_change(event)
         if name:

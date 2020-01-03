@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1e\x66orch/proto/faucet_event.proto\x1a\"forch/proto/shared_constants.proto\"\x9c\x02\n\x0b\x46\x61ucetEvent\x12\x0f\n\x07version\x18\x01 \x01(\x05\x12\x0c\n\x04time\x18\x02 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\x03\x12\x10\n\x08\x65vent_id\x18\x05 \x01(\x05\x12\x11\n\tdebounced\x18\x06 \x01(\x08\x12 \n\nLAG_CHANGE\x18\x07 \x01(\x0b\x32\n.LagChangeH\x00\x12-\n\x11STACK_TOPO_CHANGE\x18\x08 \x01(\x0b\x32\x10.StackTopoChangeH\x00\x12\"\n\x0bSTACK_STATE\x18\t \x01(\x0b\x32\x0b.StackStateH\x00\x12&\n\rCONFIG_CHANGE\x18\n \x01(\x0b\x32\r.ConfigChangeH\x00\x42\x0c\n\nevent_data\"O\n\tLagChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0f\n\x07port_no\x18\x03 \x01(\x05\x12\r\n\x05state\x18\x04 \x01(\x05\"[\n\nStackState\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\x12\x1b\n\x05state\x18\x04 \x01(\x0e\x32\x0c.State.State\"\x8b\x05\n\x0fStackTopoChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x12\n\nstack_root\x18\x02 \x01(\t\x12*\n\x05graph\x18\x03 \x01(\x0b\x32\x1b.StackTopoChange.StackGraph\x12&\n\x03\x64ps\x18\x04 \x03(\x0b\x32\x19.StackTopoChange.DpsEntry\x1a\x44\n\x08\x44psEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\'\n\x05value\x18\x02 \x01(\x0b\x32\x18.StackTopoChange.StackDp:\x02\x38\x01\x1a\xb6\x01\n\nStackGraph\x12\x10\n\x08\x64irected\x18\x01 \x01(\x08\x12\x12\n\nmultigraph\x18\x02 \x01(\x08\x12,\n\x05graph\x18\x03 \x01(\x0b\x32\x1d.StackTopoChange.NetworkGraph\x12)\n\x05nodes\x18\x04 \x03(\x0b\x32\x1a.StackTopoChange.StackNode\x12)\n\x05links\x18\x05 \x03(\x0b\x32\x1a.StackTopoChange.StackLink\x1a\x0e\n\x0cNetworkGraph\x1a\x17\n\tStackNode\x12\n\n\x02id\x18\x01 \x01(\t\x1ah\n\tStackLink\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\x0e\n\x06target\x18\x03 \x01(\t\x12.\n\x08port_map\x18\x04 \x01(\x0b\x32\x1c.StackTopoChange.LinkPortMap\x1aI\n\x0bLinkPortMap\x12\x0c\n\x04\x64p_a\x18\x01 \x01(\t\x12\x0e\n\x06port_a\x18\x02 \x01(\t\x12\x0c\n\x04\x64p_z\x18\x03 \x01(\t\x12\x0e\n\x06port_z\x18\x04 \x01(\t\x1a \n\x07StackDp\x12\x15\n\rroot_hop_port\x18\x01 \x01(\x05\"\xb1\x01\n\x0c\x43onfigChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x14\n\x0crestart_type\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\t\x12\x36\n\x10\x63onfig_hash_info\x18\x05 \x01(\x0b\x32\x1c.ConfigChange.ConfigHashInfo\x1a \n\x0e\x43onfigHashInfo\x12\x0e\n\x06hashes\x18\x01 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x1e\x66orch/proto/faucet_event.proto\x1a\"forch/proto/shared_constants.proto\"\x9c\x02\n\x0b\x46\x61ucetEvent\x12\x0f\n\x07version\x18\x01 \x01(\x05\x12\x0c\n\x04time\x18\x02 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\x03\x12\x10\n\x08\x65vent_id\x18\x05 \x01(\x05\x12\x11\n\tdebounced\x18\x06 \x01(\x08\x12 \n\nLAG_CHANGE\x18\x07 \x01(\x0b\x32\n.LagChangeH\x00\x12-\n\x11STACK_TOPO_CHANGE\x18\x08 \x01(\x0b\x32\x10.StackTopoChangeH\x00\x12\"\n\x0bSTACK_STATE\x18\t \x01(\x0b\x32\x0b.StackStateH\x00\x12&\n\rCONFIG_CHANGE\x18\n \x01(\x0b\x32\r.ConfigChangeH\x00\x42\x0c\n\nevent_data\"O\n\tLagChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0f\n\x07port_no\x18\x03 \x01(\x05\x12\r\n\x05state\x18\x04 \x01(\x05\"[\n\nStackState\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\x12\x1b\n\x05state\x18\x04 \x01(\x0e\x32\x0c.State.State\"\x8b\x05\n\x0fStackTopoChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x12\n\nstack_root\x18\x02 \x01(\t\x12*\n\x05graph\x18\x03 \x01(\x0b\x32\x1b.StackTopoChange.StackGraph\x12&\n\x03\x64ps\x18\x04 \x03(\x0b\x32\x19.StackTopoChange.DpsEntry\x1a\x44\n\x08\x44psEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\'\n\x05value\x18\x02 \x01(\x0b\x32\x18.StackTopoChange.StackDp:\x02\x38\x01\x1a\xb6\x01\n\nStackGraph\x12\x10\n\x08\x64irected\x18\x01 \x01(\x08\x12\x12\n\nmultigraph\x18\x02 \x01(\x08\x12,\n\x05graph\x18\x03 \x01(\x0b\x32\x1d.StackTopoChange.NetworkGraph\x12)\n\x05nodes\x18\x04 \x03(\x0b\x32\x1a.StackTopoChange.StackNode\x12)\n\x05links\x18\x05 \x03(\x0b\x32\x1a.StackTopoChange.StackLink\x1a\x0e\n\x0cNetworkGraph\x1a\x17\n\tStackNode\x12\n\n\x02id\x18\x01 \x01(\t\x1ah\n\tStackLink\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\x0e\n\x06target\x18\x03 \x01(\t\x12.\n\x08port_map\x18\x04 \x01(\x0b\x32\x1c.StackTopoChange.LinkPortMap\x1aI\n\x0bLinkPortMap\x12\x0c\n\x04\x64p_a\x18\x01 \x01(\t\x12\x0e\n\x06port_a\x18\x02 \x01(\t\x12\x0c\n\x04\x64p_z\x18\x03 \x01(\t\x12\x0e\n\x06port_z\x18\x04 \x01(\t\x1a \n\x07StackDp\x12\x15\n\rroot_hop_port\x18\x01 \x01(\x05\"\xe7\x01\n\x0c\x43onfigChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x14\n\x0crestart_type\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\t\x12\x0f\n\x07success\x18\x05 \x01(\x08\x12\x36\n\x10\x63onfig_hash_info\x18\x06 \x01(\x0b\x32\x1c.ConfigChange.ConfigHashInfo\x1a\x45\n\x0e\x43onfigHashInfo\x12\x14\n\x0c\x63onfig_files\x18\x01 \x01(\t\x12\x0e\n\x06hashes\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\tb\x06proto3')
   ,
   dependencies=[forch_dot_proto_dot_shared__constants__pb2.DESCRIPTOR,])
 
@@ -568,8 +568,22 @@ _CONFIGCHANGE_CONFIGHASHINFO = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='hashes', full_name='ConfigChange.ConfigHashInfo.hashes', index=0,
+      name='config_files', full_name='ConfigChange.ConfigHashInfo.config_files', index=0,
       number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='hashes', full_name='ConfigChange.ConfigHashInfo.hashes', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='error', full_name='ConfigChange.ConfigHashInfo.error', index=2,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -586,8 +600,8 @@ _CONFIGCHANGE_CONFIGHASHINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1331,
-  serialized_end=1363,
+  serialized_start=1348,
+  serialized_end=1417,
 )
 
 _CONFIGCHANGE = _descriptor.Descriptor(
@@ -626,8 +640,15 @@ _CONFIGCHANGE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='config_hash_info', full_name='ConfigChange.config_hash_info', index=4,
-      number=5, type=11, cpp_type=10, label=1,
+      name='success', full_name='ConfigChange.success', index=4,
+      number=5, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='config_hash_info', full_name='ConfigChange.config_hash_info', index=5,
+      number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -645,7 +666,7 @@ _CONFIGCHANGE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=1186,
-  serialized_end=1363,
+  serialized_end=1417,
 )
 
 _FAUCETEVENT.fields_by_name['LAG_CHANGE'].message_type = _LAGCHANGE

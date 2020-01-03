@@ -103,10 +103,15 @@ message ConfigChange {
   // datapath id
   string dp_id = 4;
 
+  // success
+  bool success = 5;
+
   // config hash
-  ConfigHashInfo config_hash_info = 5;
+  ConfigHashInfo config_hash_info = 6;
 
   message ConfigHashInfo {
-    string hashes = 1;
+    string config_files = 1;
+    string hashes = 2;
+    string error = 3;
   }
 }
