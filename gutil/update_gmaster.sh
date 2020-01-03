@@ -49,7 +49,7 @@ fi
 ORIGIN=`git remote -v | egrep ^$REPO | fgrep fetch | awk '{print $2}'`
 echo upstream $ORIGIN >> $VTEMP
 
-echo Fetching remote repos...
+echo Fetching remote repo...
 git fetch $REPO
 
 LOCAL=`git rev-parse gupdater`
@@ -69,14 +69,14 @@ echo $BASELINE `git rev-parse HEAD`>> $VTEMP
 
 echo Merging feature targets...
 cat $FFILE | while read hash branch; do
-    bhash=`git rev-parse $REPO/$branch`
+    bhash=`git rev-parse $branch`
     if [ "$bhash" != "$hash" ]; then
         echo Update hash mismatch for $branch
         echo Either use a tagged target or update hash.
         false
     fi
-    echo Merging $REPO/$branch hash $hash...
-    git merge --no-edit $REPO/$branch
+    echo Merging $branch hash $hash...
+    git merge --no-edit $branch
     echo $hash $branch >> $VTEMP
 done
 
