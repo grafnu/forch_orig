@@ -1,5 +1,5 @@
 {
-  match_rules:
+  named_match_rules:
     {
       dns:
         {
@@ -37,22 +37,22 @@
           action: DENY,
         }
     },
-  device_behaviors:
+  device_mac_behaviors:
     {
       "9a:02:57:1e:8f:01":
         {
           vid: 100,
-          matches: [all, https_to_3, dns],
+          rule_names: [all, https_to_3, dns],
         },
       "9a:02:57:1e:8f:02":
         {
           vid: 200,
-          matches: [all, https_to_3, dns],
+          rule_names: [all, https_to_3, dns],
         },
       "9a:02:57:1e:8f:03":
         {
           vid: 300,
-          matches: [all, https_to_1, https_to_2, dns],
+          rule_names: [all, https_to_1, https_to_2, dns],
         }
     }
 }
