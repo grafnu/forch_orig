@@ -1,16 +1,20 @@
 #!/bin/bash -e
 
-source gutil/update_gmaster.cfg
-
 TMP_SH=/tmp/update_gmaster.sh
 BASE=`git rev-parse --show-toplevel`
 BASE_SH=$BASE/update_gmaster.sh
 VTEMP=/tmp/GVERSION
-VFILE=$BASE/$PROJ/GVERSION
 date > $VTEMP
 UPSTREAM=`git rev-parse --abbrev-ref gupdater@{upstream}`
 REPO=${UPSTREAM%/*}
 BASELINE=gmaster
+FFILE=$BASE/gutil/FEATURES
+
+name_line=`fgrep name= $BASE/setup.py`
+name_line=${name_line#*\"}
+PROJ=${name_line%\"*}
+echo Mined project $PROJ from setup.py
+VFILE=$BASE/$PROJ/GVERSION
 
 if [ $0 != $TMP_SH ]; then
     echo Running out of $TMP_SH to mask local churn...
@@ -63,10 +67,12 @@ git reset --hard origin/$BASELINE
 echo `git rev-parse HEAD` origin/$BASELINE >> $VTEMP
 
 echo Merging feature branches...
-for branch in master gupdater $BRANCHES; do
+while read $FFILE; do
+    hash=$1
+    branch=$2
     echo Merging $REPO/$branch...
-    git merge --no-edit $REPO/$branch
-    echo `git rev-parse $REPO/$branch` $branch >> $VTEMP
+    #git merge --no-edit $REPO/$branch
+    #echo `git rev-parse $REPO/$branch` $branch >> $VTEMP
 done
 
 echo `git rev-parse HEAD` gmaster >> $VTEMP
