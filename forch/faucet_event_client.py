@@ -240,13 +240,13 @@ class FaucetEventClient():
             'L2_LEARN': entry
         }
 
-    def as_config_change(self, event):
-        """Convert the event to dp change info, if applicable"""
-        if not event or 'CONFIG_CHANGE' not in event:
-            return (None, None, None, None)
-        restart_type = event['CONFIG_CHANGE'].get('restart_type')
-        config_hash_info = event['CONFIG_CHANGE'].get('config_hash_info')
-        return (event['dp_name'], event['dp_id'], restart_type, config_hash_info)
+    # def as_config_change(self, event):
+    #     """Convert the event to dp change info, if applicable"""
+    #     if not event or 'CONFIG_CHANGE' not in event:
+    #         return (None, None, None, None)
+    #     restart_type = event['CONFIG_CHANGE'].get('restart_type')
+    #     config_hash_info = event['CONFIG_CHANGE'].get('config_hash_info')
+    #     return (event['dp_name'], event['dp_id'], restart_type, config_hash_info)
 
     def as_ports_status(self, event):
         """Convert the event to port status info, if applicable"""

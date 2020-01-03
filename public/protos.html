@@ -342,6 +342,14 @@
             <ul>
               
                 <li>
+                  <a href="#ConfigChange"><span class="badge">M</span>ConfigChange</a>
+                </li>
+              
+                <li>
+                  <a href="#ConfigChange.ConfigHashInfo"><span class="badge">M</span>ConfigChange.ConfigHashInfo</a>
+                </li>
+              
+                <li>
                   <a href="#FaucetEvent"><span class="badge">M</span>FaucetEvent</a>
                 </li>
               
@@ -1700,6 +1708,82 @@
       <p>Encapsulation of an event on the Faucet event socket.</p>
 
       
+        <h3 id="ConfigChange">ConfigChange</h3>
+        <p>Event representing config change</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>event timestamp </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dp_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>datapath name </p></td>
+                </tr>
+              
+                <tr>
+                  <td>restart_type</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>restart type </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dp_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>datapath id </p></td>
+                </tr>
+              
+                <tr>
+                  <td>config_hash_info</td>
+                  <td><a href="#ConfigChange.ConfigHashInfo">ConfigChange.ConfigHashInfo</a></td>
+                  <td></td>
+                  <td><p>config hash </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="ConfigChange.ConfigHashInfo">ConfigChange.ConfigHashInfo</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>hashes</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="FaucetEvent">FaucetEvent</h3>
         <p></p>
 
@@ -1760,6 +1844,13 @@
                 </tr>
               
                 <tr>
+                  <td>STACK_TOPO_CHANGE</td>
+                  <td><a href="#StackTopoChange">StackTopoChange</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
                   <td>STACK_STATE</td>
                   <td><a href="#StackState">StackState</a></td>
                   <td></td>
@@ -1767,8 +1858,8 @@
                 </tr>
               
                 <tr>
-                  <td>STACK_TOPO_CHANGE</td>
-                  <td><a href="#StackTopoChange">StackTopoChange</a></td>
+                  <td>CONFIG_CHANGE</td>
+                  <td><a href="#ConfigChange">ConfigChange</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>

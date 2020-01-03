@@ -15,8 +15,9 @@ message FaucetEvent {
 
   oneof event_data {
     LagChange LAG_CHANGE = 7;
-    StackState STACK_STATE = 9;
     StackTopoChange STACK_TOPO_CHANGE = 8;
+    StackState STACK_STATE = 9;
+    ConfigChange CONFIG_CHANGE = 10;
   }
 }
 
@@ -83,5 +84,29 @@ message StackTopoChange {
 
   message StackDp {
     int32 root_hop_port = 1;
+  }
+}
+
+/*
+ * Event representing config change
+ */
+message ConfigChange {
+  // event timestamp
+  float timestamp = 1;
+
+  // datapath name
+  string dp_name = 2;
+
+  // restart type
+  string restart_type = 3;
+
+  // datapath id
+  string dp_id = 4;
+
+  // config hash
+  ConfigHashInfo config_hash_info = 5;
+
+  message ConfigHashInfo {
+    string hashes = 1;
   }
 }
