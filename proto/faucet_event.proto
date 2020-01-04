@@ -18,6 +18,7 @@ message FaucetEvent {
     StackTopoChange STACK_TOPO_CHANGE = 8;
     StackState STACK_STATE = 9;
     ConfigChange CONFIG_CHANGE = 10;
+    DpChange DP_CHANGE = 11;
   }
 }
 
@@ -120,4 +121,18 @@ message ConfigChange {
     // error
     string error = 3;
   }
+}
+
+/*
+ * Event representing dp change
+ */
+message DpChange {
+  // event timestamp
+  float timestamp = 1;
+
+  // datapath name
+  string dp_name = 2;
+
+  // reason
+  string reason = 3;
 }

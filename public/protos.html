@@ -350,6 +350,10 @@
                 </li>
               
                 <li>
+                  <a href="#DpChange"><span class="badge">M</span>DpChange</a>
+                </li>
+              
+                <li>
                   <a href="#FaucetEvent"><span class="badge">M</span>FaucetEvent</a>
                 </li>
               
@@ -1805,6 +1809,44 @@
 
         
       
+        <h3 id="DpChange">DpChange</h3>
+        <p>Event representing dp change</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>timestamp</td>
+                  <td><a href="#float">float</a></td>
+                  <td></td>
+                  <td><p>event timestamp </p></td>
+                </tr>
+              
+                <tr>
+                  <td>dp_name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>datapath name </p></td>
+                </tr>
+              
+                <tr>
+                  <td>reason</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>reason </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="FaucetEvent">FaucetEvent</h3>
         <p></p>
 
@@ -1881,6 +1923,13 @@
                 <tr>
                   <td>CONFIG_CHANGE</td>
                   <td><a href="#ConfigChange">ConfigChange</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>DP_CHANGE</td>
+                  <td><a href="#DpChange">DpChange</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>

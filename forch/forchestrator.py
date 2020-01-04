@@ -101,6 +101,8 @@ class Forchestrator:
                     event.timestamp, event.dp_name, event.restart_type, event.dp_id),
                 self._restore_faucet_config(event.timestamp, event.config_hash_info.hashes),
             )),
+            (FaucetEvent.DpChange, lambda event: fcoll.process_dp_change(
+                event.timestamp, event.dp_name, None, event.reason=="cold_start")),
         ])
 
     def _restore_states(self):
@@ -175,10 +177,10 @@ class Forchestrator:
             LOGGER.debug('Port learn %s %s %s', name, port, target_mac)
             self._faucet_collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
 
-        (name, connected) = self._faucet_events.as_dp_change(event)
-        if name:
-            LOGGER.debug('DP %s connected %r', name, connected)
-            self._faucet_collector.process_dp_change(timestamp, name, None, connected)
+        # (name, connected) = self._faucet_events.as_dp_change(event)
+        # if name:
+        #     LOGGER.debug('DP %s connected %r', name, connected)
+        #     self._faucet_collector.process_dp_change(timestamp, name, None, connected)
 
     def _get_controller_info(self, target):
         controllers = self._config.get('site', {}).get('controllers', {})
