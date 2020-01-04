@@ -41,7 +41,7 @@ docker build -t forch/gauge $docker_args -f etc/Dockerfile.gauge . > build/docke
 echo Waiting for builds to complete.
 wait
 
-more build/docker_*.log
+tail build/docker_*.log
 
 images=$(docker images | fgrep forch/ | wc -l)
 if [ $images != 3 ]; then
