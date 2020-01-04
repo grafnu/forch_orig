@@ -267,11 +267,3 @@ class FaucetEventClient():
         eth_src = event['L2_LEARN']['eth_src']
         src_ip = event['L2_LEARN']['l3_src_ip']
         return (name, dpid, port_no, eth_src, src_ip)
-
-    # def as_dp_change(self, event):
-    #     """Convert to dp status"""
-    #     if not event or 'DP_CHANGE' not in event:
-    #         return (None, None)
-    #     name = event['dp_name']
-    #     connected = (event['DP_CHANGE']['reason'] == 'cold_start')
-    #     return (name, connected)

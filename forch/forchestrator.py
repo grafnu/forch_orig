@@ -177,11 +177,6 @@ class Forchestrator:
             LOGGER.debug('Port learn %s %s %s', name, port, target_mac)
             self._faucet_collector.process_port_learn(timestamp, name, port, target_mac, src_ip)
 
-        # (name, connected) = self._faucet_events.as_dp_change(event)
-        # if name:
-        #     LOGGER.debug('DP %s connected %r', name, connected)
-        #     self._faucet_collector.process_dp_change(timestamp, name, None, connected)
-
     def _get_controller_info(self, target):
         controllers = self._config.get('site', {}).get('controllers', {})
         if target not in controllers:
