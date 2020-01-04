@@ -102,7 +102,7 @@ class Forchestrator:
                 self._restore_faucet_config(event.timestamp, event.config_hash_info.hashes),
             )),
             (FaucetEvent.DpChange, lambda event: fcoll.process_dp_change(
-                event.timestamp, event.dp_name, None, event.reason=="cold_start")),
+                event.timestamp, event.dp_name, None, event.reason == "cold_start")),
         ])
 
     def _restore_states(self):
