@@ -117,4 +117,4 @@ dps:
 include: [uniform.yaml]
 version: 2
 vlans:
-  Faucet_IoT: {description: Faucet IoT, vid: 171}
+  Faucet_IoT: {description: Faucet IoT, vid: 171, unicast_flood: False}
