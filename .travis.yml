@@ -11,6 +11,7 @@ addons:
 install:
   - set -e
   - bin/setup_base
+  - bin/compile_ovs
 script:
   - set -e
   - bin/build_docker

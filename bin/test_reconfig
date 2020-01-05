@@ -43,7 +43,7 @@ restart_ovs init
 
 sudo ip link set t1sw2-eth28 down
 echo ping sw2down01 `date`
-single_ping sw2down01
+simple_ping sw2down01
 
 sudo ip link set t1sw2-eth28 up
 echo ping sw2isup01 `date`
