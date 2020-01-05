@@ -29,9 +29,9 @@ function simple_ping {
 
 function multi_ping {
     prefix=$1
-    for trial in {01..99}; do
+    for trial in {01..10}; do
         simple_ping $prefix$trial
-        sleep 3
+        sleep 10
     done
 }
 
