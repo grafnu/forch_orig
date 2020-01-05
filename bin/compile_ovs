@@ -3,7 +3,7 @@
 ovs-vsctl --version
 
 version=`ovs-vsctl --version | fgrep ovs-vsctl`
-target='ovs-vsctl (Open vSwitch) 2.12.90'
+target='ovs-vsctl (Open vSwitch) 2.12.0'
 
 if [ "$version" == "$target" ]; then
   echo OVS install already matches target $target, skipping compile.
@@ -19,10 +19,12 @@ git clone https://github.com/openvswitch/ovs.git
 
 cd ovs
 
-git checkout v2.12.90
+git checkout v2.12.0
 
 ./boot.sh
 
 ./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc
 
-make install
+make
+
+sudo make install
