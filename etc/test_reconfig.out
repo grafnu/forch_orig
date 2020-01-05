@@ -1,13 +1,14 @@
 bin/test_reconfig
-ping sw2down 0 1 0 1 2 packets transmitted, 2 received, 0% packet loss
-ping sw2up 0 1 0 1 2 packets transmitted, 2 received, 0% packet loss
-ping trial1 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
-ping trial2 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
-ping trial3 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
-ping trial4 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
-ping trial5 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
-ping trial6 0 1 0 1 2 packets transmitted, 0 received, +2 errors, 100% packet loss
-ping trial7 0 1 1 1 2 packets transmitted, 2 received, 0% packet loss
-ping trial8 0 1 1 1 2 packets transmitted, 2 received, 0% packet loss
-ping trial9 0 1 0 1 2 packets transmitted, 1 received, 50% packet loss
+ping sw2down01 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
+ping sw2isup01 1 1 0 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down01 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
+ping sw1down02 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
+ping sw1down03 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down04 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down05 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down06 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down07 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down08 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down09 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
+ping sw1down10 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
 Done with test_reconfig.
