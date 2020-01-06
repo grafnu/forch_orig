@@ -111,7 +111,7 @@ message ConfigChange {
   ConfigHashInfo config_hash_info = 6;
 
   // Config hash info: will be included in the event
-  // in case of data plane reconfiguration
+  // in case of faucet configuration changes
   message ConfigHashInfo {
     // config files
     string config_files = 1;

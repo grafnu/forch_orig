@@ -1772,7 +1772,7 @@
         
       
         <h3 id="ConfigChange.ConfigHashInfo">ConfigChange.ConfigHashInfo</h3>
-        <p>Config hash info</p>
+        <p>Config hash info: will be included in the event</p><p>in case of faucet configuration changes</p>
 
         
           <table class="field-table">
@@ -1792,7 +1792,7 @@
                   <td>hashes</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>config hash </p></td>
+                  <td><p>config hashes </p></td>
                 </tr>
               
                 <tr>
@@ -1900,15 +1900,22 @@
                 </tr>
               
                 <tr>
-                  <td>LAG_CHANGE</td>
-                  <td><a href="#LagChange">LagChange</a></td>
+                  <td>CONFIG_CHANGE</td>
+                  <td><a href="#ConfigChange">ConfigChange</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>STACK_TOPO_CHANGE</td>
-                  <td><a href="#StackTopoChange">StackTopoChange</a></td>
+                  <td>DP_CHANGE</td>
+                  <td><a href="#DpChange">DpChange</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>LAG_CHANGE</td>
+                  <td><a href="#LagChange">LagChange</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -1921,15 +1928,8 @@
                 </tr>
               
                 <tr>
-                  <td>CONFIG_CHANGE</td>
-                  <td><a href="#ConfigChange">ConfigChange</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>DP_CHANGE</td>
-                  <td><a href="#DpChange">DpChange</a></td>
+                  <td>STACK_TOPO_CHANGE</td>
+                  <td><a href="#StackTopoChange">StackTopoChange</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>

@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x1e\x66orch/proto/faucet_event.proto\x1a\"forch/proto/shared_constants.proto\"\xbc\x02\n\x0b\x46\x61ucetEvent\x12\x0f\n\x07version\x18\x01 \x01(\x05\x12\x0c\n\x04time\x18\x02 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\x03\x12\x10\n\x08\x65vent_id\x18\x05 \x01(\x05\x12\x11\n\tdebounced\x18\x06 \x01(\x08\x12 \n\nLAG_CHANGE\x18\x07 \x01(\x0b\x32\n.LagChangeH\x00\x12-\n\x11STACK_TOPO_CHANGE\x18\x08 \x01(\x0b\x32\x10.StackTopoChangeH\x00\x12\"\n\x0bSTACK_STATE\x18\t \x01(\x0b\x32\x0b.StackStateH\x00\x12&\n\rCONFIG_CHANGE\x18\n \x01(\x0b\x32\r.ConfigChangeH\x00\x12\x1e\n\tDP_CHANGE\x18\x0b \x01(\x0b\x32\t.DpChangeH\x00\x42\x0c\n\nevent_data\"O\n\tLagChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0f\n\x07port_no\x18\x03 \x01(\x05\x12\r\n\x05state\x18\x04 \x01(\x05\"[\n\nStackState\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\x12\x1b\n\x05state\x18\x04 \x01(\x0e\x32\x0c.State.State\"\x8b\x05\n\x0fStackTopoChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x12\n\nstack_root\x18\x02 \x01(\t\x12*\n\x05graph\x18\x03 \x01(\x0b\x32\x1b.StackTopoChange.StackGraph\x12&\n\x03\x64ps\x18\x04 \x03(\x0b\x32\x19.StackTopoChange.DpsEntry\x1a\x44\n\x08\x44psEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\'\n\x05value\x18\x02 \x01(\x0b\x32\x18.StackTopoChange.StackDp:\x02\x38\x01\x1a\xb6\x01\n\nStackGraph\x12\x10\n\x08\x64irected\x18\x01 \x01(\x08\x12\x12\n\nmultigraph\x18\x02 \x01(\x08\x12,\n\x05graph\x18\x03 \x01(\x0b\x32\x1d.StackTopoChange.NetworkGraph\x12)\n\x05nodes\x18\x04 \x03(\x0b\x32\x1a.StackTopoChange.StackNode\x12)\n\x05links\x18\x05 \x03(\x0b\x32\x1a.StackTopoChange.StackLink\x1a\x0e\n\x0cNetworkGraph\x1a\x17\n\tStackNode\x12\n\n\x02id\x18\x01 \x01(\t\x1ah\n\tStackLink\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\x0e\n\x06target\x18\x03 \x01(\t\x12.\n\x08port_map\x18\x04 \x01(\x0b\x32\x1c.StackTopoChange.LinkPortMap\x1aI\n\x0bLinkPortMap\x12\x0c\n\x04\x64p_a\x18\x01 \x01(\t\x12\x0e\n\x06port_a\x18\x02 \x01(\t\x12\x0c\n\x04\x64p_z\x18\x03 \x01(\t\x12\x0e\n\x06port_z\x18\x04 \x01(\t\x1a \n\x07StackDp\x12\x15\n\rroot_hop_port\x18\x01 \x01(\x05\"\xe7\x01\n\x0c\x43onfigChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x14\n\x0crestart_type\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\t\x12\x0f\n\x07success\x18\x05 \x01(\x08\x12\x36\n\x10\x63onfig_hash_info\x18\x06 \x01(\x0b\x32\x1c.ConfigChange.ConfigHashInfo\x1a\x45\n\x0e\x43onfigHashInfo\x12\x14\n\x0c\x63onfig_files\x18\x01 \x01(\t\x12\x0e\n\x06hashes\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\">\n\x08\x44pChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0e\n\x06reason\x18\x03 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x1e\x66orch/proto/faucet_event.proto\x1a\"forch/proto/shared_constants.proto\"\xbc\x02\n\x0b\x46\x61ucetEvent\x12\x0f\n\x07version\x18\x01 \x01(\x05\x12\x0c\n\x04time\x18\x02 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\x03\x12\x10\n\x08\x65vent_id\x18\x05 \x01(\x05\x12\x11\n\tdebounced\x18\x06 \x01(\x08\x12&\n\rCONFIG_CHANGE\x18\n \x01(\x0b\x32\r.ConfigChangeH\x00\x12\x1e\n\tDP_CHANGE\x18\x0b \x01(\x0b\x32\t.DpChangeH\x00\x12 \n\nLAG_CHANGE\x18\x07 \x01(\x0b\x32\n.LagChangeH\x00\x12\"\n\x0bSTACK_STATE\x18\t \x01(\x0b\x32\x0b.StackStateH\x00\x12-\n\x11STACK_TOPO_CHANGE\x18\x08 \x01(\x0b\x32\x10.StackTopoChangeH\x00\x42\x0c\n\nevent_data\"O\n\tLagChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0f\n\x07port_no\x18\x03 \x01(\x05\x12\r\n\x05state\x18\x04 \x01(\x05\"[\n\nStackState\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\x12\x1b\n\x05state\x18\x04 \x01(\x0e\x32\x0c.State.State\"\x8b\x05\n\x0fStackTopoChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x12\n\nstack_root\x18\x02 \x01(\t\x12*\n\x05graph\x18\x03 \x01(\x0b\x32\x1b.StackTopoChange.StackGraph\x12&\n\x03\x64ps\x18\x04 \x03(\x0b\x32\x19.StackTopoChange.DpsEntry\x1a\x44\n\x08\x44psEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\'\n\x05value\x18\x02 \x01(\x0b\x32\x18.StackTopoChange.StackDp:\x02\x38\x01\x1a\xb6\x01\n\nStackGraph\x12\x10\n\x08\x64irected\x18\x01 \x01(\x08\x12\x12\n\nmultigraph\x18\x02 \x01(\x08\x12,\n\x05graph\x18\x03 \x01(\x0b\x32\x1d.StackTopoChange.NetworkGraph\x12)\n\x05nodes\x18\x04 \x03(\x0b\x32\x1a.StackTopoChange.StackNode\x12)\n\x05links\x18\x05 \x03(\x0b\x32\x1a.StackTopoChange.StackLink\x1a\x0e\n\x0cNetworkGraph\x1a\x17\n\tStackNode\x12\n\n\x02id\x18\x01 \x01(\t\x1ah\n\tStackLink\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\x0e\n\x06target\x18\x03 \x01(\t\x12.\n\x08port_map\x18\x04 \x01(\x0b\x32\x1c.StackTopoChange.LinkPortMap\x1aI\n\x0bLinkPortMap\x12\x0c\n\x04\x64p_a\x18\x01 \x01(\t\x12\x0e\n\x06port_a\x18\x02 \x01(\t\x12\x0c\n\x04\x64p_z\x18\x03 \x01(\t\x12\x0e\n\x06port_z\x18\x04 \x01(\t\x1a \n\x07StackDp\x12\x15\n\rroot_hop_port\x18\x01 \x01(\x05\"\xe7\x01\n\x0c\x43onfigChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x14\n\x0crestart_type\x18\x03 \x01(\t\x12\r\n\x05\x64p_id\x18\x04 \x01(\t\x12\x0f\n\x07success\x18\x05 \x01(\x08\x12\x36\n\x10\x63onfig_hash_info\x18\x06 \x01(\x0b\x32\x1c.ConfigChange.ConfigHashInfo\x1a\x45\n\x0e\x43onfigHashInfo\x12\x14\n\x0c\x63onfig_files\x18\x01 \x01(\t\x12\x0e\n\x06hashes\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\">\n\x08\x44pChange\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0f\n\x07\x64p_name\x18\x02 \x01(\t\x12\x0e\n\x06reason\x18\x03 \x01(\tb\x06proto3')
   ,
   dependencies=[forch_dot_proto_dot_shared__constants__pb2.DESCRIPTOR,])
 
@@ -77,36 +77,36 @@ _FAUCETEVENT = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='LAG_CHANGE', full_name='FaucetEvent.LAG_CHANGE', index=6,
-      number=7, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='STACK_TOPO_CHANGE', full_name='FaucetEvent.STACK_TOPO_CHANGE', index=7,
-      number=8, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='STACK_STATE', full_name='FaucetEvent.STACK_STATE', index=8,
-      number=9, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='CONFIG_CHANGE', full_name='FaucetEvent.CONFIG_CHANGE', index=9,
+      name='CONFIG_CHANGE', full_name='FaucetEvent.CONFIG_CHANGE', index=6,
       number=10, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='DP_CHANGE', full_name='FaucetEvent.DP_CHANGE', index=10,
+      name='DP_CHANGE', full_name='FaucetEvent.DP_CHANGE', index=7,
       number=11, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='LAG_CHANGE', full_name='FaucetEvent.LAG_CHANGE', index=8,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='STACK_STATE', full_name='FaucetEvent.STACK_STATE', index=9,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='STACK_TOPO_CHANGE', full_name='FaucetEvent.STACK_TOPO_CHANGE', index=10,
+      number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -721,26 +721,26 @@ _DPCHANGE = _descriptor.Descriptor(
   serialized_end=1513,
 )
 
-_FAUCETEVENT.fields_by_name['LAG_CHANGE'].message_type = _LAGCHANGE
-_FAUCETEVENT.fields_by_name['STACK_TOPO_CHANGE'].message_type = _STACKTOPOCHANGE
-_FAUCETEVENT.fields_by_name['STACK_STATE'].message_type = _STACKSTATE
 _FAUCETEVENT.fields_by_name['CONFIG_CHANGE'].message_type = _CONFIGCHANGE
 _FAUCETEVENT.fields_by_name['DP_CHANGE'].message_type = _DPCHANGE
-_FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
-  _FAUCETEVENT.fields_by_name['LAG_CHANGE'])
-_FAUCETEVENT.fields_by_name['LAG_CHANGE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
-_FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
-  _FAUCETEVENT.fields_by_name['STACK_TOPO_CHANGE'])
-_FAUCETEVENT.fields_by_name['STACK_TOPO_CHANGE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
-_FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
-  _FAUCETEVENT.fields_by_name['STACK_STATE'])
-_FAUCETEVENT.fields_by_name['STACK_STATE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
+_FAUCETEVENT.fields_by_name['LAG_CHANGE'].message_type = _LAGCHANGE
+_FAUCETEVENT.fields_by_name['STACK_STATE'].message_type = _STACKSTATE
+_FAUCETEVENT.fields_by_name['STACK_TOPO_CHANGE'].message_type = _STACKTOPOCHANGE
 _FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
   _FAUCETEVENT.fields_by_name['CONFIG_CHANGE'])
 _FAUCETEVENT.fields_by_name['CONFIG_CHANGE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
 _FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
   _FAUCETEVENT.fields_by_name['DP_CHANGE'])
 _FAUCETEVENT.fields_by_name['DP_CHANGE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
+_FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
+  _FAUCETEVENT.fields_by_name['LAG_CHANGE'])
+_FAUCETEVENT.fields_by_name['LAG_CHANGE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
+_FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
+  _FAUCETEVENT.fields_by_name['STACK_STATE'])
+_FAUCETEVENT.fields_by_name['STACK_STATE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
+_FAUCETEVENT.oneofs_by_name['event_data'].fields.append(
+  _FAUCETEVENT.fields_by_name['STACK_TOPO_CHANGE'])
+_FAUCETEVENT.fields_by_name['STACK_TOPO_CHANGE'].containing_oneof = _FAUCETEVENT.oneofs_by_name['event_data']
 _STACKSTATE.fields_by_name['state'].enum_type = forch_dot_proto_dot_shared__constants__pb2._STATE_STATE
 _STACKTOPOCHANGE_DPSENTRY.fields_by_name['value'].message_type = _STACKTOPOCHANGE_STACKDP
 _STACKTOPOCHANGE_DPSENTRY.containing_type = _STACKTOPOCHANGE

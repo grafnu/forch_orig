@@ -196,7 +196,7 @@ class FaucetEventClient():
     def _dispatch_faucet_event(self, event):
         for target in self._handlers:
             if target in event:
-                faucet_event = dict_proto(event, FaucetEvent, True)
+                faucet_event = dict_proto(event, FaucetEvent, ignore_unknown_fields=True)
                 target_event = getattr(faucet_event, target)
                 self._augment_event_proto(faucet_event, target_event)
                 LOGGER.debug('dispatching %s event', target)
