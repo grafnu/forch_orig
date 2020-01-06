@@ -20,7 +20,7 @@ function simple_ping {
     sw1=`tcpdump -r $OUT_DIR/faux-1.pcap | wc -l`
     sw2=`tcpdump -r $OUT_DIR/t1sw2-eth28.pcap | wc -l`
     pingc=`echo $ping | sed -e 's/, time.*//'`
-    echo ping $label $((sw1 > 3)) $((sw1 < 8)) $((sw2 > 6)) $((sw2 < 16)) $pingc | tee -a $TEST_RESULTS
+    echo ping $label $((sw1 > 3)) $((sw1 < 8)) $((sw2 > 5)) $((sw2 < 16)) $pingc | tee -a $TEST_RESULTS
     echo faux-1 pcap
     tcpdump -r $OUT_DIR/faux-1.pcap | head
     echo t1sw2 pcap
