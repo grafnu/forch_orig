@@ -91,18 +91,14 @@ class Forchestrator:
     def _register_handlers(self):
         fcoll = self._faucet_collector
         self._faucet_events.register_handlers([
+            (FaucetEvent.ConfigChange, self._process_config_change),
+            (FaucetEvent.DpChange, lambda event: fcoll.process_dp_change(
+                event.timestamp, event.dp_name, None, event.reason == "cold_start")),
             (FaucetEvent.LagChange, lambda event: fcoll.process_lag_state(
                 event.timestamp, event.dp_name, event.port_no, event.state)),
             (FaucetEvent.StackState, lambda event: fcoll.process_stack_state(
                 event.timestamp, event.dp_name, event.port, event.state)),
             (FaucetEvent.StackTopoChange, fcoll.process_stack_topo_change_event),
-            (FaucetEvent.ConfigChange, lambda event: (
-                fcoll.process_dp_config_change(
-                    event.timestamp, event.dp_name, event.restart_type, event.dp_id),
-                self._restore_faucet_config(event.timestamp, event.config_hash_info.hashes),
-            )),
-            (FaucetEvent.DpChange, lambda event: fcoll.process_dp_change(
-                event.timestamp, event.dp_name, None, event.reason == "cold_start")),
         ])
 
     def _restore_states(self):
@@ -122,11 +118,15 @@ class Forchestrator:
         self._faucet_events.set_event_horizon(event_horizon)
 
     def _restore_faucet_config(self, timestamp, config_hash):
-        if not config_hash:
-            return
         config_info, faucet_dps, _ = self._get_faucet_config()
         assert config_hash == config_info['hashes'], 'config hash info does not match'
         self._faucet_collector.process_dataplane_config_change(timestamp, faucet_dps)
+
+    def _process_config_change(self, event):
+        self._faucet_collector.process_dp_config_change(
+            event.timestamp, event.dp_name, event.restart_type, event.dp_id)
+        if event.config_hash_info.hashes:
+            self._restore_faucet_config(event.timestamp, event.config_hash_info.hashes)
 
     def _faucet_events_connect(self):
         LOGGER.info('Attempting faucet event sock connection...')

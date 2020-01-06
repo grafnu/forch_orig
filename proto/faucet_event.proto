@@ -14,11 +14,11 @@ message FaucetEvent {
   bool debounced = 6;
 
   oneof event_data {
-    LagChange LAG_CHANGE = 7;
-    StackTopoChange STACK_TOPO_CHANGE = 8;
-    StackState STACK_STATE = 9;
     ConfigChange CONFIG_CHANGE = 10;
     DpChange DP_CHANGE = 11;
+    LagChange LAG_CHANGE = 7;
+    StackState STACK_STATE = 9;
+    StackTopoChange STACK_TOPO_CHANGE = 8;
   }
 }
 
@@ -110,12 +110,13 @@ message ConfigChange {
   // config hash
   ConfigHashInfo config_hash_info = 6;
 
-  // Config hash info
+  // Config hash info: will be included in the event
+  // in case of data plane reconfiguration
   message ConfigHashInfo {
     // config files
     string config_files = 1;
 
-    // config hash
+    // config hashes
     string hashes = 2;
 
     // error
