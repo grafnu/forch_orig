@@ -1,8 +1,12 @@
 #!/bin/bash -e
 
+if [ -n "$1" ]; then
+    TEST_SET=$1
+fi
+
 if [ -z "$TEST_SET" ]; then
-  echo TEST_SET not defined.
-  false
+    echo TEST_SET not defined.
+    false
 fi
 
 echo Running $TEST_SET tests...
