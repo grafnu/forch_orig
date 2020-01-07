@@ -1,0 +1,167 @@
+CHANGES
+=======
+
+* Convert as\_config\_change and as\_dp\_change to protobuf (#143)
+* Add package debug
+
+0.25
+----
+
+* Updating to latest merged faucet version (#144)
+* Initial draft for faucetizer (#140)
+
+0.24
+----
+
+* Refactor test functions (#142)
+* Proto file for auth result (#141)
+* Expose LACP inactive status when link is up but not inactive. (#133)
+* add version option to cmd line (#135)
+* Version fix (#139)
+* Clean up learned\_l2\_port handling (#138)
+* Restructure events and state reconstruction (#137)
+* clean up hop\_path algorithm and learn l2\_learn state from varz (#136)
+* Reject request containing directory traversal expressions (#134)
+* Cleanup expected change counts
+* Make errors more explicit in egress path output (#131)
+* Restore common counts
+* Build STACK\_TOPO\_CHANGE from varz (#129)
+* create building\_schema.json file (#130)
+* Updating change counts
+* Remove float\_precision opation
+* Update faucet version (#132)
+* Convert STACK\_STATE event (#124)
+* Change alorithm of finding host path (#122)
+* Use get() to get port description (#128)
+* Updating tests for dp\_id fix (#127)
+* Updating test counts to reflect most common
+* Update faucet to more stable version (#126)
+* Reorder events (#123)
+* convert lag\_change event (#121)
+* create faucet event dispatch mechanism (#120)
+* Change install path of data files to lib/forch (#119)
+* convert to faucet config modules and check hashes on events (#98)
+* Use proto state for dataplane\_state (#117)
+* clean up active error handling (#118)
+* convert to system\_state proto (#116)
+* Switch state API proto (#115)
+* create debian build script (#111)
+* changes to fix debian build (#113)
+* Force restart OVS in reset stack test (#112)
+* Use protobuf for host\_path and list\_hosts API (#109)
+* Debian packaging changes (#108)
+* Protobuf for dataplane state (#107)
+* Don't use no-member (#106)
+* Start basic faucet\_event proto (#100)
+* statically include compiled proto files (#105)
+* restructure config API (#104)
+* Remove google-cloud dep (#103)
+* Change ordering of stack bring-up
+* Using protobuf for process state API (#99)
+* adding wheel to list of requirements (#102)
+* sort order of broken links for test stability (#101)
+* Convert stack\_topo\_change event to proto (#96)
+* add tagged setup.py version (#97)
+* documentation for cpn\_state (#95)
+* Add protobuf documentation (#94)
+* add faucet config API (#87)
+* Add protoc version
+* set controller active state when keepalived goes down (#91)
+* convert cpn\_state and system\_state to protos (#89)
+* add GVERSION to package (#92)
+* add dependency to setup.py (#90)
+* Build protos into forch/ (#88)
+* Adding healthy state test case (#85)
+* cpn config protobuf (#86)
+* update to latest facuet (with added varz), and forch debugging cleanup (#83)
+* update vrrp state map using update() instead of direct assignment (#82)
+* read faucet from faucet.yaml (#80)
+* read stack varz (#79)
+* Cleanup of event handling (#78)
+* formatting log (#77)
+* Restore states from prometheus metrics (#73)
+* add times and change count in process\_state summary (#76)
+* cache process data (#75)
+* Rename to NOAH
+* Fix test output
+* fix process creation time (#74)
+* Convert dataplane state to healthy not up (#72)
+* Reconnection behaviour change (#71)
+* update link state detection (#70)
+* Write new user to /etc/passwd (#69)
+* Make trigger work from GCE
+* Update test\_stack with mostly working setup (#67)
+* Autobuild script
+* Implement faucet version checks and some test result updates (#66)
+* Track change count and last update for stack links and dps (#57)
+* Fix STACK handling (w/ new faucet version) (#65)
+* fix process tests (#64)
+* fixes (#63)
+* minor clean of change diff (#62)
+* Don't require running as sudo for forch (#61)
+* handle empty host in http request (#60)
+* updating faucet version and some test integration (#59)
+* Adding integration test suite (#58)
+* logging to file (#56)
+* handle lag event (#54)
+* Forch reconnection (#55)
+* bring back process stats (#53)
+* propagate system state to subsystems if current controller is not master (#52)
+* Use name for state, not port
+* change port state from active to up (#51)
+* Update dataplane\_state handling (#50)
+* Adding state and detail to dataplane\_state (#48)
+* Systemstate (#49)
+* Startup (#47)
+* Cleanup (#46)
+* set switch state to broken if no switches connected (#45)
+* Account for egress state for dp summary status (#44)
+* When determine system state, also check reachability to peer controller. (#42)
+* Add url of list\_hosts on access MACs in switch\_state (#43)
+* Reconn (#41)
+* return empty dict in case of error (#40)
+* reflect vrrp state in system overview (#38)
+* fixing summary (#39)
+* Comments (#36)
+* Tweaks to system handling (#37)
+* Fix stupid typo
+* Clean up system\_state summary (#35)
+* Clean up system\_state and process\_state (#34)
+* minor fixes to process scanning (#32)
+* Allow configurable controller list (#31)
+* process (#29)
+* Cleanup port\_restrcit (#30)
+* Splintering L2\_LEARNED\_MACS in to L2\_LEARN events (#28)
+* Fix http port number
+* Refactoring of some keys and minor tweaks (#26)
+* Fix URL generation (#27)
+* Update logging and a few minor tweaks (#25)
+* Adding blocking for event polling (#22)
+* add package init file (#24)
+* add setup.py (#23)
+* Fixing link look up to determine if a link is up (#21)
+* set default env if not set yet (#20)
+* Add space join for regex matching (#19)
+* using regex solely to find a process (#17)
+* dataplane\_state API (#16)
+* Switch (#15)
+* Apply new api params and error checking (#14)
+* fix get\_port\_attribute (#13)
+* Only set HOSTNAME if not defined
+* Add switches\_restrict (#12)
+* process\_state API (#11)
+* Updates to state collector (#9)
+* Update web tools, moved in from daq (#8)
+* cpn state update (#10)
+* Updates to cpn state summary (#7)
+* host\_path API change (#6)
+* Add travis lint build (#5)
+* Adjusting cpn\_node return
+* Removing redundant link info (#3)
+* cpn (#4)
+* add basics for system\_summary api
+* Base stickler file
+* Cleanup module usage
+* Import of files from DAQ
+* Updating boilerplate files
+* Initial commit
