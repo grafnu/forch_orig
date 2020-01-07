@@ -111,7 +111,7 @@ for index in 1; do
 done
 
 echo Letting system settle...
-sleep 20
+sleep 10
 
 echo head of forch-faucet-1/faucet.log:
 head inst/forch-faucet-1/faucet.log
