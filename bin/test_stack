@@ -89,7 +89,7 @@ sleep 32
 test_forch -twod
 
 echo %%% steady state ip address check | tee -a $TEST_RESULTS
-api_result=$OUT_DIR/forch-twod/host_path2.jsona
+api_result=$OUT_DIR/forch-twod/host_path2.json
 jq .src_ip $api_result | tee -a $TEST_RESULTS
 jq .dst_ip $api_result | tee -a $TEST_RESULTS
 
