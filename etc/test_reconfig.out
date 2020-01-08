@@ -1,10 +1,10 @@
 bin/test_reconfig
-ping initstate 1 1 0 1 2 packets transmitted, 2 received, 0% packet loss
+ping initstate 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
 ping sw2down01 1 1 0 1 2 packets transmitted, 2 received, 0% packet loss
 ping sw2down02 1 1 0 1 2 packets transmitted, 2 received, 0% packet loss
 ping sw2isup01 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
 ping sw2isup02 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
-ping sw1down01 0 1 0 1 2 packets transmitted, 0 received, 100% packet loss
+ping sw1down01 0 1 1 1 2 packets transmitted, 0 received, 100% packet loss
 ping sw1down02 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
 ping sw1down03 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
 ping sw1down04 1 1 1 1 2 packets transmitted, 2 received, 0% packet loss
