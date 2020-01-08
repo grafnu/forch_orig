@@ -11,7 +11,7 @@ addons:
 install:
   - set -e
   - bin/setup_base
-  - bin/compile_ovs
+  # - bin/compile_ovs
 script:
   - set -e
   - bin/build_docker
@@ -20,4 +20,6 @@ script:
 env:
   matrix:
     #- TEST_SET=stack
+    - TEST_SET=reconfig
+    - TEST_SET=reconfig
     - TEST_SET=reconfig
