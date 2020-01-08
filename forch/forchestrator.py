@@ -222,6 +222,7 @@ class Forchestrator:
     def get_system_state(self, path, params):
         """Get an overview of the system state"""
         system_state = SystemState()
+        system_state.version = __version__
         system_state.peer_controller_url = self._get_peer_controller_url()
         system_state.summary_sources.CopyFrom(self._get_system_summary(path))
         system_state.site_name = self._config.get('site', {}).get('name', 'unknown')
