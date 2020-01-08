@@ -1,5 +1,9 @@
 #!/bin/bash
 
+source bin/stack_functions
+
+preamble_setup
+
 TEST_OUT=test_out/test_topology.out
 
 export FORCH_CONFIG_DIR=topo/bond

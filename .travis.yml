@@ -10,16 +10,18 @@ addons:
     update: true
 install:
   - set -e
+  - env
   - bin/setup_base
-  - bin/compile_ovs
+  - bin/compile_ovs $SKIP_BUILD
+  - bin/build_docker $SKIP_BUILD
 script:
   - set -e
-  - bin/build_docker
   - bin/setup_stack local
+  - bin/build_proto check
   - bin/run_test_set
 env:
   matrix:
-    #- TEST_SET=stack
+    - TEST_SET=stack
     - TEST_SET=reconfig
-    - TEST_SET=reconfig
-    - TEST_SET=reconfig
+    - TEST_SET=topology
+    - TEST_SET=basics SKIP_BUILD=skip
