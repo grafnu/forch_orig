@@ -60,7 +60,7 @@ message SystemState {
   }
 
   /*
-   * Version of faucet and forch
+   * Versions of components on the controller
    */
   message Versions {
     // faucet version
