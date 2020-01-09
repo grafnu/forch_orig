@@ -127,7 +127,7 @@ class FaucetEventClient():
         if event_type == 'PORT_CHANGE':
             if not event.get('debounced'):
                 self._debounce_port_event(event, tevent.port, tevent.port_active)
-            elif self._process_state_update(faucet_event.dpid, tevent.port, tevent.port_active):
+            elif self._process_state_update(faucet_event.dp_id, tevent.port, tevent.port_active):
                 return True
             return False
 
