@@ -23,5 +23,5 @@ env:
   matrix:
     - TEST_SET=stack
     - TEST_SET=reconfig
-    - TEST_SET=topology
+    - TEST_SET=topology SKIP_BUILD=skip
     - TEST_SET=basics SKIP_BUILD=skip

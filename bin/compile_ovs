@@ -2,6 +2,11 @@
 
 ovs-vsctl --version
 
+if [ "$1" == skip ]; then
+    echo Skipping build as directed.
+    exit 0
+fi
+
 version=`ovs-vsctl --version | fgrep ovs-vsctl`
 target='ovs-vsctl (Open vSwitch) 2.12.0'
 
