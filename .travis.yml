@@ -12,16 +12,16 @@ install:
   - set -e
   - env
   - bin/setup_base
-  - bin/compile_ovs $SKIP_BUILD
-  - bin/build_docker $SKIP_BUILD
+  - $TEST_SKIP bin/compile_ovs
+  - $TEST_SKIP bin/build_docker
 script:
   - set -e
-  - bin/setup_stack local
+  - $TEST_SKIP bin/setup_stack local
   - bin/build_proto check
   - bin/run_test_set
 env:
   matrix:
     - TEST_SET=stack
     - TEST_SET=reconfig
-    - TEST_SET=topology SKIP_BUILD=skip
-    - TEST_SET=basics SKIP_BUILD=skip
+    - TEST_SET=topology TEST_SKIP=true
+    - TEST_SET=basics TEST_SKIP=true

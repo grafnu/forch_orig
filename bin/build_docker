@@ -1,10 +1,5 @@
 #!/bin/bash -e
 
-if [ "$1" == skip ]; then
-    echo Skipping build as directed.
-    exit 0
-fi
-
 FAUCET_REPO=https://github.com/grafnu/faucet.git
 FAUCET_HASH=$(cat etc/FAUCET_VERSION)
 docker_args=
