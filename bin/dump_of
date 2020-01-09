@@ -1,6 +1,0 @@
-#!/bin/bash
-
-sudo ovs-ofctl dump-flows t1sw1 > /tmp/$1/t1sw1
-sudo ovs-ofctl dump-flows t1sw2 > /tmp/$1/t1sw2
-sudo ovs-ofctl dump-flows t2sw1 > /tmp/$1/t2sw1
-sudo ovs-ofctl dump-flows t2sw2 > /tmp/$1/t2sw2
