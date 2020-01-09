@@ -1,7 +1,10 @@
 #!/bin/bash -e
 
-FAUCET_REPO=https://github.com/grafnu/faucet.git
+ROOT=$(realpath $(dirname $0)/..)
+cd $ROOT
+
 FAUCET_HASH=$(cat etc/FAUCET_VERSION)
+
 docker_args=
 mkdir -p build
 
