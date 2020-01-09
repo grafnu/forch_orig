@@ -114,10 +114,18 @@ class FaucetEventClient():
         if event_id != self._last_event_id:
             raise Exception('Out-of-sequence event id #%d' % event_id)
 
-        (_, dpid, port, active) = self.as_port_state(event)
-        if dpid and port:
+        #TODO: Anurag: Factor out once as_ports_status is phased out.
+        event_type = None
+        for target in self._handlers:
+            if target in event:
+                event_type = target
+                faucet_event = dict_proto(event, FaucetEvent, ignore_unknown_fields=True)
+                tevent = getattr(faucet_event, target)
+
+        #(_, dpid, port, active) = self.as_port_state(event)
+        if event_type == 'PORT_CHANGE':
             if not event.get('debounced'):
-                self._debounce_port_event(event, port, active)
+                self._debounce_port_event(event, tevent.port, tevent.port_active)
             elif self._process_state_update(dpid, port, active):
                 return True
             return False
