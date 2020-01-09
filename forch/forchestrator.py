@@ -510,7 +510,9 @@ if __name__ == '__main__':
     ARGS = parse_args(sys.argv[1:])
 
     if ARGS.version:
-        print(f'Forch version {__version__}')
+        from pbr.version import VersionInfo
+        version = VersionInfo('forch').semantic_version().release_string()
+        print(f'Forch version {version}')
         sys.exit()
 
     main()
