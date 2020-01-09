@@ -21,6 +21,9 @@ TEST_RESULTS=$OUT_DIR/test_$TEST_SET.out
 
 bin/test_${TEST_SET}
 
+pwd
+ls -l etc/ test_out/
+
 echo
 ls -l $TEST_RESULTS
 echo '########## Begin complete test results ##########'
