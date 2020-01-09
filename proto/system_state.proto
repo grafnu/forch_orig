@@ -12,8 +12,8 @@ message SystemState {
   // Site name (prefix of most components)
   string site_name = 1;
 
-  // NOAH version
-  string noah_version = 2;
+  // faucet and forch version
+  Versions versions = 2;
 
   // This controller's name
   string controller_name = 3;
@@ -57,6 +57,17 @@ message SystemState {
 
     // Host listing summary
     StateSummary list_hosts = 5;
+  }
+
+  /*
+   * Version of faucet and forch
+   */
+  message Versions {
+    // faucet version
+    string faucet_version = 1;
+
+    // forch version
+    string forch_version = 2;
   }
 }
 
