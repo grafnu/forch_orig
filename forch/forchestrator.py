@@ -102,7 +102,7 @@ class Forchestrator:
             (FaucetEvent.PortChange, lambda event: fcoll.process_port_state(
                 event.timestamp, event.dp_name, event.port_no,
                 event.status and event.reason != "DELETE")),
-            (FaucetEvent.L2Change, lambda event: fcoll.process_port_learn(
+            (FaucetEvent.L2Learn, lambda event: fcoll.process_port_learn(
                 event.timestamp, event.dp_name, event.port_no, event.eth_src, event.l3_src_ip)),
         ])
 
