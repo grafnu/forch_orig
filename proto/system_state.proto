@@ -64,10 +64,10 @@ message SystemState {
    */
   message Versions {
     // faucet version
-    string faucet_version = 1;
+    string faucet = 1;
 
     // forch version
-    string forch_version = 2;
+    string forch = 2;
   }
 }
 
