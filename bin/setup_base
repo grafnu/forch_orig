@@ -42,6 +42,13 @@ fi
 rm -rf protoc-gen-doc
 git clone https://github.com/pseudomuto/protoc-gen-doc.git
 
+if [ -d faucet ]; then
+    echo Dir faucet/ already exists. Not cloning.
+else
+    echo Cloning faucet locally...
+    git clone $FAUCET_REPO faucet
+    (cd faucet; git checkout $FAUCET_HASH)
+fi
 
 echo
 echo Done with forch base setup.
