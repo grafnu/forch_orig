@@ -1,12 +1,8 @@
-forch (0.25-2-g9cf240c) UNRELEASED; urgency=medium
+forch (0.16) UNRELEASED; urgency=medium
 
-  [ Anurag Porripireddi ]
   * New upstream release
 
-  [ Forch Cabal ]
-  * New upstream release
-
- -- Forch Cabal <faucet-dev@>  Tue, 07 Jan 2020 18:40:54 +0000
+ -- Anurag Porripireddi <anuragprdi@google.com>  Mon, 09 Dec 2019 18:23:48 +0000
 
 forch (0.1.1) unstable; urgency=medium
 
