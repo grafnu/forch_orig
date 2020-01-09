@@ -106,6 +106,8 @@ class FaucetEventClient():
                 return False
 
     def _filter_faucet_event(self, event):
+        if 'EVENT_SOCK_HEARTBEAT' in event:
+            return False
         event_id = int(event.get('event_id'))
         if event_id <= self._last_event_id:
             LOGGER.debug('Outdated faucet event #%d', event_id)
@@ -122,11 +124,10 @@ class FaucetEventClient():
                 faucet_event = dict_proto(event, FaucetEvent, ignore_unknown_fields=True)
                 tevent = getattr(faucet_event, target)
 
-        #(_, dpid, port, active) = self.as_port_state(event)
         if event_type == 'PORT_CHANGE':
             if not event.get('debounced'):
                 self._debounce_port_event(event, tevent.port, tevent.port_active)
-            elif self._process_state_update(dpid, port, active):
+            elif self._process_state_update(faucet_event.dpid, tevent.port, tevent.port_active):
                 return True
             return False
 
