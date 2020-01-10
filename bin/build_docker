@@ -54,7 +54,7 @@ else
     (cd faucet; git checkout $FAUCET_HASH)
 fi
 
-faucet_ver=$(cd faucet; git rev-parse HEAD)
+faucet_ver=$(cd faucet; git describe --dirty)
 
 docker_args+=--label=FAUCET=$faucet_ver
 
