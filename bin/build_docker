@@ -77,6 +77,6 @@ fi
 echo Updating $DOCKER_IMAGE_LIST...
 docker images | fgrep forch/ | fgrep latest | while read image tag hash other; do
     echo $image $hash `date` >> $DOCKER_IMAGE_LIST
-fi
+done
 
 echo Done with successful docker build.
