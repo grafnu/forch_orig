@@ -9,14 +9,10 @@ mkdir -p build
 pull=
 
 if [ "$1" == push ]; then
-    rm -f $DOCKER_IMAGE_LIST
-    docker images | fgrep forch/ | while read image tag hash other; do
-        if [ "$tag" == latest ]; then
-            echo Tagging $hash as $image:$hash and push to dockerhub...
-            docker tag $hash $image:$hash
-            docker push $image:$hash
-            echo $image $hash `date` >> $DOCKER_IMAGE_LIST
-        fi
+    cat $DOCKER_IMAGE_LIST | while read image hash other; do
+        echo Tagging $hash as $image:$hash and push to dockerhub...
+        docker tag $hash $image:$hash
+        docker push $image:$hash
     done
     echo Done with docker build push.
     exit 0
@@ -32,11 +28,13 @@ if [ "$1" == pull ]; then
 fi
 
 docker rmi -f $ALL_IMAGES || true
-images=$(docker images | fgrep forch/ | wc -l)
+images=$(docker images | fgrep forch/ | fgrep latest | wc -l)
 if [ $images != 0 ]; then
     echo Unexpected forch/ images found:
     docker images | fgrep forch/
+    false
 fi
+rm -f $DOCKER_IMAGE_LIST
 
 echo Building faux...
 docker build -t forch/faux -f etc/Dockerfile.faux . > build/docker_faux.log &
@@ -69,11 +67,16 @@ wait
 
 tail build/docker_*.log
 
-images=$(docker images | fgrep forch/ | wc -l)
+images=$(docker images | fgrep forch/ | fgrep latest | wc -l)
 if [ $images != 3 ]; then
     echo Did not find expected 3 forch images:
-    docker images | fgrep forch/
+    docker images | fgrep forch/ | fgrep latest
     false
+fi
+
+echo Updating $DOCKER_IMAGE_LIST...
+docker images | fgrep forch/ | fgrep latest | while read image tag hash other; do
+    echo $image $hash `date` >> $DOCKER_IMAGE_LIST
 fi
 
 echo Done with successful docker build.
