@@ -27,6 +27,22 @@ if [ "$1" == pull ]; then
     exit 0
 fi
 
+if [ "$1" == check ]; then
+    using_faucet=`docker inspect forch/faucet:latest | jq -r .[0].Config.Labels.FAUCET`
+    using_hash=`cd faucet; git rev-parse $using_faucet`
+
+    expected_faucet=$(cat etc/FAUCET_VERSION)
+    expected_hash=`cd faucet; git rev-parse $expected_faucet`
+
+    if [ "$using_hash" != "$expected_hash" ]; then
+        echo Docker faucet image does not match configuration.
+        echo $using_hash from forch/faucet:latest $using_faucet
+        echo $expected_hash from etc/FAUCET_VERSION $expected_faucet
+        false
+    fi
+    exit 0
+fi
+
 docker rmi -f $ALL_IMAGES || true
 images=$(docker images | fgrep forch/ | fgrep latest | wc -l)
 if [ $images != 0 ]; then
