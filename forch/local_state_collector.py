@@ -88,12 +88,15 @@ class LocalStateCollector:
             broken.append(target_name)
 
         process_state['processes'] = process_map
+        process_state['process_state_last_update'] = self._current_time
 
         old_state = process_state.get('process_state')
         state = State.broken if broken else State.healthy
-        process_state['process_state_last_update'] = self._current_time
+
+        old_state_detail = process_state.get('process_state_detail')
         state_detail = 'Processes in broken state: ' + ', '.join(broken) if broken else ''
-        if state != old_state:
+
+        if state != old_state or state_detail != old_state_detail:
             state_change_count = process_state.get('process_state_change_count', 0) + 1
             LOGGER.info('process_state #%d is %s: %s', state_change_count, state, state_detail)
             process_state['process_state'] = state
