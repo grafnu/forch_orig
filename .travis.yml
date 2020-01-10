@@ -10,7 +10,6 @@ addons:
     update: true
 install:
   - set -e
-  - ls -l etc/
   - bin/setup_base
   - bin/build_proto check
 script:
