@@ -10,9 +10,10 @@ pull=
 
 if [ "$1" == push ]; then
     cat $DOCKER_IMAGE_LIST | while read image hash other; do
-        echo Tagging $hash as $image:$hash and push to dockerhub...
+        echo Push $hash as $image:$hash to dockerhub...
         docker tag $hash $image:$hash
         docker push $image:$hash
+        docker rmi $image:$hash
     done
     echo Done with docker build push.
     exit 0
@@ -20,8 +21,10 @@ fi
 
 if [ "$1" == pull ]; then
     cat $DOCKER_IMAGE_LIST | while read image hash other; do
+        echo Pulling $image:$hash from dockerhub...
         docker pull $image:$hash
         docker tag $hash $image:latest
+        docker rmi $image:$hash
     done
     echo Done with docker build pull.
     exit 0
