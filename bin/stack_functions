@@ -149,7 +149,7 @@ function restart_ovs {
     sudo /etc/init.d/openvswitch-switch restart
 
     echo $desc Waiting for network stability...
-    sleep 15
+    sleep 30
 }
 
 function test_stack {
