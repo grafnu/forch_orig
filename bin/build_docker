@@ -2,10 +2,36 @@
 
 FAUCET_REPO=https://github.com/grafnu/faucet.git
 FAUCET_HASH=$(cat etc/FAUCET_VERSION)
+ALL_IMAGES="forch/faux forch/faucet forch/gauge"
+DOCKER_IMAGE_LIST=etc/docker_images.txt
 docker_args=
 mkdir -p build
+pull=
 
-docker rmi -f forch/faux forch/faucet forch/gauge || true
+if [ "$1" == push ]; then
+    rm -f $DOCKER_IMAGE_LIST
+    docker images | fgrep forch/ | while read image tag hash other; do
+        if [ "$tag" == latest ]; then
+            echo Tagging $hash as $image:$hash and push to dockerhub...
+            docker tag $hash $image:$hash
+            docker push $image:$hash
+            echo $image $hash `date` >> $DOCKER_IMAGE_LIST
+        fi
+    done
+    echo Done with docker build push.
+    exit 0
+fi
+
+if [ "$1" == pull ]; then
+    cat $DOCKER_IMAGE_LIST | while read image hash other; do
+        docker pull $image:$hash
+        docker tag $hash $image:latest
+    done
+    echo Done with docker build pull.
+    exit 0
+fi
+
+docker rmi -f $ALL_IMAGES || true
 images=$(docker images | fgrep forch/ | wc -l)
 if [ $images != 0 ]; then
     echo Unexpected forch/ images found:
