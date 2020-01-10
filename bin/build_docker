@@ -32,10 +32,10 @@ fi
 
 if [ "$1" == check ]; then
     using_faucet=`docker inspect forch/faucet:latest | jq -r .[0].Config.Labels.FAUCET`
-    using_hash=`cd faucet; git rev-parse $using_faucet`
+    using_hash=`cd faucet; git rev-list -n 1 $using_faucet`
 
     expected_faucet=$(cat etc/FAUCET_VERSION)
-    expected_hash=`cd faucet; git rev-parse $expected_faucet`
+    expected_hash=`cd faucet; git rev-list -n 1 $expected_faucet`
 
     if [ "$using_hash" != "$expected_hash" ]; then
         echo Docker faucet image does not match configuration.
@@ -58,7 +58,7 @@ rm -f $DOCKER_IMAGE_LIST
 echo Building faux...
 docker build -t forch/faux -f etc/Dockerfile.faux . > build/docker_faux.log &
 
-faucet_ver=$(cd faucet; git rev-parse HEAD)
+faucet_ver=$(cd faucet; git rev-list -n 1 `git describe --dirty`)
 if [ "$faucet_ver" != $FAUCET_HASH ]; then
     echo Local faucet version not as expected.
     echo $FAUCET_HASH from etc/FAUCET_VERSION
@@ -66,7 +66,7 @@ if [ "$faucet_ver" != $FAUCET_HASH ]; then
     false
 fi
 
-faucet_ver=$(cd faucet; git describe --dirty)
+faucet_ver=$(cd faucet; git rev-list -n 1 `git describe --dirty`)
 
 docker_args+=--label=FAUCET=$faucet_ver
 
