@@ -70,10 +70,10 @@ class LocalStateCollector:
         broken = []
 
         # fill up process info
-        for target_name, target_map in self._target_procs.items():
+        for target_name in self._target_procs:
             state_map = process_map.setdefault(target_name, {})
             proc_list = procs.get(target_name, [])
-            target_count = int(target_map.get('count', 1))
+            target_count = int(self._target_procs.items[target_name].get('count', 1))
             state, detail = self._extract_process_state(target_name, target_count, proc_list)
             state_map['detail'] = detail
             if state:
