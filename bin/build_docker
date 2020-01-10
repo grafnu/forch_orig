@@ -55,19 +55,12 @@ rm -f $DOCKER_IMAGE_LIST
 echo Building faux...
 docker build -t forch/faux -f etc/Dockerfile.faux . > build/docker_faux.log &
 
-if [ -d faucet ]; then
-    echo Faucet already exists. Not cloning.
-    faucet_ver=$(cd faucet; git rev-parse HEAD)
-    if [ "$faucet_ver" != $FAUCET_HASH ]; then
-        echo Local faucet version not as expected.
-        echo $FAUCET_HASH from etc/FAUCET_VERSION
-        echo $faucet_ver in faucet/
-        false
-    fi
-else
-    echo Cloning faucet locally...
-    git clone $FAUCET_REPO faucet
-    (cd faucet; git checkout $FAUCET_HASH)
+faucet_ver=$(cd faucet; git rev-parse HEAD)
+if [ "$faucet_ver" != $FAUCET_HASH ]; then
+    echo Local faucet version not as expected.
+    echo $FAUCET_HASH from etc/FAUCET_VERSION
+    echo $faucet_ver in faucet/
+    false
 fi
 
 faucet_ver=$(cd faucet; git describe --dirty)
@@ -92,7 +85,7 @@ fi
 
 echo Updating $DOCKER_IMAGE_LIST...
 docker images | fgrep forch/ | fgrep latest | while read image tag hash other; do
-    echo $image $hash `date` >> $DOCKER_IMAGE_LIST
+    echo $image $hash >> $DOCKER_IMAGE_LIST
 done
 
 echo Done with successful docker build.
