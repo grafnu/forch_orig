@@ -12,7 +12,7 @@ install:
   - set -e
   - bin/setup_base
   - $TEST_SKIP bin/compile_ovs
-  - $TEST_SKIP bin/build_docker
+  - $TEST_SKIP bin/build_docker ${DOCKER_BUILD:-pull}
 script:
   - set -e
   - $TEST_SKIP bin/setup_stack local
