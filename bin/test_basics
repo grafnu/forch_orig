@@ -6,6 +6,5 @@ preamble_setup
 
 bin/package_forch testing
 bin/check_style
-bin/build_docker check
 bin/build_proto check
 bin/build_proto

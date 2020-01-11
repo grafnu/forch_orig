@@ -29,10 +29,7 @@ if [ "$1" == pull ]; then
         docker rmi $image:$hash
     done
     echo Done with docker build pull.
-    exit 0
-fi
 
-if [ "$1" == check ]; then
     using_faucet=`docker inspect forch/faucet:latest | jq -r .[0].Config.Labels.FAUCET`
     using_hash=`cd faucet; git rev-list -n 1 $using_faucet`
 
