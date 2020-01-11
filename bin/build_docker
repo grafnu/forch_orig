@@ -4,7 +4,6 @@ ROOT=$(realpath $(dirname $0)/..)
 cd $ROOT
 
 FAUCET_HASH=$(cat etc/FAUCET_VERSION)
-ALL_IMAGES="forch/faux forch/faucet forch/gauge"
 DOCKER_IMAGE_LIST=etc/docker_images.txt
 docker_args=
 mkdir -p build
@@ -45,13 +44,6 @@ if [ "$1" == pull ]; then
     exit 0
 fi
 
-docker rmi -f $ALL_IMAGES || true
-images=$(docker images | fgrep forch/ | fgrep latest | wc -l)
-if [ $images != 0 ]; then
-    echo Unexpected forch/ images found:
-    docker images | fgrep forch/
-    false
-fi
 rm -f $DOCKER_IMAGE_LIST
 
 echo Building faux...
