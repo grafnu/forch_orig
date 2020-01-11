@@ -63,7 +63,7 @@ if [ -n "$FAUCET_SOCK" ]; then
 fi
 
 if [ -n "$local" ]; then
-    using_faucet=$(cd faucet; git describe --dirty)
+    using_faucet=$(cd faucet; git rev-list -n 1 `git describe --dirty`)
     error_label="from local faucet/"
 else
     using_faucet=`docker inspect $IMAGE | jq -r .[0].Config.Labels.FAUCET`
