@@ -23,7 +23,7 @@ function simple_ping {
     sw3=`tcpdump -r $OUT_DIR/t1sw1-eth6.pcap | wc -l`
     pingc=`echo $ping | sed -e 's/, time.*//'`
     echo ping $label \
-         $((sw1 > 3)) $((sw1 < 8)) \
+         $((sw1 > 3)) $((sw1 < 10)) \
          $((sw2 > 0)) $((sw2 < 16)) \
          $((sw3 < 10)) \
          $pingc | tee -a $TEST_RESULTS
