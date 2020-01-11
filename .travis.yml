@@ -19,10 +19,6 @@ script:
   - bin/run_test_set
 env:
   matrix:
-    #- TEST_SET=stack
+    - TEST_SET=stack
     - TEST_SET=reconfig
-    - TEST_SET=reconfig
-    - TEST_SET=reconfig
-    - TEST_SET=reconfig
-    #- TEST_SET=topology TEST_SKIP=true
-    #- TEST_SET=basics TEST_SKIP=true
+    - TEST_SET=basics TEST_SKIP=true
