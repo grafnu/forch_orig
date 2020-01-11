@@ -69,12 +69,13 @@ faucet_ver=$(cd faucet; git rev-list -n 1 `git describe --dirty`)
 
 docker_args+=--label=FAUCET=$faucet_ver
 
-echo Building faucet and gauge...
+echo Building faucet...
 docker build -t forch/faucet $docker_args -f etc/Dockerfile.faucet . > build/docker_faucet.log &
-docker build -t forch/gauge $docker_args -f etc/Dockerfile.gauge . > build/docker_gauge.log &
 
 echo Waiting for builds to complete.
 wait
+
+docker build -t forch/gauge $docker_args -f etc/Dockerfile.gauge . > build/docker_gauge.log
 
 tail build/docker_*.log
 
