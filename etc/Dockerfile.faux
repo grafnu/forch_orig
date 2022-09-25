@@ -3,7 +3,7 @@
 # Faux reference device for framework development/testing.
 #
 
-FROM ubuntu:bionic
+FROM ubuntu:jammy
 
 COPY bin/retry_cmd bin/
 
