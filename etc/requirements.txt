@@ -6,7 +6,7 @@ pbr>=1.9
 prometheus_client
 protobuf
 psutil
-pylint==2.4.4
+pylint==2.17.7
 pytricia
 pyyaml
 requests
